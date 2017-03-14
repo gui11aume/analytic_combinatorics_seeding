@@ -1,0 +1,20 @@
+SHELL= bash
+go: sim
+	./sim 50 17 0.08 >  out-.08.txt
+	for i in {51..200} ; do \
+		./sim $$i 17 0.08 >> out-.08.txt ; \
+	done
+	./sim 50 17 0.1 >  out-.10.txt
+	for i in {51..200} ; do \
+		./sim $$i 17 0.1 >> out-.10.txt ; \
+	done
+	./sim 50 17 0.12 >  out-.12.txt
+	for i in {51..200} ; do \
+		./sim $$i 17 0.12 >> out-.12.txt ; \
+	done
+
+sim: sim.c
+	gcc -std=gnu99 -g -O3 sim.c -o sim
+
+clean:
+	rm go
