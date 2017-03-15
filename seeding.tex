@@ -49,8 +49,16 @@ $O(mn)$, where $m$ and $n$ are the sequence lengths, so it is only
 feasible for short sequences. For long sequences, heuristics are used for
 speed up, and the most popular belong to ``seeding'' methods.
 
-This document is written primarily for readers without a strong background
-in analytic combinatorics
+This document is predominantly written for bioinformaticians and people
+with a working knowledge of sequencing technologies and their applications.
+Accordingly, the focus will be on explaining the mathematical concepts,
+rather than the technological aspects. Also, our goal here is not to push
+the boundaries of analytic combinatorics, but to explain how its simplest
+concepts are useful to solve common problems in bioinformatics. We have
+opted for simplicity, to the detriment of generality and rigor. The
+results presented here are only a basic introduction to analytic
+combinatorics; the field is currently much more advanced and we refer the
+interested to the original literature.
 
 \section{Weighted generating functions}
 \label{sec:WGF}
@@ -124,16 +132,16 @@ function is $p^kz^k$. Since the sets $\mathcal{A}, \mathcal{A}^2,
 function of their union is
 
 \begin{equation*}
-pz + p^2z^2 + p^3z^3 \ldots
+pz + (pz)^2 + (pz)^3 \ldots
 \end{equation*}
 
-For any given $k$, $pz + p^2z^2 + \ldots + p^kz^k = (pz-p^{k+1}z^{k+1}) /
-(1-z)$. If $|z| < 1/p$ the term $p^{k+1}z^{k+1}$ vanishes as $k$
-increases. So the weighted generating function is defined for $|z| < 1/p$
-and is equal to
+For any given $k$, notice that $(1-pz) \big(pz + (pz)^2 + \ldots + (pz)^k
+\big) = pz-(pz)^{k+1}$.  If $|z| < 1/p$, the term $(pz)^{k+1}$ vanishes as
+$k$ increases. So the weighted generating function is defined for $|z| <
+1/p$ and is equal to
 
 \begin{equation*}
-pz + p^2z^2 + p^3z^3 \ldots = \frac{pz}{1-pz}.
+pz + (pz)^2 + (pz)^3 \ldots = \frac{pz}{1-pz}.
 \end{equation*}
 \end{example}
 
@@ -156,6 +164,7 @@ for $|A(z)| < 1$ and are respectively equal to
 \frac{1}{1-A(z)}&.
 \end{split}
 \end{equation*}
+\end{proposition}
 
 \begin{proof}
 For $k \geq 1$, the generating function of $\mathcal{A}^k$ is $A(z)^k$ and
@@ -171,13 +180,144 @@ generating function of $\mathcal{A}^*$ is $1 + A(z) + A(z)^2 + \ldots =
 \begin{remark}
 These expressions are not defined for $A(z) = 1$, \textit{i.e.} when
 $\mathcal{A}$ contains only the empty object. In other words, one cannot
-construct sequences of empty ojects. From here on, we will not state the
-conditions of definition of the generating functions. We will simply
-assume that $|z|$ is lower than the radius of convergence of the given
-expression.
+construct sequences of empty ojects.
 \end{remark}
 
+From here on, we will not state the conditions of definition of the
+generating functions. We will simply assume that $|z|$ is lower than the
+radius of convergence of the given expression.
+
+\begin{example}
+In Sanger sequencing, ...
+\end{example}
+
+
+%%%%%%%%%%%%% The crown jewel proposition %%%%%%%%%%%%%
+
+One of the crown jewels of analytic combinatorics is that we can
+approximate them very accurately from the weighted generating function
+(\ref{eq:Sp}). In order to show how to do this, we will first prove a more
+general result.
+
+\begin{proposition}
+\label{th:ass}
+If a weighted generating function $A(z)$ is the ratio of two polynomials
+$P(z)/Q(z)$, and that the roots of $Q$ are simple, then the coefficient of
+$z^k$ in its series expansion is asymptotically equivalent to
+
+\begin{equation}
+\label{eq:ass}
+-\frac{P(z_1)}{Q'(z_1)}\frac{1}{z_1^{k+1}},
+\end{equation}
+
+\noindent
+where $z_1$ is the root of smallest modulus of $Q$,
+and $Q'$ is the derivative of $Q$.
 \end{proposition}
+
+The roots of $Q$ are called the ``singularities'' of the weighted
+generating function $A$. They are values where the function is not
+defined. When they correspond to simple roots of $Q$, they also referred
+to as ``simples poles'' of $A$.
+
+Proposition~\ref{th:ass} says that the asymptotic growth of the
+coefficients of the series expansion of $A(z)$ is dictated by the
+singularity of smallest modulus, also known as the ``dominant
+singularity'' of $A$. We will first state a lemma that will be
+important to improve the asymptotic approximation of the coefficients.
+
+\begin{lemma}
+\label{lemma:poles}
+For $|z| < a$ we have
+
+\begin{equation}
+\label{eq:poles}
+\frac{1}{1-z/a} = \sum_{k=0}^\infty \frac{z^k}{a^k}.
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+This formula was proved in example~\ref{ex:sequences}.
+\end{proof}
+
+We now prove proposition~\ref{th:ass}.
+
+\begin{proof}
+Let $z_1, z_2, \ldots, z_n$ be the complex roots of $Q$ sorted by
+increasing order of modulus. It is well known that there exists complex
+numbers $s_j$ such that $P(z)/Q(z)$ can be written as
+
+\begin{equation}
+\sum_{j=1}^n \frac{s_j}{z-z_j} =
+\sum_{j=1}^n \frac{s_j/z_j}{1-z/z_j}.
+\end{equation}
+
+Here we assumed without loss of generality that the degree of $P$ is lower
+than the degree of $Q$. If this is not the case, the decomposition above
+also contains a polynomial whose coefficients are eventually null and
+which do not affect the asymptotics. Using lemma~\ref{lemma:poles}, we see
+that the coefficient of $z^k$ in the series expansion of $A(z)$ is equal
+to
+
+\begin{equation}
+\label{eq:fullass}
+-\sum_{j=1}^n \frac{s_j}{z_j^{k+1}}.
+\end{equation}
+
+Since $z_1$ is the root with smallest modulus, the sum converges
+asymptotically to
+
+\begin{equation*}
+-\frac{s_1}{z_1^{k+1}}.
+\end{equation*}
+
+To find the value of $s_1$, we factorize $Q(z)$ as
+$(z-z_1)Q_1(z)$, which is possible because $z_1$ is a root of $Q$,
+and we write
+
+\begin{equation*}
+\frac{P(z)}{Q(z)} =
+\frac{P(z)}{(z-z_1)Q_1(z)} = \frac{s_1}{z-z_1} +
+\varepsilon(z).
+\end{equation*}
+
+Multiplying both sides by $(z-z_1)$ and setting $z = z_1$ we obtain
+the expression
+
+\begin{equation*}
+\frac{P(z_1)}{Q_1(z_1)} = s_1.
+\end{equation*}
+
+Differentiating $Q(z) = (z-z_1)Q_1(z)$ shows that $Q'(z_1) =
+Q_1(z_1)$, and thus $s_1 = P(z_1) / Q'(z_1)$, which concludes the proof.
+\end{proof}
+
+\begin{remark}
+Expression (\ref{eq:fullass}) is not an approximation, it is the exact
+value of the coefficient. By keeping more than one leading term, we can
+obtain more accurate estimates, and by keeping all the terms we obtain the
+exact number.
+\end{remark}
+
+\begin{remark}
+The convergence to the asymptotic estimate is exponential. To see this,
+divide the exact expression (\ref{eq:fullass}) by its leading term
+$-s_1/z_1^{k+1}$ and obtain
+
+\begin{equation*}
+\frac{-\sum_{j=1}^n s_j/z_j^{k+1}}{-s_1/z_1^{k+1}} = 1 + \sum_{j=2}^n
+\frac{s_j}{s_1} \left( \frac{z_1}{z_j} \right)^{k+1}.
+\end{equation*}
+
+Since $z_1 < z_j$ for $2 \leq j \leq n$, the error terms are
+$O(|z_1/z_2|^k)$ and they decrease exponentially fast as $k$ increases.
+\end{remark}
+
+\begin{remark}
+For proposition~\ref{th:ass} to hold, only $z_1$ must be a simple pole. If
+this is not the case, the asymptotics growth involves a polynomial term of
+the variable $k$. All the cases discussed below have only simple poles.
+\end{remark}
 
 \section{Exact seeding}
 
@@ -419,125 +559,7 @@ explicit as expression (\ref{eq:Sp}).
 \end{remark}
 
 The task is now to extract the coefficient of $z^k$ in the series
-expansion of $S(z)$. These coefficients have no known explicit expression,
-but one of the crown jewels of analytic combinatorics is that we can
-approximate them very accurately from the weighted generating function
-(\ref{eq:Sp}). In order to show how to do this, we will first prove a more
-general result.
-
-%%%%%%%%%%%%% The crown jewel proposition %%%%%%%%%%%%%
-\begin{proposition}
-\label{th:ass}
-If a weighted generating function is the ratio of two polynomials
-$P(z)/Q(z)$, then the coefficient of $z^k$ in its series expansion is
-asymptotically equivalent to
-
-\begin{equation}
-\label{eq:ass}
--\frac{P(z_1)}{Q^{(m)}(z_1)}(k+m-1)(k+m-2)
-  \ldots(k+1)\frac{m}{z_1^{k+1}},
-\end{equation}
-
-\noindent
-where $z_1$ is the root of smallest modulus of $Q$, $m$ is its
-multiplicity, and $Q^{(m)}$ is the $m$-th derivative of $Q$.
-\end{proposition}
-
-The roots of $Q$ are called the ``singularities'' of the rational function
-(they are values where the function is not defined).
-Proposition~\ref{th:ass} says that asymptotic behavior of the coefficients
-is dictated by the singularity of smallest modulus, which we will refer to
-as the ``main singularity'' of the function.  We will first prove a lemma
-that will also be important to improve the asymptotic approximation of the
-coefficients later on.
-
-\begin{lemma}
-\label{lemma:poles}
-Let $n$ be a positive integer and $a$ be a complex number. For $|z| < a$
-we have
-
-\begin{equation}
-\label{eq:poles}
-\frac{1}{(1-z/a)^n} = \sum_{k=0}^\infty {k+n-1 \choose n-1}\frac{z^k}{a^k}.
-\end{equation}
-\end{lemma}
-
-\begin{proof}
-Example~\ref{ex:sequences} showed that (\ref{eq:poles}) holds for $n=1$.
-Proceed by induction and assume that (\ref{eq:poles}) holds for $n$.
-Differentiate both sides of (\ref{eq:poles}) to obtain
-
-\begin{equation*}
-\frac{n}{a} \frac{1}{(1-z/a)^{n+1}} 
-= \sum_{k=0}^\infty k {k+n-1 \choose n-1}\frac{z^{k-1}}{a^k}.
-\end{equation*}
-
-Recalling $\frac{k}{n}{k+n-1 \choose n-1} = {k-1+n \choose n}$ and
-rearranging the terms, we obtain the same expression as (\ref{eq:poles})
-where $n$ is replaced by $n+1$.
-\end{proof}
-
-We now prove proposition~\ref{th:ass}.
-
-\begin{proof}
-Let $z_1, z_2, \ldots, z_n$ be the complex roots of $Q$ sorted by
-increasing order of modulus, and $m_1, m_2, \ldots, m_n$ be their
-multiplicity. It is well known that there exists complex numbers $s_{i,j}$
-such that $P(z)/Q(z)$ can be written as
-
-\begin{equation}
-\label{eq:fullass}
-\sum_{j=1}^n \sum_{i=1}^{m_i} \frac{s_{i,j}}{(z-z_j)^i} =
-\sum_{j=1}^n \sum_{i=1}^{m_i} \frac{s_{i,j}/z_j}{(1-z/z_j)^i}
-\end{equation}
-
-Here we assumed without loss of generality that the degree of $P$ is lower
-than the degree of $Q$. If this is not the case, the decomposition above
-also contains a polynomial whose coefficients are eventually null and
-which do not affect the asymptotics. Using lemma~\ref{lemma:poles}, we see
-that the coefficient of $z^k$ in the series expansion of $S(z)$ is equal
-to
-
-\begin{equation*}
--\sum_{j=1}^n \sum_{i=1}^{m_i}
-{k+i-1 \choose i-1} \frac{s_{i,j}}{z_j^{k+1}}.
-\end{equation*}
-
-Since $z_1$ is the root with smallest modulus and that its multiplicity is
-$m_1$, the leading term of this sum is
-
-\begin{equation*}
--{k+m_1-1 \choose m_1-1} \frac{s_{m_1,1}}{z_1^{k+1}}.
-\end{equation*}
-
-To find the value of $s_{m_1,1}$, we factorize $Q(z)$ as
-$(z-z_1)^{m_1}Q_1(z)$, which is possible because $z_1$ is a root of $Q$,
-and we write
-
-\begin{equation*}
-\frac{P(z)}{Q(z)} =
-\frac{P(z)}{(z-z_1)^{m_1}Q_1(z)} = \frac{s_{m_1,1}}{(z-z_1)^{m_1}} +
-\varepsilon(z).
-\end{equation*}
-
-Multiplying both sides by $(z-z_1)^{m_1}$ and setting $z = z_1$ we obtain
-the expression
-
-\begin{equation*}
-\frac{P(z_1)}{Q_1(z_1)} = s_{m_1,1}.
-\end{equation*}
-
-Differentiating $m_1$ times the equality $Q(z) = (z-z_1)^{m_1}Q_1(z)$
-shows that $Q^{(m_1)}(z_1) = m_1!Q_1(z_1)$, so $s_{m_1,1} = m_1!P(z_1) /
-Q^{(m)}(z_1)$, which concludes the proof.
-\end{proof}
-
-\begin{remark}
-Expression (\ref{eq:fullass}) is not an approximation, it is the exact
-value of the coefficient. By keeping more than one leading term, we can
-obtain more accurate estimates, and by keeping all the terms we obtain the
-exact number.
-\end{remark}
+expansion of $S(z)$. These coefficients have no known explicit expression.
 
 Returning to the case of seedless reads, proposition~\ref{th:ass} invites
 us to find the roots of the singularities of $S(z)$. The left panel of
@@ -557,7 +579,7 @@ interval $(1, 1.5)$. \textit{Right}: complex representation of $Q$. Shown
 is the complex plane around the origin. The darker the dot, the higher the
 value of $1/Q(z)$ at the corresponding value of $z$. Sixteen singularities
 of $S$ lie close to a circle. The remaining seventeenth is the one shown
-on the left panel and it it is the main singularity because it lies
+on the left panel and it it is the dominant singularity because it lies
 slightly closer to the origin.}
 \label{fig:plotQ}
 \end{figure}
@@ -571,7 +593,8 @@ are not exactly regular.
 %%%%%%%%%%%%% Minimal singularity of S %%%%%%%%%%%%%
 \begin{proposition}
 \label{th:roots}
-$S$ has only one real positive singularity, which is the main singularity.
+$S$ has only one real positive singularity, which is the dominant
+singularity.
 \end{proposition}
 
 \begin{proof}
@@ -621,20 +644,20 @@ explaining how the calculations are done in practice.
 \begin{example}
 \label{ex:num}
 Let us approximate the probability that a read of size $k=50$ is seedless
-for $d=17$ and for a substitution rate $p=0.01$. To find the main
-singularity of $S$, we need to solve the equation
-$1-pz(1+qz+\ldots+(qz)^{16}) = 0$. For convenience, we rewrite it as
-$1-pz(1-(qz)^{17})/(1-qz) = 0$ and solve it numerically with the
-Newton-Raphson method, yielding $z_1 \approx 1.026886$. Substituting this
-value in (\ref{eq:Cp}) yields $C \approx 1.433681$, so the probability
-that a read contains no seed is approximately $1.433681 / 1.026886^{52}
-\approx 0.3608321$. For comparison, performing 1,000,000 random
-simulations gives an estimate in the range...
+for $d=17$ and for a substitution rate $p=0.01$. To find the dominant
+singularity of $S$, we need to solve $1-pz(1+qz+\ldots+(qz)^{16}) = 0$.
+We rewrite the equation as $1-pz(1-(qz)^{17})/(1-qz) = 0$ and solve
+it numerically with the Newton-Raphson method, yielding $z_1 \approx
+1.026886$. Substituting this value in (\ref{eq:Cp}) yields $C \approx
+1.433681$, so the probability that a read contains no seed is
+approximately $1.433681 / 1.026886^{52} \approx 0.3608321$. For
+comparison, performing 1,000,000 random simulations gives an estimate in
+the range...
 \end{example}
 
 The demonstration of proposition~\ref{th:ass} shows that the analytic
 combinatorics estimate converges exponentially as $k$ increases because
-the main singularity has multiplicity $1$. The numerical estimates are
+the dominant singularity has multiplicity $1$. The numerical estimates are
 thus close to the exact values, as illustrated in example~\ref{ex:num}.
 Figure~\ref{fig:simulp} shows this on more comprehensive example
 with longer reads and higher probability of error $p$.
@@ -645,11 +668,9 @@ with longer reads and higher probability of error $p$.
 \caption{\textbf{Accuracy of the estimates}. The analytic combinatorics
 estimates are compared to random simulations for $d=17$ and $p=0.08$,
 $p=0.10$ or $p=0.12$. Shown on both panels are the probablities that a
-read of given size contains a seed, either estimated by 1,000,000 random
-simulations (dots), or by the method described above (lines). The analytic
-combinatorics estimates are slightly under the target values for large
-values of $k$, but overall the errors are small (the difference never
-exceeds 0.00028 on the examples shown here).}
+read of given size contains a seed, either estimated by 10,000,000 random
+simulations (dots), or by the method described above (lines). The
+difference never exceeds 0.00028 on the examples shown here.}
 \label{fig:simulp}
 \end{figure}
 
@@ -712,10 +733,17 @@ S(z) &= \frac{\big(1+E(z)-E(0)\big)^2F_d(z)}{1-E(z)F_d(z)} +
 \end{split}
 \end{equation*}
 
+\begin{remark}
+Setting $\delta = 0$ in the expression above, we obtain expression
+(\ref{eq:Sp}), \textit{i.e.} the weighted generating function of seedless
+reads when the only errors are substitutions.
+\end{remark}
+
 Applying proposition~\ref{th:ass} to this expression, we obtain the
 following proposition.
 
 \begin{proposition}
+\label{th:pd}
 The probability that a read of size $k$ is seedless is asymptotically
 equivalent to
 
@@ -730,7 +758,7 @@ where $z_1$ is the only real positive root of the denominator of $S(z)$,
 (1-\delta)^{d-2}(qz)^{d-1}\big)$, and
 
 \begin{equation}
-\label{eq:Cdp}
+\label{eq:Cpd}
 \begin{split}
 C &=
 \frac{ \big(1-(1-\delta)(1-p)z\big)^2 }
@@ -740,25 +768,44 @@ C &=
 - d(1-\delta)^2pqz^2.
 \end{split}
 \end{equation}
-
 \end{proposition}
+
+\begin{remark}
+Notice that the power of $z_1$ differs between propositions~\ref{th:p} and
+\ref{th:pd}. The reason is that the factors $z$ or $1/z$ have been moved
+out of the constant $C$ in expressions (\ref{eq:Cp}) and (\ref{eq:Cpd}).
+\end{remark}
 
 \begin{example}
 Let us approximate the probablity that a read of size $k = 100$ is
 seedless for $d=17$ and for substitution and deletion rates $p = 0.05$ and
-$\delta = 0.15$, respectively. In order to find the main singularity of
+$\delta = 0.15$, respectively. In order to find the dominant singularity of
 $S$, we need to solve the equation $1-pz - \big(pz(1-\delta) +
 \delta\big)\big(qz+(1-\delta)(qz)^2 + \ldots +
 (1-\delta)^{15}(qz)^{16}\big) = 0$. We rewrite it as $1-pz -
 \big(pz(1-\delta)+\delta\big)(qz-(1-\delta)^{16}(qz)^{17}) /
 (1-(1-\delta)qz) = 0$ and solve it numerically with the Newton-Raphson
 method, yielding $z_1 \approx 1.006705$. Substituting this value in
-(\ref{eq:Cdp}) yields $C \approx 1.088876$, so the probability that a read
+(\ref{eq:Cpd}) yields $C \approx 1.088876$, so the probability that a read
 contains no seed is approximately $1.088876 / 1.006705^{100} \approx
 0.558141$. For comparison, performing 1,000,000 random simulations gives
 an estimate in the range...
 \end{example}
 
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.445]{simulpdel.pdf}
+\caption{\textbf{Accuracy of the estimates}. The analytic combinatorics
+estimates are compared to random simulations for $d=17$, $p=0.05$ and
+$\delta=0.14$ or $\delta=0.15$ or $\delta=0.16$. Shown on both panels are
+the probablities that a read of given size contains a seed, either
+estimated by 10,000,000 random simulations (dots), or by the method
+described above (lines). The difference never exceeds 0.0004 on the
+examples shown here.}
+\label{fig:simulpdel}
+\end{figure}
+
+\subsection{Substitutions, deletions and insertions}
 
 \begin{figure}[h]
 \centering

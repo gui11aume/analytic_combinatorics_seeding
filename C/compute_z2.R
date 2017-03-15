@@ -47,53 +47,54 @@ cst_term = function(z,p,d,h) {
 
 p = 0.05
 d = 17
-k = 100:500
+k = 1:500
 
 L = list()
 
 for (h in c(0.14, 0.15, 0.16)) {
    z = Newton(p,d,h)
-   print(z)
    options(digits=22)
    C = alt_const(z,p,d,h)
-   print(C)
    L[[as.character(h)]] = 1-C/z^k
-   print (C/z^100)
 }
 
-stop()
+S = list(
+   read.table("out-.05-.14.txt"),
+   read.table("out-.05-.15.txt"),
+   read.table("out-.05-.16.txt")
+)
 
-#S = list(
-#   1 - scan("out-.05-.15.txt") /10000000
-#)
-
-pdf("simulp.pdf", width=11, height=5.5, useDingbats=FALSE)
+pdf("simulpdel.pdf", width=11, height=5.5, useDingbats=FALSE)
 par(mfrow=c(1,2))
-subs = seq(1,250,4)
-plot(k[subs], L[[1]][subs], pch=19, cex=.5, ylim=c(0.35,.95),
+subs = seq(1,64,3)
+plot(S[[1]][subs,1], 1-S[[1]][subs,2]/1e7, pch=19, cex=.5, ylim=c(0.35,.95),
      plot.first=grid(),
      xlab="Read size", ylab="Seeding probability")
-#lines(k[1:100], L[[1]][1:100])
+lines(k[100:360], L[[1]][100:360])
 
-points(k[subs], L[[2]][subs], pch=19, cex=.5)
-#lines(k[1:100], L[[2]][1:100])
-#
-points(k[subs], L[[3]][subs], pch=19, cex=.5)
-#lines(k[1:100], L[[3]][1:100])
+points(S[[2]][subs,1], 1-S[[2]][subs,2]/1e7, pch=19, cex=.5)
+lines(k[100:360], L[[2]][100:360])
+
+points(S[[3]][subs,1], 1-S[[3]][subs,2]/1e7, pch=19, cex=.5)
+lines(k[100:360], L[[3]][100:360])
 
 legend(x="bottomright", inset=0.05, legend=c("Simulation", "Estimate"),
        pch=c(19, NA), lty=c(NA, 1), pt.cex=.6, bg="white", box.col=NA)
 
 
-subs = seq(250,400,2)
-plot(k[subs], L[[1]][subs], pch=19, cex=.5, ylim=c(0.85,1),
+subs = seq(64,138,3)
+plot(S[[1]][subs,1], 1-S[[1]][subs,2]/1e7, pch=19, cex=.5, ylim=c(0.85,1),
      plot.first=grid(),
      xlab="Read size", ylab="Seeding probability")
-#lines(k[100:150], L[[1]][100:150])
-#
-points(k[subs], L[[2]][subs], pch=19, cex=.5)
-#lines(k[100:150], L[[2]][100:150])
-#
-points(k[subs], L[[3]][subs], pch=19, cex=.5)
-#lines(k[100:150], L[[3]][100:150])
+lines(k[352:497], L[[1]][352:497])
+
+points(S[[2]][subs,1], 1-S[[2]][subs,2]/1e7, pch=19, cex=.5)
+lines(k[352:497], L[[2]][352:497])
+
+points(S[[3]][subs,1], 1-S[[3]][subs,2]/1e7, pch=19, cex=.5)
+lines(k[352:497], L[[3]][352:497])
 dev.off()
+
+max(abs(1-S[[1]][,2]/1e7 - L[[1]][S[[1]][,1]]))
+max(abs(1-S[[2]][,2]/1e7 - L[[2]][S[[2]][,1]]))
+max(abs(1-S[[3]][,2]/1e7 - L[[3]][S[[3]][,1]]))
