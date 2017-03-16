@@ -154,6 +154,7 @@ object of size 0 and weight 1, we can also define $\mathcal{A}^* =
 $\mathcal{A}$.
 
 \begin{proposition}
+\label{th:sequences}
 Let $\mathcal{A}$ be a set with weighted generating function $A(z)$. The
 generating functions of $\mathcal{A}^+$ and $\mathcal{A}^*$ are defined
 for $|A(z)| < 1$ and are respectively equal to
@@ -187,17 +188,41 @@ From here on, we will not state the conditions of definition of the
 generating functions. We will simply assume that $|z|$ is lower than the
 radius of convergence of the given expression.
 
+These simple rules are enough to solve non-trivial problems. We now
+motivate the analytic combinatorics approach by a simple example that has
+no direct connection with seeding algorithms, but that will nevertheless
+be useful for exposition purposes.
+
 \begin{example}
-In Sanger sequencing, ...
+\label{ex:Sanger}
+In Sanger sequencing, a nucleotide is sometimes duplicated because the
+corresponding peak is wider than average. A nucleotide thus has size $1$
+with a certain probability $q$, and size $2$ with probability $p = 1-q$.
+The weighted generating function of nucleotides is thus $qz + pz^2$. Reads
+are sequences of nucleotides, so by proposition~\ref{th:sequences} they
+have weighted generating function
+
+\begin{equation}
+\label{eq:Sanger}
+\frac{1}{1-qz-pz^2}.
+\end{equation}
 \end{example}
 
+In this example, what is the probability that a read of size $100$ has no
+duplication? The first answer coming to mind is $q^{100}$, but this is the
+probability that a read of $100$ \emph{nucleotides} has no duplication. To
+answer the question, we need to divide $q^{100}$ by the cumulated
+probabilities of reads of size $100$.  This quantity is not
+straightforward to compute, but it happens to be the coefficient of
+$z^{100}$ in the series expansion of (\ref{eq:Sanger}). Solving the
+problem is a matter of evaluating this coefficient.
 
 %%%%%%%%%%%%% The crown jewel proposition %%%%%%%%%%%%%
 
-One of the crown jewels of analytic combinatorics is that we can
-approximate them very accurately from the weighted generating function
-(\ref{eq:Sp}). In order to show how to do this, we will first prove a more
-general result.
+It is not always possible to obtain exact values, but one of the crown
+jewels of analytic combinatorics is that we can very accurately
+approximate the coefficients of weighted generating functions.  In order
+to show how to do this, we will first prove a more general result.
 
 \begin{proposition}
 \label{th:ass}
@@ -237,7 +262,7 @@ For $|z| < a$ we have
 \end{lemma}
 
 \begin{proof}
-This formula was proved in example~\ref{ex:sequences}.
+Proceed as in example~\ref{ex:sequences}, replacing $p$ by $1/a$.
 \end{proof}
 
 We now prove proposition~\ref{th:ass}.
@@ -264,8 +289,8 @@ to
 -\sum_{j=1}^n \frac{s_j}{z_j^{k+1}}.
 \end{equation}
 
-Since $z_1$ is the root with smallest modulus, the sum converges
-asymptotically to
+Since $z_1$ is the root with smallest modulus, the sum is asymptotically
+equivalent to
 
 \begin{equation*}
 -\frac{s_1}{z_1^{k+1}}.
@@ -316,8 +341,46 @@ $O(|z_1/z_2|^k)$ and they decrease exponentially fast as $k$ increases.
 \begin{remark}
 For proposition~\ref{th:ass} to hold, only $z_1$ must be a simple pole. If
 this is not the case, the asymptotics growth involves a polynomial term of
-the variable $k$. All the cases discussed below have only simple poles.
+the variable $k$. The proposition was stated with this restrictive
+condition because all the cases discussed here have only simple poles.
 \end{remark}
+
+Back to the question of example~\ref{ex:Sanger}, the weighted generating
+function (\ref{eq:Sanger}) is the ratio of $P(z) = 1$ and $Q(z) =
+1-qz-pz^2$. The roots of $Q$ are $z_1 = 1$ and $z_2 = 1/p$, and $Q'(z) =
+-q -2pz$ so the coefficient of $z^{100}$ is approximately
+$1/((q+2pz_1)z_1^{101}) = 1/(p+1)$ and the probability that a read of size
+$100$ has no duplication is approximately equal to
+
+\begin{equation*}
+(p+1)q^{100}.
+\end{equation*}
+
+In this case, we can also obtain the exact answer by using the second root
+as well. We obtain
+
+\begin{equation*}
+\frac{q^{100}}{1/(q+2pz_1)z_1^{101} + 1/(q+2pz_2)z_2^{101}} =
+\frac{(p+1)q^{100}}{1+(p+1)/(q+2)p^{101}}.
+\end{equation*}
+
+Things do not always turn out that simple, but this example illustrates
+how analytic combinatorics can offer simple, yet not intuitive solutions.
+Actually, it is not clear how one may come to the exact solution with
+another approach. This example also illustrates how close the approximate
+solution typically is to the exact one. For a probability of duplication
+$p < 0.7$, the two numbers would not even be distinguishable using the
+standard number encoding on modern computers.
+
+As mentioned above, the purpose of this example is only to expose the
+analytic combinatorics approach, which we summarize as follows: $(i)$
+define simple objects associated to simple generating functions, $(ii)$
+combine these objects into more complex structures, $(iii)$ translate
+those combinations into more complex generating functions, and $(iv)$ use
+analytic transfer theorems to extract coefficients asymptotics.
+
+
+%%%%%%%%%%%%% Seeding problem begins %%%%%%%%%%%%%
 
 \section{Exact seeding}
 
