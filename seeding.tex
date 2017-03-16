@@ -212,10 +212,19 @@ In this example, what is the probability that a read of size $100$ has no
 duplication? The first answer coming to mind is $q^{100}$, but this is the
 probability that a read of $100$ \emph{nucleotides} has no duplication. To
 answer the question, we need to divide $q^{100}$ by the cumulated
-probabilities of reads of size $100$.  This quantity is not
-straightforward to compute, but it happens to be the coefficient of
-$z^{100}$ in the series expansion of (\ref{eq:Sanger}). Solving the
-problem is a matter of evaluating this coefficient.
+probabilities of reads of size $100$. We can express this quantity from
+the binomial distribution as
+
+\begin{equation*}
+{100 \choose 0}q^{100} + {99 \choose 1}pq^{99} + {98 \choose 2}p^2q^{98} +
+\ldots + {50 \choose 50}p^{50}.
+\end{equation*}
+
+This is not straightforward to compute, but it happens to be the
+coefficient of $z^{100}$ in the series expansion of (\ref{eq:Sanger}).
+Indeed, from the definition expressed in formula (\ref{eq:GF1}), the
+coefficient of $z^{100}$ is the sum of the weights of all objects of size
+$100$.  Solving the problem is a matter of evaluating this coefficient.
 
 %%%%%%%%%%%%% The crown jewel proposition %%%%%%%%%%%%%
 
@@ -347,10 +356,10 @@ condition because all the cases discussed here have only simple poles.
 
 Back to the question of example~\ref{ex:Sanger}, the weighted generating
 function (\ref{eq:Sanger}) is the ratio of $P(z) = 1$ and $Q(z) =
-1-qz-pz^2$. The roots of $Q$ are $z_1 = 1$ and $z_2 = 1/p$, and $Q'(z) =
+1-qz-pz^2$. The roots of $Q$ are $z_1 = 1$ and $z_2 = -1/p$, and $Q'(z) =
 -q -2pz$ so the coefficient of $z^{100}$ is approximately
 $1/((q+2pz_1)z_1^{101}) = 1/(p+1)$ and the probability that a read of size
-$100$ has no duplication is approximately equal to
+$100$ has no duplication is approximately
 
 \begin{equation*}
 (p+1)q^{100}.
@@ -361,7 +370,7 @@ as well. We obtain
 
 \begin{equation*}
 \frac{q^{100}}{1/(q+2pz_1)z_1^{101} + 1/(q+2pz_2)z_2^{101}} =
-\frac{(p+1)q^{100}}{1+(p+1)/(q+2)p^{101}}.
+\frac{(p+1)q^{100}}{1+(-p)^{101}(p+1)/(q-2)}.
 \end{equation*}
 
 Things do not always turn out that simple, but this example illustrates
