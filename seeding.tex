@@ -17,10 +17,10 @@
 
 %---------------------------------------------------------------
 
-\title{Analytic combinatorics for bioinformatics I: applications to
+\title{Analytic combinatorics meets bioinformatics I: applications to
 seeding methods}
 %\author{
-%\textsc{Guillaume Filion} \\ [1ex]
+%\textsc{Guillaume Filion & Eduard Valera Zorita} \\ [1ex]
 %\normalsize CRG, Barcelona
 %}
 \date{\today}
@@ -60,8 +60,9 @@ results presented here are only a basic introduction to analytic
 combinatorics; the field is currently much more advanced and we refer the
 interested to the original literature.
 
-\section{Weighted generating functions}
-\label{sec:WGF}
+\section{Analytic combinatorics}
+\subsection{Weighted generating functions}
+\label{subsec:WGF}
 
 \begin{definition}
 \label{def:GF}
@@ -154,7 +155,7 @@ pz + (pz)^2 + (pz)^3 \ldots = \frac{pz}{1-pz}.
 
 Example~\ref{ex:sequences} can be generalized. For any set $\mathcal{A}$,
 objects of $\mathcal{A}^+ = \cup_{k=1}^\infty\mathcal{A}^k$ are called
-nonempty sequences of objects of $\mathcal{A}$. By defining
+nonempty (finite) sequences of objects of $\mathcal{A}$. By defining
 $\mathcal{A}^0$ as the set containg only $\varepsilon$, the ``empty''
 object of size 0 and weight 1, we can also define $\mathcal{A}^* =
 \cup_{k=0}^\infty\mathcal{A}^k$ as the set of sequences of objects of
@@ -260,55 +261,230 @@ sequences of size $k$ is $1$, the probability that a sequence does not
 contain any $b$ is $1/3^k \big/ 1 = 1/3^k$.
 \end{example}
 
-This simple artillery is sufficient to solve non-trivial problems. We now
-motivate the analytic combinatorics approach by a simple example that has
-no direct connection with seeding algorithms, but that will nevertheless
-be useful for exposition purposes.
+
+%%%%%%%%%%%%%%%%% Transfer matrices %%%%%%%%%%%%%%%%%
+
+\subsection{Sequences and transfer matrices}
+
+In many combinatorial applications, one needs to count the sequences where
+a pattern does or does not occur. A convenient way to find the weighted
+generating functions of such sequences is to use transfer matrices in
+order to encode the allowed or disallowed patterns. Let us illustrate how
+to this is done with an example from biology.
+
+The sequence \texttt{CG} is the only one that can be methylated in many
+animal genomes. Assuming that \texttt{G}s and \texttt{G}s both occur with
+frequency $p/2$ and that \texttt{A}s and \texttt{T}s occur with frequency
+$q/2$, where $q = 1-p$, what is the weighted generating function of
+sequences without \texttt{CG}?
+
+First, we define the weighted generating functions of the individual
+symbols. With natural notatoins we see that $C(z) = G(z) = pz/2$ and that
+$A(z) = T(z) = qz/2$.
+
+\begin{definition}
+\label{def:transfermat}
+Let $(\mathcal{A}_i)_{1 \leq i \leq k}$ 
+be sets of combinatorial objects, and let $A_i(z)$ be the
+weighted generating functions of $\mathcal{A}_i$. The entry $(i,j)$ of
+the $k\times n$ transfer matrix is equal to $A_j(z)$ if an object of
+$\mathcal{A}_i$ can be followed by an object of $\mathcal{A}_j$, and $0$
+otherwise.
+\end{definition}
 
 \begin{example}
-\label{ex:Sanger}
-In Sanger sequencing, a nucleotide is sometimes duplicated because the
-corresponding peak is wider than average. A nucleotide thus has size $1$
-with a certain probability $q$, and size $2$ with probability $p = 1-q$.
-The weighted generating function of nucleotides is thus $qz + pz^2$. Reads
-are sequences of nucleotides, so by proposition~\ref{th:sequences} they
-have weighted generating function
+\label{ex:CGmat}
+Ordering the weighted generating functions of nucleotides alphabetically
+as $(A(z), C(z), G(z), T(z))$, the transfer matrix of sequences without
+\texttt{CG} can be written as
+
+\begin{equation*}
+M(z) = \left[
+\begin{matrix}
+A(z) & C(z) & G(Z) & T(z) \\
+A(z) & C(z) &  0   & T(z) \\
+A(z) & C(z) & G(Z) & T(z) \\
+A(z) & C(z) & G(Z) & T(z)
+\end{matrix}
+\right] = z/2 \left[
+\begin{matrix}
+q & p & p & q \\
+q & p & 0 & q \\
+q & p & p & q \\
+q & p & p & q
+\end{matrix}
+\right].
+\end{equation*}
+\end{example}
+
+
+
+\begin{proposition}
+\label{th:transfermatrices}
+Let $(\mathcal{A}_i)_{1 \leq i \leq m}$ be sets of combinatorial objects
+and let $A_i(z)$ be the weighted generating function of $\mathcal{A}_i$.
+Let $M(z)$ be a square transfer matrix. The weighted generating function
+of a sequence of $n+1$ items starting with an object from $\mathcal{A}_i$
+and ending with an object from $\mathcal{A}_j$ is
 
 \begin{equation}
-\label{eq:Sanger}
-\frac{1}{1-qz-pz^2}.
+\label{eq:mznij}
+A_i(z) \cdot \left( M(z)^n \right)_{i,j}.
+\end{equation}
+
+It follows that the the weighted generating function of sequences of items
+starting with an object from $\mathcal{A}_i$ and ending with an object
+from $\mathcal{A}_j$ is
+
+\begin{equation}
+\label{eq:I-Mz}
+A_i(z) \cdot \left( I - M(z) \right)^{-1}_{i,j},
+\end{equation}
+
+\noindent
+provided the eigenvalues of $M(z)$ all have modulus less than $1$.
+\end{proposition}
+
+\begin{proof}
+We proceed by recurrence. For $n = 0$, the sequences have only one item.
+Expression (\ref{eq:mznij}) is equal to $A_i(z)$ if $i = j$ and $0$
+otherwise, which is the generating function of sequences of one item
+starting with an object from $\mathcal{A}_i$ and ending with an object
+from $\mathcal{A}_j$.
+
+Assume that (\ref{eq:mznij}) holds for $n \geq 0$. A sequence of $n+2$
+items starting with an object from $\mathcal{A}_i$ and ending with an
+object from $\mathcal{A}_j$ is a sequence of $n+1$ items starting with an
+object from $\mathcal{A}_i$ and ending with an object from any
+$\mathcal{A}_k$, followed by an object from $\mathcal{A}_j$. Using the
+recurrence hypothesis and the fact that an object from $\mathcal{A}_k$ can
+be followed by an object from $\mathcal{A}_j$ if and only if $M(z)_{k,j}
+\neq 0$, we obtain the weighted generating function as
+
+\begin{equation*}
+\sum_{k = 1}^m A_i(z)\left( M(z)^n \right)_{i,k} M(z)_{k,j} 
+ = A_i(z) \left( M(z)^{n+1} \right)_{i,j}.
+\end{equation*}
+
+To prove (\ref{eq:I-Mz}), observe that the weighted generating function of
+sequences of items starting with an object from $\mathcal{A}_i$ and ending
+with an object from $\mathcal{A}_j$ is
+
+\begin{equation*}
+\sum_{n=0}^\infty A_i(z) \cdot \left(M(z)^n \right)_{i,j} =
+ A_i(z) \cdot \left( \sum_{n=0}^\infty M(z)^n\right)_{i,j} .
+\end{equation*}
+
+Now observe that $(I-M(z)) \cdot (I+M(z)+M(z)^2+ \ldots + M(z)^n) =
+I-M(z)^{n+1}$, so if all the eigenvalues of $M(z)$ have modulus less than
+$1$, the right hand size converges to $I$ as $n$ goes to infinity, which
+proves (\ref{eq:I-Mz}).
+\end{proof}
+
+\begin{remark}
+When the forbidden transitions involve more than two items (\textit{e.g.}
+sequences of $\{a,b\}$ without $baa$), the transfer matrix can be modified
+to...
+\end{remark}
+
+\begin{example}
+\label{ex:CGmat2}
+Continuing example~\ref{ex:CGmat}, the weighted generating function of
+sequences without \texttt{CG} that start with a \texttt{C} and end with a
+\texttt{G} is
+
+\begin{equation*}
+C(z) \cdot (I-M(z))^{-1}_{2,3}.
+\end{equation*}
+
+All the entries of $M(z)$ are less than $1$ for $|z| < 1$ and $M_*(z)$,
+the inverse of $I-M(z)$, is found to be equal to 
+
+\begin{equation*}
+\frac{1}{\lambda(z)} \left[
+\begin{matrix}
+(pz)^2+2qz+4   & 2pz        & pz(pz-2)   & 2qz                \\
+-pqz^2+2qz     & -2(1+q)z+4 & 2pqz^2     & -pqz^2+2qz         \\
+2qz            & 2pz        & -2(1+q)+4  & 2qz                \\
+2qz            & 2pz        & pz(1-pz)   & (pz)^2 - 2(p+1) +4
+\end{matrix}
+\right]
+\end{equation*}
+
+\noindent
+where $\lambda(z) = (pz)^2 - 4z + 4$ is the determinant of $I-M(z)$. Now
+picking the entry at coordinates $(2,3)$, we find that the weighted
+generating function is
+
+\begin{equation*}
+pz/2\frac{2pqz^2}{(pz)^2 - 4z + 4}
+= \frac{p^2qz^3}{(pz)^2 - 4z + 4}.
+\end{equation*}
+\end{example}
+
+We can also find the weighted generating function of all sequences that do
+not contain \texttt{CG} by summing over all possible objects at the
+beginning and at the end of the sequence. This is equivalent to computing
+
+\begin{proposition}
+The weighted generating function of all possible sequences described by
+the transfer matrix $M(z)$ is 
+
+\begin{equation}
+1 + U(z) \cdot (I-M(z))^{-1} \cdot V,
+\end{equation}
+
+\noindent
+where $U(z)$ is the row vector such the $i$-th element is equal to
+$A_i(z)$ if the sequence can start with an object from $\mathcal{A}_i$ and
+$0$ otherwise, and $V$ is the column vector such that the $j$-th element
+is equal to $1$ if the sequence end with an object from $\mathcal{A}_j$
+and $0$ otherwise.
+\end{proposition}
+
+\begin{proof}
+Applying (\ref{eq:I-Mz}) and summing for all possible start and end cases
+gives $U(z) \cdot (I-M(z))^{-1} \cdot V$. We need to add $1$ to account
+for the empty sequence.
+\end{proof}
+
+\begin{example}
+Continuing example~\ref{ex:CGmat2}, sequences without \texttt{CG} may
+start with all the nucleotides, so $U(z)$ is the row vector $(A(z), C(z),
+G(z), T(z))$. Likewise, they may end with all the nucleotides, so $V$ is
+the column vector $(1,1,1,1)$. The weighted generating function of all
+possible sequences (including the empty one) without \texttt{CG} is
+
+\begin{equation}
+\label{eq:WGFnoCG}
+F(z) = \frac{4}{4-4z+(pz)^2}.
 \end{equation}
 \end{example}
 
-In this example, what is the probability that a read of size $100$ has no
-duplication? The first answer coming to mind is $q^{100}$, but this is the
-probability that a read of $100$ \emph{nucleotides} has no duplication. To
-answer the question, we need to divide $q^{100}$ by the cumulated
-probabilities of reads of size $100$. We can express this quantity from
-the binomial distribution as
+Proposition~\ref{th:transfermatrices} allows us to construct
+elaborate weighted generating functions. By expression (\ref{eq:GF1}) from
+the definition, the coefficient of $z^k$ in the Taylor expansion of
+(\ref{eq:WGFnoCG}) is the sum of the weights of all the sequences of size
+$k$ that contain no \texttt{CG}. Due to our normalization, this is also
+the probability that a sequence of size $k$ contains no \texttt{CG}.
+It would be very useful if we could extract those coefficients from
+(\ref{eq:WGFnoCG}) directly. The next section will give a generic method
+to do so.
 
-\begin{equation*}
-{100 \choose 0}q^{100} + {99 \choose 1}pq^{99} + {98 \choose 2}p^2q^{98} +
-\ldots + {50 \choose 50}p^{50}.
-\end{equation*}
 
-This is not straightforward to compute, but it happens to be the
-coefficient of $z^{100}$ in the series expansion of (\ref{eq:Sanger}).
-Indeed, from the definition expressed in formula (\ref{eq:GF1}), the
-coefficient of $z^{100}$ is the sum of the weights of all objects of size
-$100$.  Solving the problem is a matter of evaluating this coefficient.
 
 %%%%%%%%%%%%% The crown jewel proposition %%%%%%%%%%%%%
 
-It is not always possible to obtain exact values, but one of the crown
-jewels of analytic combinatorics is that we can very accurately
-approximate the coefficients of weighted generating functions.  In order
-to show how to do this, we will first prove a more general result.
+\subsection{Asymptotic estimates}
+
+It is not always possible to extract the exact coefficients of a
+generating function, but one of the crown jewels of analytic combinatorics
+is that we can very accurately approximate them.
 
 \begin{proposition}
 \label{th:ass}
-If a weighted generating function $A(z)$ is the ratio of two polynomials
-$P(z)/Q(z)$, and that the roots of $Q$ are simple, then the coefficient of
+If a weighted generating function $F(z)$ is the ratio of two polynomials
+$P(z)/Q(z)$, and the roots of $Q$ are simple, then the coefficient of
 $z^k$ in its series expansion is asymptotically equivalent to
 
 \begin{equation}
@@ -322,14 +498,14 @@ and $Q'$ is the derivative of $Q$.
 \end{proposition}
 
 The roots of $Q$ are called the ``singularities'' of the weighted
-generating function $A$. They are values where the function is not
+generating function $F$. They are values where the function is not
 defined. When they correspond to simple roots of $Q$, they also referred
 to as ``simples poles'' of $A$.
 
 Proposition~\ref{th:ass} says that the asymptotic growth of the
-coefficients of the series expansion of $A(z)$ is dictated by the
+coefficients of the series expansion of $F(z)$ is dictated by the
 singularity of smallest modulus, also known as the ``dominant
-singularity'' of $A$. We will first state a lemma that will be
+singularity'' of $F$. We will first state a lemma that will be
 important to improve the asymptotic approximation of the coefficients.
 
 \begin{lemma}
@@ -426,53 +602,122 @@ the variable $k$. The proposition was stated with this restrictive
 condition because all the cases discussed here have only simple poles.
 \end{remark}
 
-Back to the question of example~\ref{ex:Sanger}, the weighted generating
-function (\ref{eq:Sanger}) is the ratio of $P(z) = 1$ and $Q(z) =
-1-qz-pz^2$. The roots of $Q$ are $z_1 = 1$ and $z_2 = -1/p$, and $Q'(z) =
--q -2pz$ so the coefficient of $z^{100}$ is approximately
-$1/((q+2pz_1)z_1^{101}) = 1/(p+1)$ and the probability that a read of size
-$100$ has no duplication is approximately
+\begin{example}
+Recall from example~\ref{ex:CGmat2} that the weighted generating function
+of sequences without \texttt{CG} is
 
 \begin{equation*}
-(p+1)q^{100}.
+F(z) = \frac{4z-(pz)^2}{4-4z+(pz)^2}.
 \end{equation*}
 
-In this case, we can also obtain the exact answer by using the second root
-as well. We obtain
+Here $Q(z) = 4-4z+(pz)^2$ has two distinct roots, $z_1 =
+2(1-\sqrt{1-p^2})/p^2$ and $z_2 = 2(1+\sqrt{1-p^2})/p^2$. Since $Q'(z) =
+2p^2z-4$, the coefficient of $z^k$ is the Taylor expansion of $F(z)$ is
+asymptotically equivalent to
 
 \begin{equation*}
-\frac{q^{100}}{1/(q+2pz_1)z_1^{101} + 1/(q+2pz_2)z_2^{101}} =
-\frac{(p+1)q^{100}}{1-(-p)^{101}}.
+\begin{split}
+-\frac{P(z_1)}{Q'(z_1)}\frac{1}{z_1^{k+1}} &=
+\frac{1}{\sqrt{1-p^2}}
+\left( \frac{p^2/2}{1-\sqrt{1-p^2}} \right)^{k+1} \\
+&= \frac{1}{\sqrt{1-p^2}} \left(\frac{1+\sqrt{1-p^2}}{2} \right)^{k+1}.
+\end{split}
 \end{equation*}
+
+In this case we can also obtain the exact answer by using the second root.
+The probability that a sequence of size $k$ contains no \texttt{CG} is
+exactly equal to
+
+\begin{equation*}
+\begin{split}
+-\frac{P(z_1)}{Q'(z_1)}\frac{1}{z_1^{k+1}}
+&-\frac{P(z_2)}{Q'(z_2)}\frac{1}{z_2^{k+1}} \\
+&=
+\frac{1}{\sqrt{1-p^2}} \left[
+\left( \frac{p^2/2}{1-\sqrt{1-p^2}} \right)^{k+1}
+- \left( \frac{p^2/2}{1+\sqrt{1-p^2}} \right)^{k+1}\right] \\
+&= \frac{1}{\sqrt{1-p^2}} \left[
+\left(\frac{1+\sqrt{1-p^2}}{2} \right)^{k+1} -
+\left(\frac{1-\sqrt{1-p^2}}{2} \right)^{k+1} \right].
+\end{split}
+\end{equation*}
+
+In case all the nucleotides have the same frequency, $p=1/2$ and the
+probability is approximately equal to $(0.9330127^{k+1} - 0.0669873^{k+1})
+/ 1.154701$. From $k=5$, the second term is more than one million times
+smaller than the first, which shows how fast it can be neglected.
+\end{example}
 
 Things do not always turn out that simple, but this example illustrates
 how analytic combinatorics can offer simple, yet not intuitive solutions.
 Actually, it is not clear how one may come to the exact solution with
 another approach. This example also illustrates how close the approximate
-solution typically is to the exact one. For a probability of duplication
-$p < 0.7$, the two numbers would not even be distinguishable using the
-standard number encoding on modern computers.
+solution typically is to the exact one.
 
-As mentioned above, the purpose of this example is only to expose the
-analytic combinatorics approach, which we summarize as follows: $(i)$
-define simple objects associated to simple generating functions, $(ii)$
-combine these objects into more complex structures, $(iii)$ translate
-those combinations into more complex generating functions, and $(iv)$ use
-analytic transfer theorems to extract coefficients asymptotics.
+The purpose of this example is only to expose the analytic combinatorics
+approach, which we summarize as follows: $(i)$ define simple objects
+associated to simple generating functions, $(ii)$ combine these objects
+into more complex structures, $(iii)$ translate those combinations into
+more complex generating functions, and $(iv)$ use analytic transfer
+theorems to extract coefficients asymptotics.
+
+
+
+
+
+
+
+
 
 
 %%%%%%%%%%%%% Seeding problem begins %%%%%%%%%%%%%
 
 \section{Exact seeding}
 
-Every sequencing technology makes occasional errors, so that the sequence
-of a read does not always correspond to the biological molecule that was
-sequenced. Errors can be inertions, deletions (together referred to as
-indels) or subsitutions.
+From the eperimental point of view, a sequencing read is the result of an
+assay on some molecule of a nucleic acid. The output of the assy is the
+decoded sequence of monomers that compose the molecule. From the formal
+point of view, a read is a word composed of symbols.
+
+The focus here is not the sequence of nucleotides of a molecule or a read,
+but whether the decoded sequence contains errors. The symbols we will
+manipulate therefore represent the different errors typically found in
+sequencing reads: substitutions, deletions and insertions.
+
+To introduce the concepts progressively, we first describe simplified
+models where some types of errors are disallowed. The strategy is the same
+in all the models: we exhibit the generating functions of simple ojects
+called intervals, which we arrange together according to a set of rules
+specified by a composition matrix.
+
+\begin{definition}
+\label{def:interval}
+An interval is a nonempty sequence of identical symbols.
+\end{definition}
+
+\begin{definition}
+A composition matrix is
+\end{definition}
+
+
+
+\begin{definition}
+\label{def:seed}
+An exact $d$-seed is an error-free interval of size at least $d$.
+\end{definition}
+
+\begin{definition}
+\label{def:symbols}
+Let $\Sigma$ be the alphabet $\{h, m\}$, where $h$ stands for
+``hit'', and $m$ stands for ``miss''.
+\end{definition}
+
+Every sequencing read has a unique decomposition in intervals of maximum
+length. This decomposition will allow us to encode the reads as...
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.89]{seeding_sketch.pdf}
+\includegraphics[scale=0.89]{sketch_seeding.pdf}
 \caption{\textbf{Structure of reads}. Here we consider sequencing reads
 that can have any type of error (insertions, deletions or substitutions).
 The reads have size $k$, and the errors are represented as grey squares. A
@@ -494,92 +739,12 @@ Importantly, such intervals cannot have length $0$, because there must be
 at least one correct nucleotide to call an interval error-free. This
 motivates the following combinatorial definition of reads.
 
-\begin{definition}
-\label{def:read}
-A read is an alternating sequence of error-only intervals and error-free
-intervals. The set of reads is denoted $\mathcal{R}$ and its weighted
-generating function is $R(z)$.
-\end{definition}
-
 There are obviously $2^k$ possible reads of size $k$, but they are not
 equally likely because the frequency of errors is different from $1/2$
 (the error rate of all modern technologies is lower). The weights will
 come in handy to record the probability of ocurrence of reads. In what
 follows, weights can be thought of as frequencies of certain events, or as
 quantities proportional to these frequencies.
-
-\begin{proposition}
-\label{th:R}
-Denote the weighed generating function of error-only and of error-free
-intervals as $E(z)$ and $F(z)$, respectively. Reads have weighted
-generating function
-
-\begin{equation}
-\label{eq:R}
-R(z) = \frac{\big(1+E(z)-E(0)\big)^2F(z)}{1-E(z)F(z)} + E(z)-E(0)+1.
-\end{equation}
-\end{proposition}
-
-Formula (\ref{eq:R}) is somewhat cumbersome because reads can neither
-start nor end with an error-only interval of size $0$ (deletions cannot be
-happen before the reads starts or after it ends). We must proceed with
-care in order to count every read only once, and exclude those impossible
-configurations.
-
-\begin{proof}
-As we have seen in section \ref{sec:WGF}, the weighted generating function
-of an error-only interval followed by an error-free interval is
-$E(z)F(z)$. We will call sequences of such pairs $u$-reads, and
-their weighted generating function is
-
-\begin{equation*}
-U(z) = \frac{1}{1-E(z)F(z)}.
-\end{equation*}
-
-Nonempty $u$-reads are the reads that start with an error-only interval
-and end with an error-free interval. A pitfall is that $u$-reads can start
-with an error-only interval of size $0$, \textit{i.e.} a deletion, which
-can never happen on real reads. We thus need to ensure that such reads are
-disallowed. Writing $E(z) = e_0 + e_1z + e_2z^2 + \ldots$, we see that the
-weighted generating function of error-only intervals of size greater than
-$0$ is $E(z) = e_1z + e_2z^2 + \ldots = E^+(z) = E(z) - E(0)$. 
-
-We now proceed by partitioning the reads on their first and last intervals.
-We call type $(i)$ reads those that start with an error-free interval and
-end with an error-free interval. They are obtained by concatenating an
-error-free interval and a $u$-read, so their weighted generating function
-is $F(z)U(z)$.
-
-Type $(ii)$ reads are those that start with an error-free interval and end
-with a nonempty error-only interval. They are obtained by concatenating a
-type $(i)$ read and a nonempty error-only interval so their weighted
-generating function is $F(z)U(z)E^+(z)$.
-
-Type $(iii)$ reads those that start with a nonempty error-only interval
-and end with an error-free interval. They are obtained by concatenating a
-nonempty error-only interval, an error-free interval, and a $u$-read, so
-their weighted generating function is $E^+(z)F(z)U(z)$.
-
-Type $(iv)$ reads those that start with a nonempty error-only interval and
-end with a nonempty error-only interval. They are obtained either by
-concatenating a type $(iii)$ and an nonempty error-only interval or as
-just a nonempty error-only interval, so their weighted generating function
-is $E^+(z)F(z)U(z)E^+(z) + E^+(z)$.
-
-The only missing read is $\varepsilon$, the read of size $0$ and whose
-weighted generating function is $1$.
-
-Summing the weighted generarting functions of reads of types $(i)$,
-$(ii)$, $(iii)$, $(iv)$ and of $\varepsilon$, we obtain expression
-(\ref{eq:R}).
-\end{proof}
-
-\begin{remark}
-In the proof of proposition \ref{th:R}, we did not need to add a sparate
-term for reads that consists of just an error-free interval, because they
-are a type $(i)$ reads (the concatenation of an error-free interval and
-the empty $u$-read).
-\end{remark}
 
 Error-free intervals are important for many analyses. For instance, when
 the read has to be aligned to a reference genome, the search space is
@@ -590,36 +755,11 @@ the reference genome). If all the error-free intervals of the read are
 shorter than the seeds, then no hit will be found. It is thus useful to
 study the distribution of the longest error-free interval of a read.
 
-\begin{definition}
-\label{def:seed}
-An exact $d$-seed is an error-free interval of size at least $d$.
-\end{definition}
 
 We will consider that the integer $d$ is fixed, and we refer to $d$-seeds
 as seeds most of the time. We will also call ``seedless'' the reads that
 contain no seed. This qualification also depends on a certain value of
 $d$, but the context will never be ambiguous.
-
-\begin{proposition}
-\label{th:S}
-Denote the weighted generating fuctions of error-only intervals as $E(z)$
-and denote as $F_d(z)$ the weighted generating function of error-free
-intervals of size less than $d$. The weighted generating function of the
-set of seedless reads is
-
-\begin{equation}
-\label{eq:S}
-S(z) = \frac{(1+E(z)-E(0))^2F_d(z)}{1-E(z)F_d(z)} + E(z)-E(0)+1.
-\end{equation}
-\end{proposition}
-
-\begin{proof}
-Proceed as in proposition~\ref{th:R}.
-\end{proof}
-
-Note that if the weighted generating function of error-free intervals
-$F(z)$ is equal to $f_1z + f_2z^2 + \ldots$, then $F_d(z) = f_1z + f_2z^2
-+ \ldots + f_{d-1}z^{d-1}$.
 
 The probability that the seeding approach will fail for a read of length
 $k$ is the total weight of seedless reads of size $k$, divided by the
@@ -633,7 +773,11 @@ This, in a nutshell, is the standard analytic combinatorics approach. We
 will see below that in general we cannot obtain exact solutions, but we
 can get very accurate asymptotic approximations.
 
-\subsection{Substitution only}
+
+
+%%%%%%%%%%%%%%%%%% Substitutions only %%%%%%%%%%%%%%%%%%%
+
+\subsection{Substitutions only}
 
 One of the simplest and yet useful models to consider is that errors
 consist of substitutions only, and that they occur with the same
@@ -647,60 +791,54 @@ functions of error-free intervals and error-only intervals are thus
 respectively
 
 \begin{equation*}
-\begin{split}
-E(z) &= pz + p^2z^2 + \ldots =
-  \frac{pz}{1-pz}\text{, and} \\
-F(z) &= qz + q^2z^2 + \ldots = \frac{qz}{1-qz}.
-\end{split}
+M(z) = \left(
+\begin{matrix}
+0    & pz \\
+F(z) & pz
+\end{matrix}
+\right).
 \end{equation*}
 
-Note that $E(0) = 0$. Substituting the expressions above in (\ref{eq:R}),
-the weighted generating function of reads has a relatively simple
-expression, namely
+\begin{equation*}
+M_*(z) = (I-M(z))^{-1}=
+\frac{1}{\lambda(z)}
+\left(
+\begin{matrix}
+1-pz & pz   \\
+F(z) & 1
+\end{matrix}
+\right)
+\end{equation*}
+
+\noindent
+where $\lambda(z) = 1-pz(1+F(z))$ is the determinant of $I-M(z)$.
+Reads may start and end with any type of interval, so we obtain the
+weighted generating function of reads as
 
 \begin{equation}
-\label{eq:Rp}
-R(z) = \frac{\big(1+E(z)\big)^2F(z)}{1-E(z)F(z)} + E(z)+1= \frac{1}{1-z}.
+\label{eq:Ssub}
+R(z) = 1 + U(z) \cdot M_*(z) \cdot V = 
+\frac{1+F(z)}{1-pz(1+F(z))}.
 \end{equation}
 
-Setting $p=1$ in example~\ref{ex:sequences} shows that $z/(1-z) = z + z^2
-+ z^3 + \ldots$, so the coefficient of $z^k$ is equal to $1$ for all $k
-\geq 1$.
+\begin{equation*}
+F(z) = \frac{qz}{1-qz}.
+\end{equation*}
 
-We now write the generating function of seedless reads. For this, we only
-need to truncate $F(z)$ at $z^{d-1}$ as shown below
 
 \begin{equation*}
 F_d(z) = qz + (qz)^2 + \ldots + (qz)^{d-1}.
 \end{equation*}
 
-Substituting this in expression (\ref{eq:S}), we now obtain the weighted
-generating function of seedless reads as
+Substituting this in expression (\ref{eq:Ssub}), we now obtain the
+weighted generating function of seedless reads as
 
 \begin{equation}
 \label{eq:Sp}
-S(z) = \frac{\big(1+E(z)\big)^2F_d(z)}{1-E(z)F_d(z)} + E(z) + 1 =
+S(z) = \frac{1+F_d(z)}{1-pz(1+F_d(z))} =
 \frac{1+qz + \ldots + (qz)^{d-1}}{1-pz(1+qz + \ldots +
 (qz)^{d-1})}.
 \end{equation}
-
-\begin{remark}
-\label{rem:alt}
-Expression (\ref{eq:Sp}) suggests an alternative definition of seedless
-reads. $S(z)$ is the product of $1+qz + \ldots + (qz)^{d-1}$ and
-$1/\big(1-pz(1+qz + \ldots+(qz)^{d-1})\big)$. Those weighted generating
-functions represent error-free intervals of size less than $d$, and
-sequences of substitutions followed by error-free intervals of size less
-than $d$. In both cases, the error-free intervals are possibly empty.
-In other words, there is a unique decomposition of seedless reads
-in segments that contain a single error at the beginning (with the
-possible exception of the first segment) and whose size is at most $d$
-(including the error).
-
-This alternative definition is not only valid for seedless reads, but also
-for other reads. Expression (\ref{eq:Rp}) just does not make it as
-explicit as expression (\ref{eq:Sp}).
-\end{remark}
 
 The task is now to extract the coefficient of $z^k$ in the series
 expansion of $S(z)$. These coefficients have no known explicit expression.
@@ -787,16 +925,16 @@ explaining how the calculations are done in practice.
 
 \begin{example}
 \label{ex:num}
-Let us approximate the probability that a read of size $k=50$ is seedless
+Let us approximate the probability that a read of size $k=100$ is seedless
 for $d=17$ and for a substitution rate $p=0.01$. To find the dominant
 singularity of $S$, we need to solve $1-pz(1+qz+\ldots+(qz)^{16}) = 0$.
-We rewrite the equation as $1-pz(1-(qz)^{17})/(1-qz) = 0$ and solve
-it numerically with the Newton-Raphson method, yielding $z_1 \approx
+We rewrite the equation as $1-pz(1-(qz)^{17})/(1-qz) = 0$ and solve it
+numerically with the Newton-Raphson method, yielding $z_1 \approx
 1.026886$. Substituting this value in (\ref{eq:Cp}) yields $C \approx
 1.433681$, so the probability that a read contains no seed is
-approximately $1.433681 / 1.026886^{52} \approx 0.3608321$. For
-comparison, performing 1,000,000 random simulations gives an estimate in
-the range...
+approximately $1.433681 / 1.026886^{102} \approx 0.000272$. 
+For comparison, performing 10 billion random simulations gives an
+estimate in the range...
 \end{example}
 
 The demonstration of proposition~\ref{th:ass} shows that the analytic
@@ -823,6 +961,10 @@ values. Figure~\ref{fig:simulp} also shows that relatively small changes
 in the prboability of error have a large influence on the probability of
 that the read contains a seed in the depicted range of read sizes.
 
+
+
+%%%%%%%%%%%%%%%%% Subsitutions and deletions %%%%%%%%%%%%%%%%%%
+
 \subsection{Substitutions and deletions}
 
 The uniform substitution model does not describe all sequencing
@@ -846,20 +988,33 @@ or ends with a deletion, so the weighted generating function of error-only
 interval of size $k>1$ is $p^kz^k$. Finally, the $k-1$ ``spaces'' between
 the nucleotides of an error-free interval of size $k$ must not contain any
 deletion, so the weighted generating function of error-free intervals of
-size $k>1$ is $(1-\delta)^{k-1}(pz)^k$. In summary $E(z) = \delta + pz +
-(pz)^2 + \ldots = \delta + pz / (1-pz)$ and $F(z) = qz + (1-\delta)(qz)^2
-+ (1-\delta)^2(qz)^3 + \ldots = qz / (1-(1-\delta)qz)$.
-
-Substituting these values in equation (\ref{eq:R}), the weighted
-generating function of reads appears as
+size $k>1$ is $(1-\delta)^{k-1}(pz)^k$.
 
 \begin{equation*}
-R(z) = \frac{\big(1+E(z)-E(0)\big)^2F(z)}{1-E(z)F(z)} + E(z)-E(0)+1 =
-\frac{1}{1-z}.
+M(z) = \left(
+\begin{matrix}
+\delta F(z) & pz \\
+F(z)        & pz
+\end{matrix}
+\right).
 \end{equation*}
 
-The weighted generating function of the reads is the same as under the
-constant substitution model, and the total weights are all equal to $1$.
+\begin{equation*}
+M_*(z) = (I-M(z))^{-1}=
+\frac{1}{\lambda(z)}
+\left(
+\begin{matrix}
+1-pz  & pz              \\
+F(z) & 1 -\delta F(z)
+\end{matrix}
+\right)
+\end{equation*}
+
+\noindent
+where $\lambda(z) = 1-pz-(pz(1-\delta)+\delta)F(z)$ is the determinant of
+$I-M(z)$.  The weighted generating function of the reads is the same as
+under the constant substitution model, and the total weights are all equal
+to $1$.
 
 The weighted generating function of error-free reads of size less than $d$
 is $F_d(z) = qz + (1-\delta)(qz)^2 + \ldots + (1-\delta)^{d-2}(qz)^{d-1}$.
@@ -867,14 +1022,10 @@ Substituting this value in equation (\ref{eq:S}), we obtain the
 weighted generating function of seedless reads as
 
 \begin{equation*}
-\begin{split}
-S(z) &= \frac{\big(1+E(z)-E(0)\big)^2F_d(z)}{1-E(z)F_d(z)} +
-  E(z)-E(0)+1 \\
-&= \frac{1+(1-\delta)\big(qz+(1-\delta)(qz)^2 + \ldots +
+S(z) = \frac{1+(1-\delta)\big(qz+(1-\delta)(qz)^2 + \ldots +
   (1-\delta)^{d-2}(qz)^{d-1}\big)}
   {1-pz - \big(pz(1-\delta) + \delta\big)\big(qz+(1-\delta)(qz)^2 +
   \ldots + (1-\delta)^{d-2}(qz)^{d-1}\big)}.
-\end{split}
 \end{equation*}
 
 \begin{remark}
@@ -950,6 +1101,57 @@ examples shown here.}
 \end{figure}
 
 \subsection{Substitutions, deletions and insertions}
+\label{subsec:sdi}
+
+Introducing insertions brings additional difficulties. First, they usually
+come in bursts and are not even spread over the read. This is also the
+case of deletions, but we could neglect it because this does not affect
+the size of the interval (all deletions are error-only intervals of size
+$0$). The distribution of insertions create a situation analogous to
+example~\ref{ex:Sanger}, where the total weight of reads of size $k$ is no
+longer equal to $1$. The second difficulty is that bursts come in two
+distinct types: the closed bursts that are followed by a match or a
+substitution, and the ``runaway'' bursts at the end of reads.
+
+To model insertion bursts, we need to assign a probability $r$ to the
+first insertion, and a probability $a > r$ to all subsequent insertions of
+the burst. The burst stops with probability $1-a$ at each decoded
+nucleotide, so closed insertion bursts have weighted generating function
+
+\begin{equation*}
+M(z) = \left(
+\begin{matrix}
+\delta F(z) & pz      & rz  \\
+F(z)        & pz      & rz  \\
+(1-a)F(z)   & (1-a)pz & az
+\end{matrix}
+\right).
+\end{equation*}
+
+We do not show $M_*(z) = (I-M(z))^{-1}$ because the expression is fairly
+complex and we will not use it anyway.
+
+$\lambda(z) = 1 - (p+a)z +(pa-(1-a)pr)z^2  +F(z) ((1-\delta)(ar+a-r)pz^2
++(a\delta-(1-\delta)p-(1-a)r)z-\delta)$
+
+\begin{equation*}
+1 + U(z) \cdot M_*(z) \cdot V = \frac{\left( 1-(a-r)z \right)
+\left(1+(1-\delta)F(z) \right)}{\lambda(z)}.
+\end{equation*}
+
+\begin{equation}
+R(z) = \frac{1-(a-r)z}{1-(1+a-r)z+(a-(1+pa)r+(1-a)r^2)z^2}.
+\end{equation}
+
+%sage: (((a - 1)*r^2 + (a*p + 1)*r - a)*z^2 + (a - r + 1)*z - 1).roots(z)
+%[(-1/2*(a - r + sqrt((4*a - 3)*r^2 + a^2 + 2*(2*a*p - a + 1)*r - 2*a + 1)
+%+ 1)/((a - 1)*r^2 + (a*p + 1)*r - a),
+%  1),
+% (-1/2*(a - r - sqrt((4*a - 3)*r^2 + a^2 + 2*(2*a*p - a + 1)*r - 2*a + 1)
+%+ 1)/((a - 1)*r^2 + (a*p + 1)*r - a),
+%  1)]
+
+
 
 \begin{figure}[h]
 \centering
