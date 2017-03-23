@@ -227,6 +227,7 @@ them different weights. Let us revisit the previous example with a slight
 modification.
 
 \begin{example}
+\label{ex:wweights}
 Assume once again that $\mathcal{A} = \{a\}$ and $\mathcal{B} = \{b\}$,
 but this time $a$ has frequency $1/3$ and $b$ has frequency $2/3$. The
 weighted generating function of $\mathcal{A}$ is $z/3$ and that of
@@ -257,9 +258,24 @@ elements of $\mathcal{A}$, of which the weighted generating function is
 
 The coefficient of $z^k$ is $1/3^k$ so sequences of size $k$ that contain
 no $b$ have a total weight equal to $1/3^k$. Since the total weight of
-sequences of size $k$ is $1$, the probability that a sequence does not
+sequences of size $k$ is $1$, the total weight of sequences that do not
 contain any $b$ is $1/3^k \big/ 1 = 1/3^k$.
 \end{example}
+
+In example~\ref{ex:wweights}, the weighted generating function of the
+sequence $aaaba$ is $z/3 \times z/3 \times z/3 \times 2z/3 \times z/3 =
+2z^5/243$, which is another way of saying that $aaaba$ has size $5$ and
+weight $2/243$. Observe that if the symbols are chosen independently of
+each other, $2/243$ is the probability that a sequence of size $5$ is
+equal to $aaaba$. This is a general feature of weights. In the
+applications below, they will always be equal to the probability
+of occurrence of the objects they mark.
+
+The coefficients of weighted generating functions expressed as in
+(\ref{eq:GF2}) thus represent the probabilities of occurrence of some
+objects of interest. This observation motivates the search for
+their weighted generating function.
+
 
 
 %%%%%%%%%%%%%%%%% Transfer matrices %%%%%%%%%%%%%%%%%
@@ -275,11 +291,11 @@ to this is done with an example from biology.
 The sequence \texttt{CG} is the only one that can be methylated in many
 animal genomes. Assuming that \texttt{G}s and \texttt{G}s both occur with
 frequency $p/2$ and that \texttt{A}s and \texttt{T}s occur with frequency
-$q/2$, where $q = 1-p$, what is the weighted generating function of
-sequences without \texttt{CG}?
+$q/2$, where $q = 1-p$, we set out to find the weighted generating
+function of sequences without \texttt{CG}.
 
 First, we define the weighted generating functions of the individual
-symbols. With natural notatoins we see that $C(z) = G(z) = pz/2$ and that
+symbols. With natural notations we see that $C(z) = G(z) = pz/2$ and that
 $A(z) = T(z) = qz/2$.
 
 \begin{definition}
@@ -717,7 +733,7 @@ length. This decomposition will allow us to encode the reads as...
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.89]{sketch_seeding.pdf}
+\includegraphics[scale=0.88]{sketch_seeding.pdf}
 \caption{\textbf{Structure of reads}. Here we consider sequencing reads
 that can have any type of error (insertions, deletions or substitutions).
 The reads have size $k$, and the errors are represented as grey squares. A
@@ -778,6 +794,7 @@ can get very accurate asymptotic approximations.
 %%%%%%%%%%%%%%%%%% Substitutions only %%%%%%%%%%%%%%%%%%%
 
 \subsection{Substitutions only}
+\label{sec:substitutions}
 
 One of the simplest and yet useful models to consider is that errors
 consist of substitutions only, and that they occur with the same
@@ -789,6 +806,14 @@ According to the model, the weight of every error-free nucleotide is $1-p
 = q$, and the weight of every error is $p$. The weighted generating
 functions of error-free intervals and error-only intervals are thus
 respectively
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.9]{substitutions_only.pdf}
+\caption{\textbf{Substitutions only}. 
+This is some text.}
+\label{fig:subonly}
+\end{figure}
 
 \begin{equation*}
 M(z) = \left(
@@ -852,7 +877,7 @@ like this is a simple root (\textit{i.e.} that is has multiplicity $1$).
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.365]{singularityS.pdf}
+\includegraphics[scale=0.4]{singularityS.pdf}
 \caption{\textbf{Singularities of $S$}. $Q(z)$ denotes the
 denominator of $S(z)$ from expression (\ref{eq:Sp}). \textit{Left}: real
 representation of $Q$. The bold line represents the value of $Q(z)$ for
@@ -966,6 +991,7 @@ that the read contains a seed in the depicted range of read sizes.
 %%%%%%%%%%%%%%%%% Subsitutions and deletions %%%%%%%%%%%%%%%%%%
 
 \subsection{Substitutions and deletions}
+\label{sec:deletions}
 
 The uniform substitution model does not describe all sequencing
 technologies. For instance, long read technologies often have bursts of
@@ -979,6 +1005,14 @@ uniform substitutions, we assume that every nucleotide call is false with
 a probability $p$ and true with a probability $1-p=q$. But here, we also
 assume the ``space''  between consecutive nucleotides can contain a
 deletion with probability $\delta$.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.9]{deletions.pdf}
+\caption{\textbf{Substitutions and deletions}. 
+This is some text.}
+\label{fig:deletions}
+\end{figure}
 
 With this formalism, the weighted generating function of an error-only
 interval of size $0$ is simply $\delta$. Whether the ``spaces'' between
@@ -1012,26 +1046,34 @@ F(z) & 1 -\delta F(z)
 
 \noindent
 where $\lambda(z) = 1-pz-(pz(1-\delta)+\delta)F(z)$ is the determinant of
-$I-M(z)$.  The weighted generating function of the reads is the same as
-under the constant substitution model, and the total weights are all equal
-to $1$.
+$I-M(z)$.
 
-The weighted generating function of error-free reads of size less than $d$
-is $F_d(z) = qz + (1-\delta)(qz)^2 + \ldots + (1-\delta)^{d-2}(qz)^{d-1}$.
-Substituting this value in equation (\ref{eq:S}), we obtain the
-weighted generating function of seedless reads as
+\begin{equation}
+\label{eq:Sdel}
+\begin{split}
+S(z) &= 1 + U(z) \cdot M_*(z) \cdot V \\
+&= \frac{1+(1-\delta)F(z)} {1-pz - \big(pz(1-\delta) + \delta\big)F(z)}
+= \frac{1}{1-z}.
+\end{split}
+\end{equation}
 
-\begin{equation*}
-S(z) = \frac{1+(1-\delta)\big(qz+(1-\delta)(qz)^2 + \ldots +
-  (1-\delta)^{d-2}(qz)^{d-1}\big)}
-  {1-pz - \big(pz(1-\delta) + \delta\big)\big(qz+(1-\delta)(qz)^2 +
-  \ldots + (1-\delta)^{d-2}(qz)^{d-1}\big)}.
-\end{equation*}
+The weighted generating function of error-free intervals of size less than
+$d$ is $F_d(z) = qz + (1-\delta)(qz)^2 + \ldots +
+(1-\delta)^{d-2}(qz)^{d-1}$.  Substituting this value in equation
+(\ref{eq:Sdel}), we obtain the weighted generating function of seedless
+reads as
+
+\begin{equation}
+\label{eq:Sdel}
+S(z) = \frac{1+(1-\delta)F_d(z)}
+  {1-pz - \big(pz(1-\delta) + \delta\big)F_d(z)}.
+\end{equation}
 
 \begin{remark}
-Setting $\delta = 0$ in the expression above, we obtain expression
-(\ref{eq:Sp}), \textit{i.e.} the weighted generating function of seedless
-reads when the only errors are substitutions.
+Note that when $\delta = 0$, expression (\ref{eq:Sdel}) becomes
+(\ref{eq:Sp}), \textit{i.e.} the model described in
+section~\ref{sec:substitutions} is a special case of the model described
+in this section.
 \end{remark}
 
 Applying proposition~\ref{th:ass} to this expression, we obtain the
@@ -1100,67 +1142,104 @@ examples shown here.}
 \label{fig:simulpdel}
 \end{figure}
 
+
+
+
+%%%%%%%%%%% Subsitutions, deletions and insertions %%%%%%%%%%%%
+
 \subsection{Substitutions, deletions and insertions}
 \label{subsec:sdi}
 
-Introducing insertions brings additional difficulties. First, they usually
-come in bursts and are not even spread over the read. This is also the
-case of deletions, but we could neglect it because this does not affect
-the size of the interval (all deletions are error-only intervals of size
-$0$). The distribution of insertions create a situation analogous to
-example~\ref{ex:Sanger}, where the total weight of reads of size $k$ is no
-longer equal to $1$. The second difficulty is that bursts come in two
-distinct types: the closed bursts that are followed by a match or a
-substitution, and the ``runaway'' bursts at the end of reads.
+Introducing insertions brings additional difficulties because they usually
+come in bursts. This is also the case of deletions, but we could neglect
+it because this does not affect the size of the interval (all deletions
+are error-only intervals of size $0$).
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.9]{insertions.pdf}
+\caption{\textbf{Substitutions, deletions and insertions}.
+This is some text.}
+\label{fig:insertions}
+\end{figure}
 
 To model insertion bursts, we need to assign a probability $r$ to the
-first insertion, and a probability $a > r$ to all subsequent insertions of
-the burst. The burst stops with probability $1-a$ at each decoded
-nucleotide, so closed insertion bursts have weighted generating function
+first insertion, and a probability $\tilde{r} > r$ to all subsequent
+insertions of the burst. The burst stops with probability $1-\tilde{r}$ at
+each decoded nucleotide.
+
+\begin{equation*}
+F(z) = qz + (1-\delta)(qz)^2 + (1-\delta)^2(qz)^3 \ldots =
+\frac{qz}{1-(1-\delta)qz}.
+\end{equation*}
 
 \begin{equation*}
 M(z) = \left(
 \begin{matrix}
 \delta F(z) & pz      & rz  \\
 F(z)        & pz      & rz  \\
-(1-a)F(z)   & (1-a)pz & az
+\frac{1-\tilde{r}}{1-r}F(z)   & \frac{1-\tilde{r}}{1-r}pz & \tilde{r}z
 \end{matrix}
 \right).
 \end{equation*}
 
-We do not show $M_*(z) = (I-M(z))^{-1}$ because the expression is fairly
-complex and we will not use it anyway.
-
-$\lambda(z) = 1 - (p+a)z +(pa-(1-a)pr)z^2  +F(z) ((1-\delta)(ar+a-r)pz^2
-+(a\delta-(1-\delta)p-(1-a)r)z-\delta)$
-
-\begin{equation*}
-1 + U(z) \cdot M_*(z) \cdot V = \frac{\left( 1-(a-r)z \right)
-\left(1+(1-\delta)F(z) \right)}{\lambda(z)}.
-\end{equation*}
+We omit the expression of $M_*(z) = (I-M(z))^{-1}$ because it is fairly
+and we will make no use of it. Up to a factor $1-r$, the determinant of
+$M(z)$ is equal to $\lambda(z) = 1 - a(z) - b(z)F(z)$, where $a(z) =
+r-((p+\tilde{r})r-\tilde{r}-p)z - p(\tilde{r}-r)z^2$ and $b(z) =
+\delta(1-r) - \left((\tilde{r}\delta-(1-\delta)p)(1-r)
+-(1-\tilde{r})r\right)z -(1-\delta)p(\tilde{r}-r)z^2$. With these
+definitions, the weighted generating function of 
 
 \begin{equation}
-R(z) = \frac{1-(a-r)z}{1-(1+a-r)z+(a-(1+pa)r+(1-a)r^2)z^2}.
+\label{eq:Rindel}
+\begin{split}
+R(z) &= 1 + U(z) \cdot M_*(z) \cdot V \\
+&= \frac{(1-r)\left( 1-(\tilde{r}-r)z \right)
+\left(1+(1-\delta)F(z) \right)}{1-a(z)-b(z)F(z)}
+= \frac{1}{1-z}.
+\end{split}
 \end{equation}
 
-%sage: (((a - 1)*r^2 + (a*p + 1)*r - a)*z^2 + (a - r + 1)*z - 1).roots(z)
-%[(-1/2*(a - r + sqrt((4*a - 3)*r^2 + a^2 + 2*(2*a*p - a + 1)*r - 2*a + 1)
-%+ 1)/((a - 1)*r^2 + (a*p + 1)*r - a),
-%  1),
-% (-1/2*(a - r - sqrt((4*a - 3)*r^2 + a^2 + 2*(2*a*p - a + 1)*r - 2*a + 1)
-%+ 1)/((a - 1)*r^2 + (a*p + 1)*r - a),
-%  1)]
+Once again, the terms cancel out and we obtain a simple expression where
+all the coefficients are equal to $1$. To find the weighted generating
+function of seedless reads, we replace $F(z)$ in expression
+(\ref{eq:Rindel}) by its truncated version
+
+\begin{equation*}
+F_d(z) = qz + (1-\delta)(qz)^2 + (1-\delta)^2(qz)^3 \ldots +
+(1-\delta)^{d-2}(qz)^{d-1}.
+\end{equation*}
+
+We obtain the following expression where the terms $a(z)$ and $b(z)$ are
+defined as above
+
+\begin{equation}
+\label{eq:Sindel}
+S(z) = \frac{(1-r)\left( 1-(\tilde{r}-r)z \right) \left(1+(1-\delta)F_d(z)
+\right)}{1-a(z)-b(z)F_d(z)}.
+\end{equation}
+
+\begin{remark}
+Note that when $r = \tilde{r} = 0$, $a(z) = pz$ and $b(z) = pz(1-\delta) +
+\delta$. Expression (\ref{eq:Sindel}) becomes
+
+\begin{equation*}
+S(z) = \frac{1 + (1-\delta)F_d(z)}{1-pz-(pz(1-\delta+\delta))F_d(z)}.
+\end{equation*}
+
+This is expression (\ref{eq:Sdel}), \textit{i.e.} the model described in
+section~\ref{sec:deletions} is a special case of the model described in
+this section.
+\end{remark}
 
 
 
-\begin{figure}[h]
-\centering
-\includegraphics[scale=0.83]{sketch_errors.pdf}
-\caption{\textbf{Complex error models}.
-Text.
-}
-\label{fig:sketcherr}
-\end{figure}
+
+
+
+
+
 
 \section{Inexact seeding}
 
@@ -1169,6 +1248,14 @@ algorithms and data structures allows us to use...
 
 Here we assume the constant substitution rate model.
 
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.88]{sketch_inexact_seeding.pdf}
+\caption{\textbf{Structure of reads}.
+Some text.}
+\label{fig:sketchinexact}
+
+\end{figure}
 \begin{definition}
 \label{def:seed}
 An inexact $d$-seed is an interval of size at least $d$ that contains at
