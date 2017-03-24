@@ -868,12 +868,14 @@ S(z) = \frac{1+F_d(z)}{1-pz(1+F_d(z))} =
 The task is now to extract the coefficient of $z^k$ in the series
 expansion of $S(z)$. These coefficients have no known explicit expression.
 
-Returning to the case of seedless reads, proposition~\ref{th:ass} invites
-us to find the roots of the singularities of $S(z)$. The left panel of
-Figure~\ref{fig:plotQ} shows the values of the denominator of $S(z)$
-around $0$ for $p=.01$ and $d=17$. The root with smallest modulus is
-clearly visible, and by the angle of the curve at $Q(z) = 0$, it looks
-like this is a simple root (\textit{i.e.} that is has multiplicity $1$).
+Proposition~\ref{th:ass} suggests to find the singularities of $S(z)$. The
+left panel of Figure~\ref{fig:plotQ} shows the values of the denominator
+of $S(x)$ with $p=0.1$ and $d=17$ for real $x$ around $0$. $S$ has one
+real root greater than $1$.  The remaining singularities of $S$ are
+complex and they seem to be evenly spaced on the same circle, as can be
+seen on the right panel of Figure~\ref{fig:plotQ}. This is only a visual
+impression. In fact the singularities are not exactly on the same circle
+and their rotation angles are not exactly regular.
 
 \begin{figure}[h]
 \centering
@@ -891,24 +893,60 @@ slightly closer to the origin.}
 \label{fig:plotQ}
 \end{figure}
 
-The remaining singularities of $S(z)$ are complex and they seem to be
-evenly spaced on the same circle, as can be seen on the right panel of
-Figure~\ref{fig:plotQ}. This is only a visual impression. In fact the
-singularities are not exactly on the same circle and their rotation angles
-are not exactly regular.
+It is fortunate that the dominant root of $S$ is a real number because we
+can use efficient numerical methods to approximate it. The following
+proposition shows that this is no accident: the dominant singularity of
+$S$ is always a real positive number greater than $1$.
 
-%%%%%%%%%%%%% Minimal singularity of S %%%%%%%%%%%%%
 \begin{proposition}
 \label{th:roots}
-$S$ has only one real positive singularity, which is the dominant
-singularity.
+$S$ as expressed in (\ref{eq:Sp}) has exactly one positive real
+singularity. This is the dominant singularity and it is greater than $1$.
 \end{proposition}
 
 \begin{proof}
-Write $S(z) = P(z)/Q(z)$ and search the roots of $Q$. Let $x$ denote a
-real number. Since $Q(1) = q^d > 0$ and $\lim_{x\rightarrow \infty} Q(x) =
--\infty$, $Q$ vanishes for a real number greater than $1$.
+Write $S(z) = P(z)/Q(z)$ and search the roots of $Q$. First we show that
+$Q$ has no real root in the interval $(0,1)$. For a real number $x$ such
+that $0\leq x \leq 1$, we have $1+qx+\ldots+(qx)^{d-1} < 1/p$, so $Q(x) >
+0$.
+
+Second, we show that $Q$ has exactly one real root great than $1$. Because
+$Q'(x) < 0$ for $x \geq 0$ there can ben only one positive root.  Since
+$Q(1) = q^d > 0$ and $\lim_{x\rightarrow \infty} Q(x) = -\infty$, $Q$
+vanishes for a real number greater than $1$.
+
+Third, we show that this is the root with smallest modulus.  Express the
+complex roots of $Q$ as $re^{i\theta}$. They satisfy the equation
+
+\begin{equation*}
+1-pre^{i\theta}\frac{1-q^dr^de^{id\theta}}{1-qre^{i\theta}} = 0,
+re^{i\theta} \neq \frac{1}{q}.
+\end{equation*}
+
+Multiplying through by $1-qre^{i\theta}$, we obtain an equation of which
+we separate the real and the imaginary parts to obtain
+
+\begin{equation*}
+\left\{
+\begin{array}{ll}
+r \cos (\theta) -1 = pq^dr^{d+1} \cos \left( (d+1) \theta) \right) \\
+r \sin (\theta) = pq^dr^{d+1} \sin \left( (d+1) \theta) \right)
+\end{array}
+\right. re^{i\theta} \neq \frac{1}{q}.
+\end{equation*}
+
+Squaring and summing, we obtain the following equation
+
+\begin{equation*}
+r^2 = (pq^dr^{d+1})^2 + 2r \cos(\theta) -1.
+\end{equation*}
+
+Since $r > 0$, the solution of this equation is minimal when
+$2r\cos(\theta)$ is maximal, \textit{i.e.} when $\theta = 0$. In other
+words, the root with smallest modulus is a positive real number. We have
+seen above that there exsists exactly one and that it is greater than $1$.
 \end{proof}
+
 
 We can now have all the tools to approximate the coefficients of $S(z)$
 using proposition~\ref{th:ass} and thus obtain the approximate probability
