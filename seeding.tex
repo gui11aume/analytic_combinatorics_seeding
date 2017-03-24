@@ -989,15 +989,17 @@ explaining how the calculations are done in practice.
 \begin{example}
 \label{ex:num}
 Let us approximate the probability that a read of size $k=100$ is seedless
-for $d=17$ and for a substitution rate $p=0.01$. To find the dominant
-singularity of $S$, we need to solve $1-pz(1+qz+\ldots+(qz)^{16}) = 0$.
-We rewrite the equation as $1-pz(1-(qz)^{17})/(1-qz) = 0$ and solve it
-numerically with the Newton-Raphson method, yielding $z_1 \approx
-1.026886$. Substituting this value in (\ref{eq:Cp}) yields $C \approx
-1.433681$, so the probability that a read contains no seed is
-approximately $1.433681 / 1.026886^{102} \approx 0.000272$. 
-For comparison, performing 10 billion random simulations gives an
-estimate in the range...
+for $d=17$ and for a substitution rate $p=0.1$. To find the dominant
+singularity of $S$, we need to solve
+$1-0.1z\times(1+0.9z+\ldots+(0.9z)^{16}) = 0$.  We rewrite the equation as
+$1 - 0.1z\times(1-(0.9 z)^{17})/(1-0.9z) = 0$ and use bisection to solve
+it numerically, yielding $z_1 \approx 1.0268856$. Substituting this value
+in (\ref{eq:Cp}) yields $C \approx 1.433681$, so the probability that a
+read contains no seed is approximately $1.433681 / 1.0268856^{102} \approx
+0.9042361$. For comparison, a 99\% confidence interval obtained by
+performing 10 billion random simulations is $0.904234-0.904247$.
+% The magic number is 957598614 out of 10 billion.
+% 0.09575302-0.09576671.
 \end{example}
 
 The demonstration of proposition~\ref{th:ass} shows that the analytic
