@@ -443,6 +443,7 @@ not contain \texttt{CG} by summing over all possible objects at the
 beginning and at the end of the sequence. This is equivalent to computing
 
 \begin{proposition}
+\label{th:TM2WGF}
 The weighted generating function of all possible sequences described by
 the transfer matrix $M(z)$ is 
 
@@ -796,16 +797,12 @@ can get very accurate asymptotic approximations.
 \subsection{Substitutions only}
 \label{sec:substitutions}
 
-One of the simplest and yet useful models to consider is that errors
-consist of substitutions only, and that they occur with the same
-probability $p$ for every decoded nucleotide. This describes reasonably
-well the error model of the Illumina platforms, where $p$ is around
-$0.01$.
-
-According to the model, the weight of every error-free nucleotide is $1-p
-= q$, and the weight of every error is $p$. The weighted generating
-functions of error-free intervals and error-only intervals are thus
-respectively
+One of the simplest and yet useful models is to assume that errors consist
+of substitutions only, and that they occur with the same probability $p$
+for every nucleotide. This describes reasonably well the error model of
+the Illumina platforms (where $p$ is around $0.01$).
+Figure~\ref{fig:subonly} shows the transition probabilities between
+correct nucleotides and error-free nucleotides.
 
 \begin{figure}[h]
 \centering
@@ -815,6 +812,20 @@ This is some text.}
 \label{fig:subonly}
 \end{figure}
 
+With these assumptions, the weighted generating function of mismatches is
+$pz$ and that of correct nucleotides is $qz$, where $q=1-p$. The
+weighted generating function of error-free intervals comes as
+
+\begin{equation}
+F(z) = qz + (qz)^2 + (qz)^2 + \ldots = \frac{qz}{1-qz}.
+\end{equation}
+
+An error-free interval cannot follow another error-free interval,
+otherwise one of them could be extended. So an error-free interval must be
+followed by a substitution. On the other hand, a substitution can be
+followed by either an error-free interval or another substitution, so the
+transfer matrix is
+
 \begin{equation*}
 M(z) = \left(
 \begin{matrix}
@@ -823,6 +834,10 @@ F(z) & pz
 \end{matrix}
 \right).
 \end{equation*}
+
+To find the weighted generating function of reads from
+proposition~\ref{th:TM2WGF}, we need to find the inverse of $I-M(z)$.
+Using the elementary rules of algebra, we find
 
 \begin{equation*}
 M_*(z) = (I-M(z))^{-1}=
@@ -837,19 +852,18 @@ F(z) & 1
 
 \noindent
 where $\lambda(z) = 1-pz(1+F(z))$ is the determinant of $I-M(z)$.
-Reads may start and end with any type of interval, so we obtain the
-weighted generating function of reads as
+Applying proposition~\ref{th:TM2WGF} with $U(z)$ the row vector equal to
+$F(z), pz$ and $V$ the column vector equal to $(1,1)$, the weighted
+generating function of reads comes as
 
 \begin{equation}
 \label{eq:Ssub}
 R(z) = 1 + U(z) \cdot M_*(z) \cdot V = 
-\frac{1+F(z)}{1-pz(1+F(z))}.
+\frac{1+F(z)}{1-pz(1+F(z))} = \frac{1}{1-z}.
 \end{equation}
 
-\begin{equation*}
-F(z) = \frac{qz}{1-qz}.
-\end{equation*}
-
+Since $1/(1-z) = 1+z+z^2 + \ldots$, this means that the total weight of
+reads of size $k$ is equal to $1$ for every finite $k$.
 
 \begin{equation*}
 F_d(z) = qz + (qz)^2 + \ldots + (qz)^{d-1}.
@@ -978,11 +992,6 @@ Apply proposition~\ref{th:ass} and proposition~\ref{th:roots} to $S(z)$
 and also use the fact that $1+qz_1+\ldots+(qz_1)^{d-1} = 1/pz_1$.
 \end{proof}
 
-\begin{remark}
-Since $z_1 > 1$, the probability decreases exponentially
-as $k$ increases.
-\end{remark}
-
 We now illustrate proposition~\ref{th:p} with a concrete example
 explaining how the calculations are done in practice.
 
@@ -996,10 +1005,9 @@ $1 - 0.1z\times(1-(0.9 z)^{17})/(1-0.9z) = 0$ and use bisection to solve
 it numerically, yielding $z_1 \approx 1.0268856$. Substituting this value
 in (\ref{eq:Cp}) yields $C \approx 1.433681$, so the probability that a
 read contains no seed is approximately $1.433681 / 1.0268856^{102} \approx
-0.9042361$. For comparison, a 99\% confidence interval obtained by
-performing 10 billion random simulations is $0.904234-0.904247$.
-% The magic number is 957598614 out of 10 billion.
-% 0.09575302-0.09576671.
+0.095763$. For comparison, a 99\% confidence interval obtained by
+performing 10 billion random simulations is $0.09575-0.09577$
+% The magic number is 957598614 seed-containing out of 10 billion.
 \end{example}
 
 The demonstration of proposition~\ref{th:ass} shows that the analytic
@@ -1039,12 +1047,21 @@ insertions and deletions, with typical frequencies that differ from
 substitutions. In order to model more complex behaviors, we need to
 distinguish the different types of errors.
 
-To not jump too fast into the problem, we will first focus on a fictional
-case where errors can be deletions or susbtitutions. As in the case of
-uniform substitutions, we assume that every nucleotide call is false with
-a probability $p$ and true with a probability $1-p=q$. But here, we also
-assume the ``space''  between consecutive nucleotides can contain a
-deletion with probability $\delta$.
+To not jump too fast into the problem, we will first focus on the
+relatively unrealistic case where errors can be deletions or
+susbtitutions. As in the case of uniform substitutions, we assume that
+every call is false with a probability $p$ and true with a probability
+$1-p=q$. But here, we also assume the ``space''  between consecutive
+nucleotides can contain a deletion with probability $\delta$.
+
+A deletion adjacent to a substitution is irrelevant because it does not
+modify the error-free intervals in any way, but it interrupts an
+error-free interval when located between two correct calls. For this
+reason, we consider that deletions exist only between correct calls,
+simplifying the problem without loss of generality.
+Figure~\ref{fig:deletions} shows the transition probabilities between
+errors and correct calls.
+
 
 \begin{figure}[h]
 \centering
@@ -1105,7 +1122,7 @@ reads as
 
 \begin{equation}
 \label{eq:Sdel}
-S(z) = \frac{1+(1-\delta)F_d(z)}
+R(z) = \frac{1+(1-\delta)F_d(z)}
   {1-pz - \big(pz(1-\delta) + \delta\big)F_d(z)}.
 \end{equation}
 
@@ -1155,18 +1172,18 @@ out of the constant $C$ in expressions (\ref{eq:Cp}) and (\ref{eq:Cpd}).
 
 \begin{example}
 Let us approximate the probablity that a read of size $k = 100$ is
-seedless for $d=17$ and for substitution and deletion rates $p = 0.05$ and
-$\delta = 0.15$, respectively. In order to find the dominant singularity of
-$S$, we need to solve the equation $1-pz - \big(pz(1-\delta) +
-\delta\big)\big(qz+(1-\delta)(qz)^2 + \ldots +
-(1-\delta)^{15}(qz)^{16}\big) = 0$. We rewrite it as $1-pz -
-\big(pz(1-\delta)+\delta\big)(qz-(1-\delta)^{16}(qz)^{17}) /
-(1-(1-\delta)qz) = 0$ and solve it numerically with the Newton-Raphson
-method, yielding $z_1 \approx 1.006705$. Substituting this value in
-(\ref{eq:Cpd}) yields $C \approx 1.088876$, so the probability that a read
-contains no seed is approximately $1.088876 / 1.006705^{100} \approx
-0.558141$. For comparison, performing 1,000,000 random simulations gives
-an estimate in the range...
+seedless for $d=17$, $p = 0.05$ and $\delta = 0.15$, respectively.
+In order to find the dominant singularity of $S$ expressed as
+(\ref{eq:Sdel}), we need to solve the equation $1-0.05z - \big(0.0425z +
+0.15\big) \big(0.95z+0.85(0.95z)^2 + \ldots + 0.85^{15}(0.95z)^{16}\big) =
+0$. We write it as $1-0.05z - \big(0.0425z + 0.15)
+(0.95z-0.85^{16}(0.95z)^{17}) / (1-0.8075z) = 0$ and use bisection to
+solve it, yielding $z_1 \approx 1.006705$. Now substituting the obtained
+value in (\ref{eq:Cpd}) gives $C \approx 1.088876$, so the probability
+that a read contains no seed is approximately $1.088876 / 1.006705^{100}
+\approx 0.558141$. For comparison, a 99\% confidence interval obtained by
+performing 10 billion random simulations is $0.55813-0.55816$.
+% The magic number is 5581417733 out of 10 billion.
 \end{example}
 
 \begin{figure}[h]
