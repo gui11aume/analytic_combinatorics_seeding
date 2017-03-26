@@ -19,10 +19,10 @@
 
 \title{Analytic combinatorics meets bioinformatics I: applications to
 seeding methods}
-%\author{
-%\textsc{Guillaume Filion & Eduard Valera Zorita} \\ [1ex]
-%\normalsize CRG, Barcelona
-%}
+\author{
+\textsc{Guillaume Filion and Eduard Valera Zorita} \\ [1ex]
+\normalsize CRG, Barcelona
+}
 \date{\today}
 
 %---------------------------------------------------------------
@@ -692,45 +692,16 @@ theorems to extract coefficients asymptotics.
 \section{Exact seeding}
 
 From the eperimental point of view, a sequencing read is the result of an
-assay on some molecule of a nucleic acid. The output of the assy is the
+assay on some molecule of a nucleic acid. The output of the assay is the
 decoded sequence of monomers that compose the molecule. From the formal
-point of view, a read is a word composed of symbols.
+point of view, a read is a finite sequence of symbols.
 
-The focus here is not the sequence of nucleotides of a molecule or a read,
-but whether the decoded sequence contains errors. The symbols we will
-manipulate therefore represent the different errors typically found in
-sequencing reads: substitutions, deletions and insertions.
-
-To introduce the concepts progressively, we first describe simplified
-models where some types of errors are disallowed. The strategy is the same
-in all the models: we exhibit the generating functions of simple ojects
-called intervals, which we arrange together according to a set of rules
-specified by a composition matrix.
-
-\begin{definition}
-\label{def:interval}
-An interval is a nonempty sequence of identical symbols.
-\end{definition}
-
-\begin{definition}
-A composition matrix is
-\end{definition}
-
-
-
-\begin{definition}
-\label{def:seed}
-An exact $d$-seed is an error-free interval of size at least $d$.
-\end{definition}
-
-\begin{definition}
-\label{def:symbols}
-Let $\Sigma$ be the alphabet $\{h, m\}$, where $h$ stands for
-``hit'', and $m$ stands for ``miss''.
-\end{definition}
-
-Every sequencing read has a unique decomposition in intervals of maximum
-length. This decomposition will allow us to encode the reads as...
+The focus here is not the nucleotide sequence \textit{per se}, but whether
+the symbols are correct. We picture a read as a sequence of symbols
+representing the different sequencing error, namely substitutions,
+deletions and insertions, plus a symbol for no error.
+Figure~\ref{fig:sketchseed} shows the structure of reads for the seeding
+problem.
 
 \begin{figure}[h]
 \centering
@@ -745,6 +716,42 @@ example). However error-free intervals have size at least $1$, so two
 error-only intervals cannot be contiguous.}
 \label{fig:sketchseed}
 \end{figure}
+
+Error-free stretches are particularly important because they faithfully
+represent the molecule that was sequenced. If they are long, it is
+relatively easy to identify the molecule based on the decoded sequence
+because the information content is high, but if they are short, it usually
+proves more difficult. For instance, modern mapping algorithms are based
+on exact searches, using either hash tables or indexes based on the
+Burrows-Wheeler transform, so error-free stretches directly influence the
+performance of the alrogithm.
+
+In what follows, the feature of interest is the size of the longest
+error-free stretch. To facilitate the discussion, we need to introduce
+some terms that will be used throughout.
+
+\begin{definition}
+\label{def:interval}
+An error-free interval is a nonempty sequence of correct calls of maximum
+size.
+\end{definition}
+
+In other words, an error-free interval contains no error, and it is
+flanked by either an error, or by the end of the read. It is important to
+highlight that error-free intervals should really be called ``maximal
+error-free intervals''. We dropped ``maximal'' for simplicity because we
+have no use for non maximal error-free intervals. In the read shown in
+figure~\ref{fig:sketchseed}, the leftmost error-free interval has size
+$3$, the next has size $1$, the next has size $3$ and the next has size
+$4$.
+
+\begin{definition}
+\label{def:seed}
+An exact $d$-seed is an error-free interval of size at least $d$.
+\end{definition}
+
+In what follows, we will refer to a $d$-seed as simply a ``seed''
+whenever the value of $d$ is clear from the context or irrelevant.
 
 Figure~\ref{fig:sketchseed} gives a graphical representation.  It is clear
 that a read can be segmented in intervals of different nature.  Error-only
@@ -772,7 +779,6 @@ the reference genome). If all the error-free intervals of the read are
 shorter than the seeds, then no hit will be found. It is thus useful to
 study the distribution of the longest error-free interval of a read.
 
-
 We will consider that the integer $d$ is fixed, and we refer to $d$-seeds
 as seeds most of the time. We will also call ``seedless'' the reads that
 contain no seed. This qualification also depends on a certain value of
@@ -789,6 +795,14 @@ the expressions of $R(z)$ and $S(z)$, and extract their coefficients.
 This, in a nutshell, is the standard analytic combinatorics approach. We
 will see below that in general we cannot obtain exact solutions, but we
 can get very accurate asymptotic approximations.
+
+To introduce the concepts progressively, we first describe simplified
+models where some types of errors are disallowed. The strategy is the same
+in all the models: we exhibit the generating functions of simple ojects
+called intervals, which we arrange together according to a set of rules
+specified by a composition matrix.
+
+
 
 
 
@@ -813,18 +827,20 @@ This is some text.}
 \end{figure}
 
 With these assumptions, the weighted generating function of mismatches is
-$pz$ and that of correct nucleotides is $qz$, where $q=1-p$. The
-weighted generating function of error-free intervals comes as
+$pz$ and that of correct call is $qz$, where $q=1-p$. Since 
+error-free intervals are nonempty sequences of correct calls, their
+weighted generating function is simply
 
 \begin{equation}
-F(z) = qz + (qz)^2 + (qz)^2 + \ldots = \frac{qz}{1-qz}.
+\label{eq:Fsub}
+F(z) = qz + (qz)^2 + (qz)^3 + \ldots = \frac{qz}{1-qz}.
 \end{equation}
 
 An error-free interval cannot follow another error-free interval,
 otherwise one of them could be extended. So an error-free interval must be
 followed by a substitution. On the other hand, a substitution can be
-followed by either an error-free interval or another substitution, so the
-transfer matrix is
+followed by either an error-free interval or another substitution. So the
+transfer matrix for the states ``match'' and ``substitution'' is
 
 \begin{equation*}
 M(z) = \left(
@@ -837,7 +853,8 @@ F(z) & pz
 
 To find the weighted generating function of reads from
 proposition~\ref{th:TM2WGF}, we need to find the inverse of $I-M(z)$.
-Using the elementary rules of algebra, we find
+Since $M(z)$ is a $2 \times 2$ matrix, this is straightforward and we
+obtain
 
 \begin{equation*}
 M_*(z) = (I-M(z))^{-1}=
@@ -851,10 +868,10 @@ F(z) & 1
 \end{equation*}
 
 \noindent
-where $\lambda(z) = 1-pz(1+F(z))$ is the determinant of $I-M(z)$.
-Applying proposition~\ref{th:TM2WGF} with $U(z)$ the row vector equal to
-$F(z), pz$ and $V$ the column vector equal to $(1,1)$, the weighted
-generating function of reads comes as
+where $\lambda(z) = 1-pz(1+F(z))$ is the determinant of $I-M(z)$. Applying
+proposition~\ref{th:TM2WGF} with $U(z)$ equal to the row vector $(F(z),
+pz)$ and $V$ the column vector equal to $(1,1)$, the weighted generating
+function of reads is
 
 \begin{equation}
 \label{eq:Ssub}
@@ -863,33 +880,36 @@ R(z) = 1 + U(z) \cdot M_*(z) \cdot V =
 \end{equation}
 
 Since $1/(1-z) = 1+z+z^2 + \ldots$, this means that the total weight of
-reads of size $k$ is equal to $1$ for every finite $k$.
+reads of size $k$ is equal to $1$ for every finite $k$. This is convenient
+because the probability that a read is seedless is the total weight of
+seedless reads divided by the total weight of reads, which in this case is
+simply equal to the total weight of seedless reads.
 
-\begin{equation*}
-F_d(z) = qz + (qz)^2 + \ldots + (qz)^{d-1}.
-\end{equation*}
-
-Substituting this in expression (\ref{eq:Ssub}), we now obtain the
-weighted generating function of seedless reads as
+To find the weighted generating function of seedless reads, we need to
+limit error-free intervals to a maximum size of $d-1$, \textit{i.e.} to
+replace $F(z)$ by its truncation $F_d(z) = qz + (qz)^2 + \ldots
++ (qz)^{d-1}$. We obtain
 
 \begin{equation}
 \label{eq:Sp}
-S(z) = \frac{1+F_d(z)}{1-pz(1+F_d(z))} =
-\frac{1+qz + \ldots + (qz)^{d-1}}{1-pz(1+qz + \ldots +
-(qz)^{d-1})}.
+S(z) = \frac{1+F_d(z)}{1-pz\big( 1+F_d(z) \big)} =
+\frac{1+qz + \ldots + (qz)^{d-1}}{1-pz \big(1+qz + \ldots +
+(qz)^{d-1} \big)}.
 \end{equation}
 
 The task is now to extract the coefficient of $z^k$ in the series
-expansion of $S(z)$. These coefficients have no known explicit expression.
+expansion of expression (\ref{eq:Sp}). Instead of the exact solution, we
+look for an asymptotic estimate using proposition~\ref{th:ass}. For this,
+we need to find the singularities of $S(z)$.
 
-Proposition~\ref{th:ass} suggests to find the singularities of $S(z)$. The
-left panel of Figure~\ref{fig:plotQ} shows the values of the denominator
-of $S(x)$ with $p=0.1$ and $d=17$ for real $x$ around $0$. $S$ has one
-real root greater than $1$.  The remaining singularities of $S$ are
-complex and they seem to be evenly spaced on the same circle, as can be
-seen on the right panel of Figure~\ref{fig:plotQ}. This is only a visual
-impression. In fact the singularities are not exactly on the same circle
-and their rotation angles are not exactly regular.
+To higlight some general features of the problem, we start with a concrete
+case. The left panel of Figure~\ref{fig:plotQ} shows the values of the
+denominator of $S(x)$ with $p=0.1$ and $d=17$ for real $x$ around $0$. $S$
+has one real root greater than $1$.  The remaining singularities of $S$
+are complex and they seem to be evenly spaced on the same circle, as can
+be seen on the right panel of Figure~\ref{fig:plotQ}.  This is only a
+visual impression.  In fact the singularities are not exactly on the same
+circle and their rotation angles are not exactly regular.
 
 \begin{figure}[h]
 \centering
@@ -908,9 +928,10 @@ slightly closer to the origin.}
 \end{figure}
 
 It is fortunate that the dominant root of $S$ is a real number because we
-can use efficient numerical methods to approximate it. The following
-proposition shows that this is no accident: the dominant singularity of
-$S$ is always a real positive number greater than $1$.
+can use efficient numerical methods to approximate it (\textit{e.g.}
+bisection or the Newton-Raphson method). The following proposition shows
+that this is no accident: the dominant singularity of $S$ is always a real
+positive number greater than $1$.
 
 \begin{proposition}
 \label{th:roots}
@@ -930,41 +951,40 @@ $Q(1) = q^d > 0$ and $\lim_{x\rightarrow \infty} Q(x) = -\infty$, $Q$
 vanishes for a real number greater than $1$.
 
 Third, we show that this is the root with smallest modulus.  Express the
-complex roots of $Q$ as $re^{i\theta}$. They satisfy the equation
+complex roots of $Q$ as $Re^{i\theta}$. They satisfy the equation
 
 \begin{equation*}
-1-pre^{i\theta}\frac{1-q^dr^de^{id\theta}}{1-qre^{i\theta}} = 0,
-re^{i\theta} \neq \frac{1}{q}.
+1-pRe^{i\theta}\frac{1-q^dR^de^{id\theta}}{1-qRe^{i\theta}} = 0,
+Re^{i\theta} \neq \frac{1}{q}.
 \end{equation*}
 
-Multiplying through by $1-qre^{i\theta}$, we obtain an equation of which
+Multiplying through by $1-qRe^{i\theta}$, we obtain an equation of which
 we separate the real and the imaginary parts to obtain
 
 \begin{equation*}
 \left\{
 \begin{array}{ll}
-r \cos (\theta) -1 = pq^dr^{d+1} \cos \left( (d+1) \theta) \right) \\
-r \sin (\theta) = pq^dr^{d+1} \sin \left( (d+1) \theta) \right)
+R \cos (\theta) -1 = pq^dR^{d+1} \cos \left( (d+1) \theta) \right) \\
+R \sin (\theta) = pq^dR^{d+1} \sin \left( (d+1) \theta) \right)
 \end{array}
-\right. re^{i\theta} \neq \frac{1}{q}.
+\right. Re^{i\theta} \neq \frac{1}{q}.
 \end{equation*}
 
 Squaring and summing, we obtain the following equation
 
 \begin{equation*}
-r^2 = (pq^dr^{d+1})^2 + 2r \cos(\theta) -1.
+R^2 = (pq^dR^{d+1})^2 + 2R \cos(\theta) -1.
 \end{equation*}
 
-Since $r > 0$, the solution of this equation is minimal when
-$2r\cos(\theta)$ is maximal, \textit{i.e.} when $\theta = 0$. In other
+Since $R > 0$, the solution of this equation is minimal when
+$2R\cos(\theta)$ is maximal, \textit{i.e.} when $\theta = 0$. In other
 words, the root with smallest modulus is a positive real number. We have
 seen above that there exsists exactly one and that it is greater than $1$.
 \end{proof}
 
-
-We can now have all the tools to approximate the coefficients of $S(z)$
-using proposition~\ref{th:ass} and thus obtain the approximate probability
-that a read contains no seed.
+We now have all the tools to approximate the coefficients of $S(z)$ using
+proposition~\ref{th:ass} and thus obtain the approximate probability that
+a read contains no seed.
 
 \begin{proposition}
 \label{th:p}
@@ -988,15 +1008,15 @@ C =\frac{(1-qz_1)^2}{p^2\left( 1 + d(qz_1)^{d+1} - (d+1)(qz_1)^d
 \end{proposition}
 
 \begin{proof}
-Apply proposition~\ref{th:ass} and proposition~\ref{th:roots} to $S(z)$
-and also use the fact that $1+qz_1+\ldots+(qz_1)^{d-1} = 1/pz_1$.
+Apply propositions~\ref{th:ass} and \ref{th:roots}, together with the fact
+that $1+qz_1+\ldots+(qz_1)^{d-1} = 1/pz_1$.
 \end{proof}
 
 We now illustrate proposition~\ref{th:p} with a concrete example
 explaining how the calculations are done in practice.
 
 \begin{example}
-\label{ex:num}
+\label{ex:num1}
 Let us approximate the probability that a read of size $k=100$ is seedless
 for $d=17$ and for a substitution rate $p=0.1$. To find the dominant
 singularity of $S$, we need to solve
@@ -1009,13 +1029,6 @@ read contains no seed is approximately $1.433681 / 1.0268856^{102} \approx
 performing 10 billion random simulations is $0.09575-0.09577$
 % The magic number is 957598614 seed-containing out of 10 billion.
 \end{example}
-
-The demonstration of proposition~\ref{th:ass} shows that the analytic
-combinatorics estimate converges exponentially as $k$ increases because
-the dominant singularity has multiplicity $1$. The numerical estimates are
-thus close to the exact values, as illustrated in example~\ref{ex:num}.
-Figure~\ref{fig:simulp} shows this on more comprehensive example
-with longer reads and higher probability of error $p$.
 
 \begin{figure}[h]
 \centering
@@ -1048,38 +1061,47 @@ substitutions. In order to model more complex behaviors, we need to
 distinguish the different types of errors.
 
 To not jump too fast into the problem, we will first focus on the
-relatively unrealistic case where errors can be deletions or
-susbtitutions. As in the case of uniform substitutions, we assume that
-every call is false with a probability $p$ and true with a probability
-$1-p=q$. But here, we also assume the ``space''  between consecutive
-nucleotides can contain a deletion with probability $\delta$.
+somewhat unrealistic case where errors can be deletions or
+susbtitutions, but not insertions. As in the case of uniform
+substitutions, we assume that every call is false with a probability $p$
+and true with a probability $1-p=q$. But here, we also assume the
+``space''  between consecutive nucleotides can contain a deletion with
+probability $\delta$.
 
 A deletion adjacent to a substitution is irrelevant because it does not
 modify the error-free intervals in any way, but it interrupts an
 error-free interval when located between two correct calls. For this
-reason, we consider that deletions exist only between correct calls,
-simplifying the problem without loss of generality.
-Figure~\ref{fig:deletions} shows the transition probabilities between
-errors and correct calls.
-
+reason, we simplify the problem without loss of generality and assume that
+deletions exist only between correct calls. Figure~\ref{fig:deletions}
+shows the transition probabilities between errors and correct calls.
 
 \begin{figure}[h]
 \centering
 \includegraphics[scale=0.9]{deletions.pdf}
 \caption{\textbf{Substitutions and deletions}. 
-This is some text.}
+Deletions do not have a state of their own because they have size $0$ and
+never ``appear'' in the structure of the read.}
 \label{fig:deletions}
 \end{figure}
 
-With this formalism, the weighted generating function of an error-only
-interval of size $0$ is simply $\delta$. Whether the ``spaces'' between
-the nucleotides of error-only intervals of size $k > 0$ contain deletions
-or not is irrelevant. It also does not matter whether the interval starts
-or ends with a deletion, so the weighted generating function of error-only
-interval of size $k>1$ is $p^kz^k$. Finally, the $k-1$ ``spaces'' between
-the nucleotides of an error-free interval of size $k$ must not contain any
-deletion, so the weighted generating function of error-free intervals of
-size $k>1$ is $(1-\delta)^{k-1}(pz)^k$.
+The weighted generating function of error-free intervals of size $1$ is
+simply $qz$. They are either at the beginning of the read or after a
+substitution and in both cases deletions are irrelevant. For an error-free
+interval of size $k$, we must ensure that there is no deletion in the
+$k-1$ ``spaces'' between the nucleotide calls, so the weighted generating
+function is $(1-\delta)^{k-1}(qz)^k$. Summing for all the possible sizes,
+we obtain the weighted generating function of error-free intervals as
+
+\begin{equation}
+\label{eq:Fdel}
+F(z) = qz + (1-\delta)(qz)^2 + (1-\delta)^2(qz)^3 \ldots =
+\frac{qz}{1-(1-\delta)qz}.
+\end{equation}
+
+The only difference with the transwer matrix of
+section~\ref{sec:substitutions} is that an error-free interval can follow
+another error-free interval, provided there is a deletion between them.
+Since the weight of this deletion is $\delta$, the transfer matrix is
 
 \begin{equation*}
 M(z) = \left(
@@ -1090,6 +1112,9 @@ F(z)        & pz
 \right).
 \end{equation*}
 
+To apply proposition~\ref{th:TM2WGF} we need to invert $I-M(z)$, which is
+straightforward for a $2 \times 2$ matrix. We obtain
+
 \begin{equation*}
 M_*(z) = (I-M(z))^{-1}=
 \frac{1}{\lambda(z)}
@@ -1098,12 +1123,16 @@ M_*(z) = (I-M(z))^{-1}=
 1-pz  & pz              \\
 F(z) & 1 -\delta F(z)
 \end{matrix}
-\right)
+\right),
 \end{equation*}
 
 \noindent
 where $\lambda(z) = 1-pz-(pz(1-\delta)+\delta)F(z)$ is the determinant of
 $I-M(z)$.
+
+As in section~\ref{sec:substitutions}, the row vector $U(z)$ of starting
+states is $(F(z), pz)$, and the column vector of end states is $(1,1)$, so
+we obtain the weighted generating function of reads as
 
 \begin{equation}
 \label{eq:Sdel}
@@ -1114,24 +1143,22 @@ S(z) &= 1 + U(z) \cdot M_*(z) \cdot V \\
 \end{split}
 \end{equation}
 
-The weighted generating function of error-free intervals of size less than
-$d$ is $F_d(z) = qz + (1-\delta)(qz)^2 + \ldots +
-(1-\delta)^{d-2}(qz)^{d-1}$.  Substituting this value in equation
-(\ref{eq:Sdel}), we obtain the weighted generating function of seedless
-reads as
+The terms of equation (\ref{eq:Sdel}) cancel out when $F$ is defined as
+(\ref{eq:Fdel}). The result is $1/(1-z) = 1+z +z^2 + \ldots$, which means
+that the total weight of reads of size $k$ is equal to $1$ for every $k
+\geq 0$.
+
+To find the weighted generating function of seedless reads, we need to
+limit error-free intervals to a maximum size of $d-1$, \textit{i.e.} to
+replace $F(z)$ by its truncation $F_d(z) = qz + (1-\delta)(qz)^2 + \ldots
++ (1-\delta)^{d-2}(qz)^{d-1}$. With this definition, the weighted
+generating function of seedless reads is
 
 \begin{equation}
 \label{eq:Sdel}
 R(z) = \frac{1+(1-\delta)F_d(z)}
   {1-pz - \big(pz(1-\delta) + \delta\big)F_d(z)}.
 \end{equation}
-
-\begin{remark}
-Note that when $\delta = 0$, expression (\ref{eq:Sdel}) becomes
-(\ref{eq:Sp}), \textit{i.e.} the model described in
-section~\ref{sec:substitutions} is a special case of the model described
-in this section.
-\end{remark}
 
 Applying proposition~\ref{th:ass} to this expression, we obtain the
 following proposition.
@@ -1155,11 +1182,11 @@ where $z_1$ is the only real positive root of the denominator of $S(z)$,
 \label{eq:Cpd}
 \begin{split}
 C &=
-\frac{ \big(1-(1-\delta)(1-p)z\big)^2 }
-{ \big((p+q\delta)z  -\gamma^*(1-\delta)^{d-1}(qz)^d \big)
-\big(\delta+(1-\delta)pz\big) }, \\
-\gamma^* &= d\delta -(1-\delta)\big((d-1)\delta-p((d-1)\delta+d+1)\big)z
-- d(1-\delta)^2pqz^2.
+\frac{ \big(1-(1-\delta)(1-p)z_1\big)^2 }
+{ \big((p+q\delta)z_1  -\gamma^*(1-\delta)^{d-1}(qz_1)^d \big)
+\big(\delta+(1-\delta)pz_1\big) }, \\
+\gamma^* &= d\delta -(1-\delta)\big((d-1)\delta-p((d-1)\delta+d+1)\big)z_1
+- d(1-\delta)^2pqz_1^2.
 \end{split}
 \end{equation}
 \end{proposition}
@@ -1171,6 +1198,7 @@ out of the constant $C$ in expressions (\ref{eq:Cp}) and (\ref{eq:Cpd}).
 \end{remark}
 
 \begin{example}
+\label{ex:num2}
 Let us approximate the probablity that a read of size $k = 100$ is
 seedless for $d=17$, $p = 0.05$ and $\delta = 0.15$, respectively.
 In order to find the dominant singularity of $S$ expressed as
@@ -1207,28 +1235,47 @@ examples shown here.}
 \subsection{Substitutions, deletions and insertions}
 \label{subsec:sdi}
 
-Introducing insertions brings additional difficulties because they usually
-come in bursts. This is also the case of deletions, but we could neglect
-it because this does not affect the size of the interval (all deletions
-are error-only intervals of size $0$).
+Introducing insertions brings two additional difficulties. The first is
+that substitution is indistinguishable from an insertion followed by a
+deletion (or a deletion followed by an insertion). By convention, we will
+count all these cases as substitutions. This entails that a deletion can
+never be found next to an insertion. The second difficulty is that
+insertions usually come in bursts. This is also the case of deletions, but
+we could neglect it because this does not affect the size of the interval
+(all deletions have size $0$). 
+
+We still denote the probability of substitution as $p$ and the probability
+of deletion $\delta$. To model insertion bursts, we need to assign a
+probability $r$ to the first insertion, and a probability $\tilde{r} > r$
+to all subsequent insertions of the burst. We will still denote the
+probability of a correct call as $q$, but here $q = 1-p-r$.  An insertion
+burst stops with probability $1-\tilde{r}$ at each position, sandt is
+followed by either a match or a substitution with probability $1-p/(1-r) =
+q/(1-r)$ and $p/(1-r)$, respectively. Figure~\ref{fig:insertions} shows
+the transition probabilities between matches, substitutions and
+insertions.
 
 \begin{figure}[h]
 \centering
 \includegraphics[scale=0.9]{insertions.pdf}
 \caption{\textbf{Substitutions, deletions and insertions}.
-This is some text.}
+.}
 \label{fig:insertions}
 \end{figure}
 
-To model insertion bursts, we need to assign a probability $r$ to the
-first insertion, and a probability $\tilde{r} > r$ to all subsequent
-insertions of the burst. The burst stops with probability $1-\tilde{r}$ at
-each decoded nucleotide.
+As in section\ref{sec:deletions}, we must ensure that there is no deletion
+between any two positions of an error-free interval. The weighted
+generating function thus comes as
 
 \begin{equation*}
 F(z) = qz + (1-\delta)(qz)^2 + (1-\delta)^2(qz)^3 \ldots =
 \frac{qz}{1-(1-\delta)qz}.
 \end{equation*}
+
+This expression is the same as in the case of section\ref{sec:deletions},
+but here $q = 1-p-r$ instead of $1-p$. Based on the error model and the
+conventions, the transfer matrix for the states ``match'',
+``substitution'' and ``insertion'' is
 
 \begin{equation*}
 M(z) = \left(
@@ -1240,60 +1287,166 @@ F(z)        & pz      & rz  \\
 \right).
 \end{equation*}
 
-We omit the expression of $M_*(z) = (I-M(z))^{-1}$ because it is fairly
-and we will make no use of it. Up to a factor $1-r$, the determinant of
-$M(z)$ is equal to $\lambda(z) = 1 - a(z) - b(z)F(z)$, where $a(z) =
-r-((p+\tilde{r})r-\tilde{r}-p)z - p(\tilde{r}-r)z^2$ and $b(z) =
-\delta(1-r) - \left((\tilde{r}\delta-(1-\delta)p)(1-r)
--(1-\tilde{r})r\right)z -(1-\delta)p(\tilde{r}-r)z^2$. With these
-definitions, the weighted generating function of 
+The expression of $M_*(z) = (I-M(z))^{-1}$ is omitted because it is
+cumbersome and all we need is the value if $1+U(z)\cdot M_*(z)\cdot V$.
+We still give the determinant of $I-M(z)$ in full because this will be the
+denomiator of the final expression. Up to a factor $1-r$, it is equal to
+$1-a(z)-b(z)F(z)$, where
+
+\begin{gather}
+\label{eq:a+b}
+a(z) = r-\big((p+\tilde{r})r-\tilde{r}-p\big)z
+- p(\tilde{r}-r)z^2\text{, and} \\
+b(z) = \delta(1-r) - \big((\tilde{r}\delta-(1-\delta)p)(1-r)
+-(1-\tilde{r})r\big)z -(1-\delta)p(\tilde{r}-r)z^2.
+\notag
+\end{gather}
+
+Applying proposition~\ref{th:TM2WGF} the weighted generating function of
+reads appears as
 
 \begin{equation}
 \label{eq:Rindel}
 \begin{split}
 R(z) &= 1 + U(z) \cdot M_*(z) \cdot V \\
-&= \frac{(1-r)\left( 1-(\tilde{r}-r)z \right)
+&= \frac{(1-r)\big( 1-(\tilde{r}-r)z \big)
 \left(1+(1-\delta)F(z) \right)}{1-a(z)-b(z)F(z)}
 = \frac{1}{1-z}.
 \end{split}
 \end{equation}
 
-Once again, the terms cancel out and we obtain a simple expression where
-all the coefficients are equal to $1$. To find the weighted generating
-function of seedless reads, we replace $F(z)$ in expression
-(\ref{eq:Rindel}) by its truncated version
+Again, the terms cancel out and we obtain the simple expression
+$1/(1-z)$ where all the coefficients are equal to $1$. To find the
+weighted generating function of seedless reads, we replace $F(z)$ in
+expression (\ref{eq:Rindel}) by its truncated version
 
 \begin{equation*}
-F_d(z) = qz + (1-\delta)(qz)^2 + (1-\delta)^2(qz)^3 \ldots +
-(1-\delta)^{d-2}(qz)^{d-1}.
+\begin{split}
+F_d(z) &= qz + (1-\delta)(qz)^2 + (1-\delta)^2(qz)^3 \ldots +
+(1-\delta)^{d-2}(qz)^{d-1} \\
+&= \frac{qz-(1-\delta)^{d-1}(qz)^d}{1-(1-\delta)qz}.
+\end{split}
 \end{equation*}
 
-We obtain the following expression where the terms $a(z)$ and $b(z)$ are
-defined as above
+We obtain the following expression
 
 \begin{equation}
 \label{eq:Sindel}
-S(z) = \frac{(1-r)\left( 1-(\tilde{r}-r)z \right) \left(1+(1-\delta)F_d(z)
-\right)}{1-a(z)-b(z)F_d(z)}.
+S(z) = \frac{(1-r)\big( 1-(\tilde{r}-r)z \big) \left(1+(1-\delta)F_d(z)
+\right)}{1-a(z)-b(z)F_d(z)},
 \end{equation}
+
+\noindent
+where the terms $a(z)$ and $b(z)$ are defined in (\ref{eq:a+b}).
+
+\begin{proposition}
+\label{th:pins}
+The probability that a read of size $k$ is seedless is asymptotically
+equivalent to
+
+\begin{equation*}
+\frac{C}{z_1^{k+1}},
+\end{equation*}
+
+\noindent
+where $z_1$ is the only real positive root of the polynomial
+$1-a(z)-b(z)F_d(z) = 1-a(z)-b(z)\big(qz+(1-\delta)(qz)^2 + \ldots +
+(1-\delta)^{d-2}(qz)^{d-1}\big)$, and $C = \alpha / \beta$, with
+
+\begin{equation*}
+\alpha = (1-r)(1-(\tilde{r}-r)z_1)
+   \frac{1-\big((1-\delta)(qz)\big)^d}{1-(1-\delta)qz}
+\end{equation*}
+
+\noindent
+and
+\begin{equation*}
+\begin{split}
+\beta = a'(z_1) &- \left( b'(z_1) +
+\frac{(1-\delta)q}{1-(1-\delta)qz}\right)
+\frac{qz-(1-\delta)^{d-1}(qz)^d}{1-(1-\delta)qz} \\
+&+b(z_1) \frac{q-d(1-\delta)^{d-1}q^dz^{d-1}}{1-(1-\delta)qz}.
+\end{split}
+\end{equation*}
+\end{proposition}
+
+Note that the constant $C$ above has an explicit expression for a given
+value of $z_1$, but it is relatively cumbersome, so it is more useful to
+show how to compute it. We now show how to apply propostion~\ref{th:pins} in a
+practical case.
+
+\begin{example}
+\label{ex:num3}
+Let us approximate the probability that a read of size $k=100$ is seedless
+for $d=17$ for $p=0.05$, $\delta=0.15$, $r=0.05$ and $\tilde{r}=0.45$.
+With these values, $a(z) = 0.05 +0.475z -0.02z^2$ and $b(z) = 0.1425 +
+0.00375z-0.017z^2$. We need to solve $0.95-0.475z+0.02z^2 - (0.1425
++0.00375z-0.017z^2)(0.9z+0.85(0.9z)^2+\ldots+0.85^{15}(0.9z)^{16}) = 0$.
+We rewrite the equation as $0.95-0.475z+0.02z^2 - (0.1425
++0.00375z-0.017z^2)(0.9z-0.85^{15}(0.9z)^{16})/(1-0.765z) = 0$ and use
+bisection to solve it numerically, yielding $z_1 \approx 1.00295617$.
+Using proposition~\ref{th:pins}, we obtain $C \approx 1.042504$, so the
+probability that a read contains no seed is approximately $1.042504 /
+1.00295617^{101} \approx 0.773749$. For comparison, a 99\% confidence
+interval obtained by performing 10 billion random simulations is
+$0.09575-0.09577$.
+% The magic number is 
+\end{example}
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.445]{simulpins.pdf}
+\caption{\textbf{Accuracy of the estimates}. The analytic combinatorics
+estimates are compared to random simulations for $d=17$, $p=0.05$ 
+$\delta=0.15$, $\tilde{r} = 0.45$ and $r = 0.04$, or $r = 0.05$ or $r =
+0.06$. Shown on both panels are the probablities that a read of given size
+contains a seed, either estimated by 10,000,000 random simulations (dots),
+or by the method described above (lines). The difference never exceeds
+0.0002 on the examples shown here.}
+\label{fig:simulpins}
+\end{figure}
+
 
 \begin{remark}
 Note that when $r = \tilde{r} = 0$, $a(z) = pz$ and $b(z) = pz(1-\delta) +
-\delta$. Expression (\ref{eq:Sindel}) becomes
+\delta$, so expression (\ref{eq:Sindel}) becomes
 
 \begin{equation*}
-S(z) = \frac{1 + (1-\delta)F_d(z)}{1-pz-(pz(1-\delta+\delta))F_d(z)}.
+S(z) = \frac{1 + (1-\delta)F_d(z)}{1-pz-(pz(1-\delta)+\delta))F_d(z)}.
 \end{equation*}
 
 This is expression (\ref{eq:Sdel}), \textit{i.e.} the model described in
-section~\ref{sec:deletions} is a special case of the model described in
-this section.
+section~\ref{sec:deletions}. When we also have $\delta = 0$, this
+expression further simplifies to
+
+\begin{equation*}
+S(z) = \frac{1 + F_d(z)}{1-pz(1 + F_d(z))}.
+\end{equation*}
+
+This is expression (\ref{eq:Sp}), \textit{i.e.} the model described in
+section~\ref{sec:substitutions}. In other words, the error models
+described previously are special cases of this one.
 \end{remark}
 
 
 
+%%%%%%%%%%%%%%%%%%%% Empirical error models %%%%%%%%%%%%%%%%%%
 
+\subsection{Empirical error models}
+\label{subsec:empirical}
 
+In the theory developed here, the only variable of interest is the
+probability distribution of the error intervals. Indeed, the only reason
+we introduced different kinds of errors is because they have different
+probabilities and different sizes, but the nature of the error is
+irrelevant.
+
+If we have empirical probabilities $p_0, p_1, \ldots, p_n$ such that $p_k$
+is the probability that the error pach has size $k$, we can directly write
+the weighted generating function of error intervals as $E(z) = p_0 + p_1z
++ p_2z^2 + \ldots + p_nz^n$. If the terms are estimated by averaging
+observations, this function is a polynomial and $n$ is the size of largest
+observed error patch.
 
 
 
