@@ -366,7 +366,8 @@ Ordering the weighted generating functions of nucleotides alphabetically
 as $(A(z), C(z), G(z), T(z))$, the transfer matrix of sequences without
 \texttt{CG} can be written as
 
-\begin{equation*}
+\begin{equation}
+\label{eq:Mz_CG}
 M(z) = \left[
 \begin{matrix}
 A(z) & C(z) & G(Z) & T(z) \\
@@ -382,10 +383,30 @@ q & p & p & q \\
 q & p & p & q
 \end{matrix}
 \right].
-\end{equation*}
+\end{equation}
 \end{example}
 
+A transfer matrices is closely related to the adjacency matrix of some
+directed graph. The nodes of the graph are the combinatorial objects and
+the edges are the permitted transitions. Figure~\ref{fig:CG_transtions}
+shows the graph assciated with the tansfer matrix above. The nodes are the
+nucleotides. Only the \texttt{C} to \texttt{G} transition is forbidden.
+The transfer matrix carries more information because it encodes the size
+and weight of the objects through their weighted generating function.
 
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.9]{CG_transitions.pdf}
+\caption{\textbf{Graph of the transfer matrix}. The transfer matrix shown
+in (\ref{eq:Mz_CG}) is related to a transition graph between
+nucleotides, where all the transitions are allowed, except \texttt{C} to
+\texttt{G}. A sequence without \texttt{CG} can be seen as a walk on this
+graph.}
+\label{fig:CG_transtions}
+\end{figure}
+
+The following two propositions show why transfer matrices are useful to
+find the weighted generating function of combinatorial sequences.
 
 \begin{proposition}
 \label{th:transfermatrices}
@@ -783,9 +804,9 @@ error-free stretch. To facilitate the discussion, we need to introduce
 some terms that will be used throughout.
 
 \begin{definition}
-\label{def:interval}
-An error-free interval is a nonempty sequence of correct calls of maximum
-size.
+\label{def:error-free-interval}
+An error-free interval is a nonempty sequence of correct calls that cannot
+be extended left or right.
 \end{definition}
 
 In other words, an error-free interval contains no error, and it is
@@ -942,15 +963,13 @@ circle and their rotation angles are not exactly regular.
 \centering
 \includegraphics[scale=0.4]{singularityS.pdf}
 \caption{\textbf{Singularities of $S$}. $Q(z)$ denotes the
-denominator of $S(z)$ from expression (\ref{eq:Sp}). \textit{Left}: real
-representation of $Q$. The bold line represents the value of $Q(z)$ for
-$p=0.01$ and $d=17$. The root with smallest modulus appears in the
-interval $(1, 1.5)$. \textit{Right}: complex representation of $Q$. Shown
-is the complex plane around the origin. The darker the dot, the higher the
-value of $1/Q(z)$ at the corresponding value of $z$. Sixteen singularities
-of $S$ lie close to a circle. The remaining seventeenth is the one shown
-on the left panel and it it is the dominant singularity because it lies
-slightly closer to the origin.}
+denominator of $S(z)$ from expression (\ref{eq:Sp}) with $p=0.01$ and
+$d=17$. \textit{Left}: The value of $Q(z)$ is represented for $z$ real by
+the bold line. \textit{Right}: The value of $|1/Q(z)|$ is represented for
+$z$ complex by the heat map on the complex plane. Darker pixels correspond
+to higher values. Sixteen singularities of $S$ lie close to a circle. The
+remaining seventeenth is the one shown on the left panel. It is the
+dominant singularity because it is the closest to the origin.}
 \label{fig:plotQ}
 \end{figure}
 
@@ -1024,19 +1043,18 @@ asymptotically equivalent to
 
 \noindent
 where $z_1$ is the only real positive root of the denominator of $S(z)$,
-\textit{i.e.} the root of $1-pz(1+qz+\ldots+(qz)^{d-1})$ and
+\textit{i.e.} the root of $1-pz(1+qz+\ldots+(qz)^{d-1})$, and where
 
 \begin{equation}
 \label{eq:Cp}
 C =\frac{(1-qz_1)^2}{p^2\left( 1 + d(qz_1)^{d+1} - (d+1)(qz_1)^d
 \right)}.
 \end{equation}
-
 \end{proposition}
 
 \begin{proof}
 Apply propositions~\ref{th:ass} and \ref{th:roots}, together with the fact
-that $1+qz_1+\ldots+(qz_1)^{d-1} = 1/pz_1$.
+that for any singularity $z$ we have $1+qz+\ldots+(qz)^{d-1} = 1/pz$.
 \end{proof}
 
 We now illustrate proposition~\ref{th:p} with a concrete example
@@ -1053,19 +1071,21 @@ it numerically, yielding $z_1 \approx 1.0268856$. Substituting this value
 in (\ref{eq:Cp}) yields $C \approx 1.433681$, so the probability that a
 read contains no seed is approximately $1.433681 / 1.0268856^{102} \approx
 0.095763$. For comparison, a 99\% confidence interval obtained by
-performing 10 billion random simulations is $0.09575-0.09577$
-% The magic number is 957598614 seed-containing out of 10 billion.
+performing 10 billion random simulations is $0.09575-0.09577$.
+% The magic number is 957598614 out of 10 billion.
 \end{example}
 
 \begin{figure}[h]
 \centering
 \includegraphics[scale=0.445]{simulp.pdf}
-\caption{\textbf{Accuracy of the estimates}. The analytic combinatorics
-estimates are compared to random simulations for $d=17$ and $p=0.08$,
-$p=0.10$ or $p=0.12$. Shown on both panels are the probablities that a
-read of given size contains a seed, either estimated by 10,000,000 random
-simulations (dots), or by the method described above (lines). The
-difference never exceeds 0.00028 on the examples shown here.}
+\caption{\textbf{Example estimates for substitutions only}. The analytic
+combinatorics estimates of proposition~\ref{th:p} are benchmarked against
+random simulations. Shown on both panels are the probablities that a read
+of given size contains a seed, either estimated by 10,000,000 random
+simulations (dots), or by the method described above (lines). The curves
+are drawn for $d=17$ and $p=0.08$, $p=0.10$ or $p=0.12$ (from top to
+bottom). The difference never exceeds 0.0003 on the examples shown here,
+which is the expected variation for this number of random trials.}
 \label{fig:simulp}
 \end{figure}
 
@@ -1249,13 +1269,15 @@ performing 10 billion random simulations is $0.55813-0.55816$.
 \begin{figure}[h]
 \centering
 \includegraphics[scale=0.445]{simulpdel.pdf}
-\caption{\textbf{Accuracy of the estimates}. The analytic combinatorics
-estimates are compared to random simulations for $d=17$, $p=0.05$ and
-$\delta=0.14$ or $\delta=0.15$ or $\delta=0.16$. Shown on both panels are
-the probablities that a read of given size contains a seed, either
-estimated by 10,000,000 random simulations (dots), or by the method
-described above (lines). The difference never exceeds 0.0004 on the
-examples shown here.}
+\caption{\textbf{Example estimates for substitutions and deletions}. The
+analytic combinatorics estimates of proposition~\ref{th:pd} are
+benchmarked against random simulations. Shown on both panels are the
+probablities that a read of given size contains a seed, either estimated
+by 10,000,000 random simulations (dots), or by the method described above
+(lines). The curves are drawn for $d=17$, $p=0.05$ and $\delta=0.14$,
+$\delta=0.15$ or $\delta=0.16$ (from top to bottom). The difference never
+exceeds 0.0003 on the examples shown here, which is the expected variation
+for this number of random trials.}
 \label{fig:simulpdel}
 \end{figure}
 
@@ -1432,14 +1454,17 @@ $0.77373-0.77376$.
 \begin{figure}[h]
 \centering
 \includegraphics[scale=0.445]{simulpins.pdf}
-\caption{\textbf{Accuracy of the estimates}. The analytic combinatorics
-estimates are compared to random simulations for $d=17$, $p=0.05$ 
-$\delta=0.15$, $\tilde{r} = 0.45$ and $r = 0.04$, or $r = 0.05$ or $r =
-0.06$. Shown on both panels are the probablities that a read of given size
-contains a seed, either estimated by 10,000,000 random simulations (dots),
-or by the method described above (lines). The difference never exceeds
-0.0002 on the examples shown here.}
 \label{fig:simulpins}
+\caption{\textbf{Example estimates for substitutions, deletions and
+insertions}. The analytic combinatorics estimates of
+proposition~\ref{th:pins} are benchmarked against random simulations.
+Shown on both panels are the probablities that a read of given size
+contains a seed, either estimated by 10,000,000 random simulations (dots),
+or by the method described above (lines). The curves are drawn for $d=17$,
+$p=0.05$, $\delta=0.15$, $\tilde{r} = 0.45$ and $r=0.04$, $r=0.05$ or
+$r=0.06$ (from top to bottom). The difference never exceeds 0.0002 on the
+examples shown here, which is the expected variation for this number of
+random trials.}
 \end{figure}
 
 
@@ -1477,13 +1502,40 @@ we introduced different kinds of errors is because they have different
 probabilities and different sizes, but the nature of the error is
 irrelevant.
 
+In addition to error-free intervlas, we introduce error-only intervals,
+which will encapsulate the available information about the size of error
+patches. As we will see below, we need to keep error-free intervals and
+deletions separate, so error-only intervals are always considered to be
+nonempty.
+
+\begin{definition}
+\label{def:error-interval}
+An error-only interval is a nonempty sequence of errors that cannot be
+extended left or right.
+\end{definition}
+
 If we have empirical probabilities $p_0, p_1, \ldots, p_n$ such that $p_k$
 is the probability that the error pach has size $k$, we can directly write
-the weighted generating function of error intervals as $E(z) = p_0 + p_1z
-+ p_2z^2 + \ldots + p_nz^n$. If the terms are estimated by averaging
+the weighted generating function of nonempty error intervals as $E(z) =
+p_1z + p_2z^2 + \ldots + p_nz^n$. If the terms are estimated by averaging
 observations, this function is a polynomial and $n$ is the size of largest
 observed error patch.
 
+The weighted generating function of deletions is simply $p_0$. We will set
+$\delta = p_0$ for consistency with the previous sections. We need to keep
+deletions separate from error-only intervals because a read cannot start
+or end with a deletion (there is no way to detect them before the read
+starts or after it finishes). For this reason, we must keep one extra
+state of the transfer matrix for deletions. But we must remember that an
+uninterrupted error patch was either a deletion or an error-only interval,
+so deletions and error-free intervals cannot lie next to each other.
+
+An error-free interval can be followed by an error-only interval or by a
+deletion, but it cannot be followed by another error-free interval. An
+error-only interval can only be followed by an error-free interval.
+Similarly, a deletion can only be followed by an error-free inerval. The
+transfer matrix of the objects ``error-free interval'', ``error-only
+interval'' and ``deletion'' is
 
 \begin{equation*}
 M(z) = \left(
@@ -1495,11 +1547,10 @@ F(z) & 0    & 0
 \right).
 \end{equation*}
 
-There is no way to detect that a deletion happened before or after the
-last nucleotide call, so the sequence may neither start nor end with a
-deletion. Thus, the row vector of initial states $U(z)$ is equal to
-$(F(z), E(z), 0)$ and the column vector $V$ of end states is equal to
-$(1,1,0)$. The general weighted generating function of reads is
+Since the sequence may neither start nor end with a deletion, the row
+vector of start objects $U(z)$ is equal to $(F(z), E(z), 0)$ and the
+column vector $V$ of end objects is equal to $(1,1,0)$. The weighted
+generating function of reads can be expressed in general terms as
 
 \begin{equation}
 \label{eq:Remp_gen}
@@ -1508,7 +1559,7 @@ R(z) = 1 + U(z) \cdot (I-M(z))^{-1} \cdot V =
    {1-F(z)\big(\delta+E(z)\big)}.
 \end{equation}
 
-As before, weighted generating function of error-free intervals is
+As previously, the weighted generating function of error-free intervals is
 $F(z) = qz + (1-\delta)(qz)^2 + (1-\delta)^2(qz)^3 + \ldots =
 qz/(1-(1-\delta)qz)$. Substituting this value in the equation above, we
 obtain
@@ -1520,7 +1571,7 @@ R(z) = \frac{1+E(z)}{1-qz\big(1+E(z)\big)}.
 
 Epxression (\ref{eq:Remp}) is not equal to $1/(1-z)$ because $E(z)$ is in
 general not equal to $pz/(1-pz)$. This means that the total weight of
-reads of size $k$ is not equal to $1$ and that we will need to take this
+reads of size $k$ is not equal to $1$, so we will need to take this
 into account in our approximations. As usual, we will use
 proposition~\ref{th:ass}, implying that we have to find the root with
 smallest modulus of the polynomial $1-qz\big(1+E(z)\big)$.
@@ -1528,7 +1579,7 @@ smallest modulus of the polynomial $1-qz\big(1+E(z)\big)$.
 To find the weighted generating function of seedless reads, we need to
 replace $F(z)$ by its truncation $F_d(z) = qz + (1-\delta)(qz)^2 + \ldots
 + (1-\delta)^{d-2}(qz)^{d-1}$ in expression (\ref{eq:Remp_gen}). The terms
-partially cancel each other and we obtain
+only partially cancel each other and we obtain
 
 \begin{equation}
 \label{eq:Semp}
@@ -1540,7 +1591,7 @@ S(z) = \frac{\big(1+E(z)\big)\big( 1-(1-\delta)^d(qz)^d \big)}
 To estimate the total weight of seedless reads, we need to find the root
 with smallest modulus of $1-qz\big(1+E(z)\big) +
 (1-\delta)^{d-1}(qz)^{d-1}\big(\delta+E(z)\big)$. The solution depends on
-the particular expression of $E(z)$, Even though the process can be
+the particular expression of $E(z)$. Even though the process can be
 automated using proposition~\ref{th:ass}, every case is different and
 we cannot give an explicit formula here.
 
@@ -1582,44 +1633,75 @@ approximately equal to $0.007119 / 0.06271356^{k+1}$.
 \end{example}
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%% Inexact seeding %%%%%%%%%%%%%%%%%%%%%
 \section{Inexact seeding}
 
 We now consider a more challenging problem. The ongoing development of
-algorithms and data structures allows us to use...
+algorithms and data structures makes it possible to search inexact seeds,
+\textit{i.e.} sequences that are very similar but not identical to the
+target. This comes at greater cost than finding exactly similar sequences,
+but it may be worth it because the chances are higher to identify the
+target. By tolerating errors in the seed, one can look for longer seeds,
+which also reduces the false positive rate.
+
+Before showing how to compute the probabilities that a read contains
+an inexact seed, let us roll back to the simplest error model that we have
+see so far, namely substitutions only. Figure~\ref{fig:sketchinexact}
+illustrates graphically the relationship between intervals, substitutions
+and seeds.
 
 \begin{figure}[h]
 \centering
 \includegraphics[scale=0.88]{sketch_inexact_seeding.pdf}
-\caption{\textbf{Structure of reads}.
-Some text.}
+\caption{\textbf{Inexact seeding}. Substitutions (black squares) occur
+uniformly at random within the read. They delimit error-free intervals.
+Inexact seeds (arrows) are the longest stretches of the read that contain
+at most one sbustituttion.}
 \label{fig:sketchinexact}
 
 \end{figure}
 \begin{definition}
 \label{def:seed}
 An inexact $d$-seed is an interval of size at least $d$ that contains at
-most a bustitution and no other error. An exact $d$-seed is an inexact
-$d$-seed, but the converse is not true.
+most a bustitution and no other error.
 \end{definition}
 
-In other words, an inexact seed is either an error-free interval or the
-concatenation of two error-free intervals and a substitution, each with
-total size at least $d$. In this context, a ``seedless'' read will
-designate a read that does not contain any inexact seed.
+In other words, an inexact seed is either an error-free interval of size
+at least $d$, or the concatenation of two error-free intervals and a
+substitution, with total size at least $d$. An exact $d$-seed is an
+inexact $d$-seed, but the converse is not true. In this section, a
+``seedless'' read will designate a read that does not contain any inexact
+seed.
 
 As in the case of exact seeding, we will give a construction of seedless
 reads, find the corresponding weighted generating function and extract the
-asymptotic behavior of the coefficients. The main difference with the
-previous case is that seedless reads are not simple sequences of
-intervals. The error-free intervals on either side of the substitution are
-linked by the constraint that their total size cannot be larger than $d-2$
-(the read must not contain a inexact $d$-seed, and the substitution has
-size $1$).
+asymptotic behavior of the coefficients. Transfer matrices will come in
+handy to express the dependence between the error-free intervals on either
+side of a substitution. Because the read is seedless, the sum of the sizes
+of the intervals on the left hand side and on the right hand side must not
+exceed $d-2$ (the substitution adds $1$ to the size of the seed).
 
-The transfer matrix is
+In other words, an error-free interval of size $k$ can be followed by an
+error-free interval of size $0$, or size $1$, or size $2$, \ldots, or size
+$d-k-2$. These intervals have respective weighted generating function $1$,
+$qz$, $(qz)^2$, \ldots, $(qz)^{d-k-2}$, so the transfer matrix is
 
 \begin{equation}
-M = pz\left[
+M(z) = pz\left[
 \begin{matrix}
 1 & qz  & (qz)^2 & (qz)^3 & \ldots & (qz)^{d-3} & (qz)^{d-2} \\
 1 & qz  & (qz)^2 & (qz)^3 & \ldots & (qz)^{d-3} & 0          \\
@@ -1629,15 +1711,74 @@ M = pz\left[
 1 & qz  & 0      & 0      & \ldots & 0          & 0          \\
 1 & 0   & 0      & 0      & \ldots & 0          & 0
 \end{matrix}
-\right]
+\right].
 \end{equation}
 
-The term at position $(i,j)$ in the matrix $M^n$ is the generating
-function of reads with $n+1$ error-free intervals (possibly empty), whose
-first interval has size $i-1$ and whose last interval has size $j-1$.
+Note that all the terms are multiplied by $pz$ because we have to prepend
+a substitutoin, with weighted generating function $pz$.
 
-The vector $pz(1, qz, (qz)^2, \ldots, (qz)^{d-2})$.
+The vector $U(z) = (1, qz, (qz)^2, \ldots, (qz)^{d-2})$.
 
+\begin{example}
+Let us revisit example~\ref{ex:num1}, where we approximated the
+probability that a read of size $k=100$ is seedless for $d=17$ and for a
+substitution rate $p=0.1$; but this time we allow the seed to contain one
+substitution.  The matrix $M(z)$ is $16\times16$ and the weighted
+generating function $1+U(z)\cdot(I-M(z))^{-1}\cdot V$ can be written as
+$P(z)/Q(z)$, where $P$ is a polynomial of degree 152 and $Q$ is a
+polynomial of degree 153.  Using numerical methods to find the root of $Q$
+with smallest modulus, we obtain $z_1 \approx 1.079244$. Likewise,
+we obtain $-P(z_1)/Q'(z_1) \approx 2.326700$, so the probability
+that the read is seedless is approximately
+$2.326700/1.079244^{101} \approx 0.0010511$.
+For comparison, a 99\% confidence interval obtained by performing 10
+billion random simulations is $0.001049-0.001054$.
+% The magic number is 1051660 out of 10 billion.
+In these conditions, the chances that the read contains an exact seed is
+90.4\%, whereas the chances that it contains a seed with one substitution
+is 99.9\%.
+\end{example}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%% Inexact seeding %%%%%%%%%%%%%%%%%%%%%
+\section{Caveats and complements}
+
+\subsection{Low error rates}
+
+In case the error rate is low...
+
+\subsection{Other divergence models}
+
+The difference between the sequences does not have to be sequencing
+errors, they can also be evolutionary distances.
+
+\subsection{Inexact seeding with more than one error}
+
+This is fucking impossible...
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%% Inexact seeding %%%%%%%%%%%%%%%%%%%%%
+\section{Discussion}
+
+Voila.
 
 
 %---------------------------------------------------------------
