@@ -40,7 +40,7 @@ cst_term = function(z,p,d) {
 }
 
 d = 17
-k = 50:200
+k = 1:204
 
 L = list()
 
@@ -51,40 +51,42 @@ for (p in c(0.08, 0.1, 0.12)) {
 }
 
 S = list(
-   1 - scan("out-.08.txt") /10000000,
-   1 - scan("out-.10.txt") /10000000,
-   1 - scan("out-.12.txt") /10000000
+   read.table("out-.08.txt"),
+   read.table("out-.10.txt"),
+   read.table("out-.12.txt")
 )
 
 pdf("simulp.pdf", width=11, height=5.5, useDingbats=FALSE)
 par(mfrow=c(1,2))
-subs = seq(1,100,4)
-plot(k[subs], S[[1]][subs], pch=19, cex=.5, ylim=c(0.5,1),
+subs = seq(1,51,2)
+plot(S[[1]][subs,1], 1-S[[1]][subs,2]/1e7, pch=19, cex=.5, ylim=c(0.5,1),
      plot.first=grid(),
      xlab="Read size", ylab="Seeding probability")
-lines(k[1:100], L[[1]][1:100])
+lines(k[1:154], L[[1]][1:154])
 
-points(k[subs], S[[2]][subs], pch=19, cex=.5)
-lines(k[1:100], L[[2]][1:100])
+points(S[[2]][subs,1], 1-S[[2]][subs,2]/1e7, pch=19, cex=.5)
+lines(k[1:154], L[[2]][1:154])
 
-points(k[subs], S[[3]][subs], pch=19, cex=.5)
-lines(k[1:100], L[[3]][1:100])
+points(S[[3]][subs,1], 1-S[[3]][subs,2]/1e7, pch=19, cex=.5)
+lines(k[1:154], L[[3]][1:154])
 
 legend(x="bottomright", inset=0.05, legend=c("Simulation", "Estimate"),
        pch=c(19, NA), lty=c(NA, 1), pt.cex=.6, bg="white", box.col=NA)
 
 
-subs = seq(100,150,2)
-plot(k[subs], S[[1]][subs], pch=19, cex=.5, ylim=c(0.9,1),
+subs = seq(51,76)
+plot(S[[1]][subs,1], 1-S[[1]][subs,2]/1e7, pch=19, cex=.5, ylim=c(0.9,1),
      plot.first=grid(),
      xlab="Read size", ylab="Seeding probability")
-lines(k[100:150], L[[1]][100:150])
+lines(k[146:204], L[[1]][146:204])
 
-points(k[subs], S[[2]][subs], pch=19, cex=.5)
-lines(k[100:150], L[[2]][100:150])
+points(S[[2]][subs,1], 1-S[[2]][subs,2]/1e7, pch=19, cex=.5)
+lines(k[146:204], L[[2]][146:204])
 
-points(k[subs], S[[3]][subs], pch=19, cex=.5)
-lines(k[100:150], L[[3]][100:150])
+points(S[[3]][subs,1], 1-S[[3]][subs,2]/1e7, pch=19, cex=.5)
+lines(k[146:204], L[[3]][146:204])
 dev.off()
 
-print(max(abs(S[[3]]-L[[3]])))
+max(abs(1-S[[1]][,2]/1e7 - L[[1]][S[[1]][,1]]))
+max(abs(1-S[[2]][,2]/1e7 - L[[2]][S[[2]][,1]]))
+max(abs(1-S[[3]][,2]/1e7 - L[[3]][S[[3]][,1]]))

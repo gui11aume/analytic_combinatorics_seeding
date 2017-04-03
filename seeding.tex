@@ -337,27 +337,62 @@ their weighted generating function.
 In many combinatorial applications, one needs to count the sequences where
 a pattern does or does not occur. A convenient way to find the weighted
 generating functions of such sequences is to use transfer matrices in
-order to encode the allowed or disallowed patterns. Let us illustrate how
-to this is done with an example from biology.
+order to encode the allowed or disallowed patterns. We will illustrate
+the process informally with an example from biology, before introducing
+the formal definitions.
 
-The sequence \texttt{CG} is the only one that can be methylated in many
-animal genomes. Assuming that \texttt{G}s and \texttt{G}s both occur with
+DNA methylation can only occur on the dinucleotide \texttt{CG}s in many
+animal genomes. Because of this property, it is interesting to count the
+sequences that have no \texttt{CG}. Such a sequence is a walk on the
+graph with restricted transitions shown in figure~\ref{fig:CG_transtions}.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.9]{CG_transitions.pdf}
+\caption{\textbf{Graph with restricted transitions}.
+A sequence without \texttt{CG} can be seen as a walk on the graph above.
+All the transitions are allowed, except \texttt{C} to \texttt{G}.}
+\label{fig:CG_transtions}
+\end{figure}
+
+Arranging the nodes in alphabetical order, the adjacency matrix of the
+directed graph is
+
+\begin{equation*}
+M = \left[
+\begin{matrix}
+1 & 1 & 1 & 1 \\
+1 & 1 & 0 & 1 \\
+1 & 1 & 1 & 1 \\
+1 & 1 & 1 & 1
+\end{matrix}
+\right].
+\end{equation*}
+
+The entry of the matrix $M^n$ at position $(i,j)$ corresponds to the
+number of paths on this graph that start with nucleotide $i$, end with
+nucleotide $j$ and contain $n$ steps. So a way to count sequences without
+\texttt{CG} is to compute the powers of the adjacency matrix $M$.
+
+Instead of just their numbers, we can go one step furhter and get the
+weighted generating functions of those sequences. Replacing the $1$s in the
+adjacency matrix by the weighted generating functions of the objects they
+represent, we obtain what is called the transfer matrix of the sequence.
+
+This background in mind, we now introduce transfer matrices on the problem
+at hand to find the weighted generating function of sequences without
+\texttt{CG}.  Assume that \texttt{G}s and \texttt{G}s both occur with
 frequency $p/2$ and that \texttt{A}s and \texttt{T}s occur with frequency
-$q/2$, where $q = 1-p$, we set out to find the weighted generating
-function of sequences without \texttt{CG}.
-
-First, we define the weighted generating functions of the individual
-symbols. With natural notations we see that $C(z) = G(z) = pz/2$ and that
-$A(z) = T(z) = qz/2$.
+$q/2$, where $q = 1-p$. With obvious notations we see that $C(z) = G(z) =
+pz/2$ and that $A(z) = T(z) = qz/2$.
 
 \begin{definition}
 \label{def:transfermat}
-Let $(\mathcal{A}_i)_{1 \leq i \leq k}$ 
-be sets of combinatorial objects, and let $A_i(z)$ be the
-weighted generating functions of $\mathcal{A}_i$. The entry $(i,j)$ of
-the $k\times n$ transfer matrix is equal to $A_j(z)$ if an object of
-$\mathcal{A}_i$ can be followed by an object of $\mathcal{A}_j$, and $0$
-otherwise.
+Let $(\mathcal{A}_i)_{1 \leq i \leq k}$ be sets of combinatorial objects,
+and let $A_i(z)$ be the weighted generating functions of $\mathcal{A}_i$.
+The entry $(i,j)$ of the $k\times n$ transfer matrix is equal to $A_j(z)$
+if an object of $\mathcal{A}_i$ can be followed by an object of
+$\mathcal{A}_j$, and $0$ otherwise.
 \end{definition}
 
 \begin{example}
@@ -386,24 +421,6 @@ q & p & p & q
 \end{equation}
 \end{example}
 
-A transfer matrices is closely related to the adjacency matrix of some
-directed graph. The nodes of the graph are the combinatorial objects and
-the edges are the permitted transitions. Figure~\ref{fig:CG_transtions}
-shows the graph assciated with the tansfer matrix above. The nodes are the
-nucleotides. Only the \texttt{C} to \texttt{G} transition is forbidden.
-The transfer matrix carries more information because it encodes the size
-and weight of the objects through their weighted generating function.
-
-\begin{figure}[h]
-\centering
-\includegraphics[scale=0.9]{CG_transitions.pdf}
-\caption{\textbf{Graph of the transfer matrix}. The transfer matrix shown
-in (\ref{eq:Mz_CG}) is related to a transition graph between
-nucleotides, where all the transitions are allowed, except \texttt{C} to
-\texttt{G}. A sequence without \texttt{CG} can be seen as a walk on this
-graph.}
-\label{fig:CG_transtions}
-\end{figure}
 
 The following two propositions show why transfer matrices are useful to
 find the weighted generating function of combinatorial sequences.
@@ -1717,7 +1734,17 @@ M(z) = pz\left[
 Note that all the terms are multiplied by $pz$ because we have to prepend
 a substitutoin, with weighted generating function $pz$.
 
-The vector $U(z) = (1, qz, (qz)^2, \ldots, (qz)^{d-2})$.
+Since the sequence may start with an error-only interval of any size from
+$0$ to $d-2$, the vector of starting ojects $U(z)$ is $(1, qz, (qz)^2,
+\ldots, (qz)^{d-2})$, and because the same holds for the end of the
+squence, the vector of end state $V$ is $(1,1, \ldots, 1)^T$.
+
+By proposition~\ref{th:TM2WGF}, the weighted generating function of
+seedless reads can be computed as $1+U(z) \cdot (I-M(z))^{-1} \cdot V$.
+This expression is not easy to evaluate for large matrices, but it can be
+pre-computed for a useful range of values of $d$. The solution can always
+be expressed as the ratio of two polynomials, and even though their degree
+is high, the asymptotics can be found easily by numerical approaches.
 
 \begin{example}
 Let us revisit example~\ref{ex:num1}, where we approximated the

@@ -47,7 +47,7 @@ cst_term = function(z,p,d,h) {
 
 p = 0.05
 d = 17
-k = 1:500
+k = 1:504
 
 L = list()
 
@@ -70,13 +70,13 @@ subs = seq(1,64,3)
 plot(S[[1]][subs,1], 1-S[[1]][subs,2]/1e7, pch=19, cex=.5, ylim=c(0.35,.95),
      plot.first=grid(),
      xlab="Read size", ylab="Seeding probability")
-lines(k[100:360], L[[1]][100:360])
+lines(k[90:365], L[[1]][90:365])
 
 points(S[[2]][subs,1], 1-S[[2]][subs,2]/1e7, pch=19, cex=.5)
-lines(k[100:360], L[[2]][100:360])
+lines(k[90:365], L[[2]][90:365])
 
 points(S[[3]][subs,1], 1-S[[3]][subs,2]/1e7, pch=19, cex=.5)
-lines(k[100:360], L[[3]][100:360])
+lines(k[90:365], L[[3]][90:365])
 
 legend(x="bottomright", inset=0.05, legend=c("Simulation", "Estimate"),
        pch=c(19, NA), lty=c(NA, 1), pt.cex=.6, bg="white", box.col=NA)
@@ -86,13 +86,13 @@ subs = seq(64,138,3)
 plot(S[[1]][subs,1], 1-S[[1]][subs,2]/1e7, pch=19, cex=.5, ylim=c(0.85,1),
      plot.first=grid(),
      xlab="Read size", ylab="Seeding probability")
-lines(k[352:497], L[[1]][352:497])
+lines(k[346:504], L[[1]][346:504])
 
 points(S[[2]][subs,1], 1-S[[2]][subs,2]/1e7, pch=19, cex=.5)
-lines(k[352:497], L[[2]][352:497])
+lines(k[346:504], L[[2]][346:504])
 
 points(S[[3]][subs,1], 1-S[[3]][subs,2]/1e7, pch=19, cex=.5)
-lines(k[352:497], L[[3]][352:497])
+lines(k[346:504], L[[3]][346:504])
 dev.off()
 
 max(abs(1-S[[1]][,2]/1e7 - L[[1]][S[[1]][,1]]))
