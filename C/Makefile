@@ -16,7 +16,10 @@ SIMULATIONS=                       \
 	out-.05-.15-.06-.45.txt    \
 	out-.08-inexact.txt        \
 	out-.10-inexact.txt        \
-	out-.12-inexact.txt
+	out-.12-inexact.txt        \
+	out-.08-average.txt        \
+	out-.10-average.txt        \
+	out-.12-average.txt
 
 FIGS= simulp.pdf simulpdel.pdf simulpins.pdf simulp-inexact.pdf
 
@@ -35,6 +38,10 @@ sim-del: sim-del.c mt.o
 
 sim-inexact-sub: sim-inexact-sub.c mt.o
 	$(CC) $(CFLAGS) sim-inexact-sub.c mt.o -o sim-inexact-sub
+
+sim-average: sim-average.c mt.o
+	$(CC) $(CFLAGS) sim-average.c mt.o -o sim-average
+
 
 
 # Substitutions.
@@ -138,6 +145,26 @@ out-.12-inexact.txt: sim-inexact-sub
 		>> out-.12-inexact.txt ; \
 	done
 
+# Average number of substitutions
+out-.08-average.txt: sim-average
+	./sim-average 50 17 0.08 > out-.08-average.txt
+	for ((i=52 ; i <= 150; i += 2)) ; do \
+		./sim-average $$i 17 0.08 \
+			>> out-.08-average.txt ; \
+	done
+out-.10-average.txt: sim-average
+	./sim-average 50 17 0.10 > out-.10-average.txt
+	for ((i=52 ; i <= 150; i += 2)) ; do \
+		./sim-average $$i 17 0.10 \
+			>> out-.10-average.txt ; \
+	done
+out-.12-average.txt: sim-average
+	./sim-average 50 17 0.12 > out-.12-average.txt
+	for ((i=52 ; i <= 150; i += 2)) ; do \
+		./sim-average $$i 17 0.12 \
+			>> out-.12-average.txt ; \
+	done
+
 
 simulp.pdf: out-.08.txt out-.10.txt out-.12.txt
 	R -f make_figure_simulation_sub.R
@@ -152,6 +179,10 @@ simulpins.pdf: out-.05-.15-.04-.45.txt out-.05-.15-.05-.45.txt \
 simulp-inexact.pdf: out-.08-inexact.txt out-.10-inexact.txt \
 		out-.12-inexact.txt
 	R -f make_figure_simulation_inexact_sub.R
+
+simulp-average.pdf: out-.08-average.txt out-.10-average.txt \
+		out-.12-average.txt
+	R -f make_figure_simulation_average.R
 
 
 clean:

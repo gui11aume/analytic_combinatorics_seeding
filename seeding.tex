@@ -590,7 +590,7 @@ is that we can very accurately approximate them.
 
 \begin{proposition}
 \label{th:ass}
-If a weighted generating function $F(z)$ is the ratio of two polynomials
+If a weighted generating function $A(z)$ is the ratio of two polynomials
 $P(z)/Q(z)$, and the roots of $Q$ are simple, then the coefficient of
 $z^k$ in its series expansion is asymptotically equivalent to
 
@@ -600,19 +600,18 @@ $z^k$ in its series expansion is asymptotically equivalent to
 \end{equation}
 
 \noindent
-where $z_1$ is the root of smallest modulus of $Q$,
-and $Q'$ is the derivative of $Q$.
+where $z_1$ is the root $Q$ with smallest modulus.
 \end{proposition}
 
 The roots of $Q$ are called the ``singularities'' of the weighted
-generating function $F$. They are values where the function is not
-defined. When they correspond to simple roots of $Q$, they also referred
-to as ``simples poles'' of $A$.
+generating function $A$. They are values where the function is not
+defined. When they correspond to simple roots of $Q$ (\textit{i.e.} with
+multiplicity 1), they also referred to as ``simple poles'' of $A$.
 
 Proposition~\ref{th:ass} says that the asymptotic growth of the
-coefficients of the series expansion of $F(z)$ is dictated by the
+coefficients of the series expansion of $A(z)$ is dictated by the
 singularity of smallest modulus, also known as the ``dominant
-singularity'' of $F$. We will first state a lemma that will be
+singularity'' of $A$. We will first state a lemma that will be
 important to improve the asymptotic approximation of the coefficients.
 
 \begin{lemma}
@@ -632,21 +631,22 @@ Proceed as in example~\ref{ex:sequences}, replacing $p$ by $1/a$.
 We now prove proposition~\ref{th:ass}.
 
 \begin{proof}
-Let $z_1, z_2, \ldots, z_n$ be the complex roots of $Q$ sorted by
-increasing order of modulus. It is well known that there exists complex
-numbers $s_j$ such that $P(z)/Q(z)$ can be written as
+Let $z_1, z_2, \ldots, z_n$ be the complex roots of $Q$, sorted by
+increasing order of modulus. Since $Q$ has only simple roots, there exists
+constants $\beta_1, \ldots, \beta_n$ such that the partial fraction
+decomposition of the rational function $P(z)/Q(z)$ can be written as
 
 \begin{equation}
-\sum_{j=1}^n \frac{\beta_j}{z-z_j} =
--\sum_{j=1}^n \frac{\beta_j/z_j}{1-z/z_j}.
+R(z) + \sum_{j=1}^n \frac{\beta_j}{z-z_j} =
+R(z) -\sum_{j=1}^n \frac{\beta_j/z_j}{1-z/z_j}.
 \end{equation}
 
-Here we assumed without loss of generality that the degree of $P$ is lower
-than the degree of $Q$. If this is not the case, the decomposition above
-also contains a polynomial whose coefficients are eventually null and
-which do not affect the asymptotics. Using lemma~\ref{lemma:poles}, we see
-that the coefficient of $z^k$ in the series expansion of $F(z)$ is equal
-to
+Here $R(z)$ is a polynomial that is nonzero ony if the degree of $P$ is
+higher than the degree of $Q$. Either way, the coefficient of $z^k$ in
+$R(z)$ is $0$ for $k$ higher than the degree of $R$, so those coefficients
+do not contribute to the asymptotics. We can thus assume $R(z) = 0$
+without loss of generatlity. Using lemma~\ref{lemma:poles}, we see that
+the coefficient of $z^k$ in the series expansion of $F(z)$ is equal to
 
 \begin{equation}
 \label{eq:fullass}
@@ -667,20 +667,23 @@ and we write
 \begin{equation*}
 \frac{P(z)}{Q(z)} =
 \frac{P(z)}{(z-z_1)Q_1(z)} = \frac{\beta_1}{z-z_1} +
-\varepsilon(z).
+\varepsilon(z),
 \end{equation*}
 
-Multiplying both sides by $(z-z_1)$ and setting $z = z_1$ we obtain the
-expression $\beta_1 = P(z_1) / Q_1(z_1)$.  Differentiating $Q(z) =
-(z-z_1)Q_1(z)$ shows that $Q'(z_1) = Q_1(z_1)$, and thus $\beta_1 = P(z_1)
-/ Q'(z_1)$, which concludes the proof.
+\noindent
+where $\varepsilon(z)$ is the remainder of the partial fraction
+decomposition. Multiplying both sides of the equality by $(z-z_1)$ and
+setting $z = z_1$, we obtain the expression $\beta_1 = P(z_1) / Q_1(z_1)$.
+Differentiating the definint expression $Q(z) = (z-z_1)Q_1(z)$ shows that
+$Q'(z_1) = Q_1(z_1)$, and thus that $\beta_1 = P(z_1) / Q'(z_1)$, which
+concludes the proof.
 \end{proof}
 
 \begin{remark}
 Expression (\ref{eq:fullass}) is not an approximation, it is the exact
-value of the coefficient. By keeping more than one leading term, we can
-obtain more accurate estimates, and by keeping all the terms we obtain the
-exact number.
+value of the coefficient. By keeping more than one term, we can obtain
+more accurate estimates, and by keeping all the terms we obtain the exact
+number.
 \end{remark}
 
 \begin{remark}
@@ -699,10 +702,10 @@ $O(|z_1/z_2|^k)$ and they decrease exponentially fast as $k$ increases.
 \end{remark}
 
 \begin{remark}
-For proposition~\ref{th:ass} to hold, only $z_1$ must be a simple pole. If
-this is not the case, the asymptotics growth involves a polynomial term of
-the variable $k$. The proposition was stated with this restrictive
-condition because all the cases discussed here have only simple poles.
+Proposition~\ref{th:ass} does not hold if $z_1$ is not a simple pole.
+The proof can be beneralized, but the resulting asymptotic formula is
+different. Proposition~\ref{th:ass2} in section~\ref{sec:Szu} shows the
+coefficient asymptotics for poles of second order.
 \end{remark}
 
 \begin{example}
@@ -957,6 +960,26 @@ S(z) = \frac{1+F_d(z)}{1-pz\big( 1+F_d(z) \big)} =
 \frac{1+qz + \ldots + (qz)^{d-1}}{1-pz \big(1+qz + \ldots +
 (qz)^{d-1} \big)}.
 \end{equation}
+
+\begin{remark}
+\label{rem:alt}
+Observe that equation (\ref{eq:Sp}) can be expressed as
+
+\begin{equation}
+\label{eq:altSp}
+\frac{1+F_d(z)}{1-pz(1+F_d(z))} = (1+F_d(z))
+  \sum_{n=0}^\infty \big( pz(1+F_d(z)) \big)^n.
+\end{equation}
+
+The term $pz(1+F_d(z))$ is the weighted generating function of
+``substitution intervals'', defined as a substitution followed by nothing
+or by an error-free interval. Expression (\ref{eq:altSp}) thus
+highlights that a read can be decomposed as a (potentially empty)
+error-free interval, followed by a sequence of substitution intervals.
+Note that every substitution interval contains exactly one substitution.
+This representation will be useful in section~\ref{sec:av} when deriving
+the average number of substitutions.
+\end{remark}
 
 The task is now to extract the coefficient of $z^k$ in the series
 expansion of expression (\ref{eq:Sp}). Instead of the exact solution, we
@@ -1655,102 +1678,117 @@ approximately equal to $0.007119 / 0.06271356^{k+1}$.
 
 %%%%%%%%%%%%%%%%%% Inexact seeding %%%%%%%%%%%%%%%%%%%%%
 \section{Average number of errors}
+\label{sec:av}
 
 Analytic combinatorics also allows computing the average of many
-quantities of interest. One with useful applications is the average
-number of errors in seedless reads.
+quantities of interest such as the average number of errors.  It is
+challenging to compute the average of errors for the class of seedless
+reads.
 
-To compute such quantities, we need to introduce a second variable and
-work, at least for some time, with bivariate generating functions. Taking
-the formalism of section~\ref{sec:substitutions} we introduce the variable
-$u$ that will mark the number of errors. All we need to do is replace the
-weighted generating function of errors by $pzu$. The transfer matrix
-is thus
+So far, reads were characterized by a single quantity: their size. Now we
+need to introduce a second quantity, namely the number of substitutions so
+we will bring in a second variable. More specifically, if $a_{k,n}$ is the
+total weight of seedless reads of size $k$ and with $n$ substitutions, the
+average number of substitutions for reads of size $k$ is by definition
 
-\begin{equation*}
-M(z,u) = \left(
-\begin{matrix}
-0    & pzu \\
-F(z) & pzu
-\end{matrix}
-\right).
-\end{equation*}
-
-As before, we apply proposition~\ref{th:TM2WGF} to find the (bivariate)
-generating function of reads as
-
-\begin{equation*}
-M_*(z,u) = (I-M(z))^{-1}=
-\frac{1}{\lambda(z,u)}
-\left(
-\begin{matrix}
-1-pzu & pzu   \\
-F(z) & 1
-\end{matrix}
-\right)
-\end{equation*}
-
-\noindent
-where $\lambda(z,u) = 1-pzu(1+F(z))$ is the determinant of $I-M(z)$.
-Applying proposition~\ref{th:TM2WGF} with $U(z,u)$ equal to the row vector
-$(F(z), pzu)$ and $V$ the column vector equal to $(1,1)$, the weighted
-generating function of reads is
-
-\begin{equation*}
-R(z,u) = 1 + U(z,u) \cdot M_*(z,u) \cdot V = 
-\frac{1+F(z)}{1-pzu(1+F(z))}.
-\end{equation*}
-
-To find the weighted generating function of seedless reads, we need to
-limit error-free intervals to a maximum size of $d-1$, \textit{i.e.} to
-replace $F(z)$ by its truncation $F_d(z) = qz + (qz)^2 + \ldots
-+ (qz)^{d-1}$. We obtain
 
 \begin{equation}
-\label{eq:Szu}
-S(z,u) = \frac{1+F_d(z)}{1-pzu\big( 1+F_d(z) \big)}.
+\label{eq:av}
+\left( \sum_{n=0}^\infty na_{k,n} \right) \Big/
+ \left( \sum_{n=0}^\infty a_{k,n} \right).
 \end{equation}
 
-$S(z,u)$ is a bivariate weighted generating function whos coefficients
-represent the weights of seedless reads of a given size and a given number
-of errors.
+To compute this quantity, we will manipulate bivariate generating
+functions. We introduce the variable $u$ marking the number of
+substitutions and we write
 
 \begin{equation*}
 S(z,u) = \sum_{k=0}^\infty\sum_{n=0}^\infty a_{k,n}z^ku^n.
 \end{equation*}
 
-By taking the derivative of $S(z,u)$ with respecto to $u$, and then
-setting $u=1$, we obtain a univariate weighted generating function such
-that
+Finding an explicit formula for $S(z,u)$ is the focus of
+section~\ref{sec:Szu} .  For now, observe that (\ref{eq:av}) can be
+expressed from the coefficients of $S(z,u)$. On the one hand, we have
+
+\begin{equation*}
+S(z,1) = \sum_{k=0}^\infty \left( \sum_{n=0}^\infty a_{k,n} \right) z^k.
+\end{equation*}
+
+So the denominator of (\ref{eq:av}) is the coefficient of $z^k$ in
+$S(z,1)$. On the other hand, by taking the derivative of $S(z,u)$ with
+respect to $u$, and setting $u=1$, we obtain
 
 \begin{equation*}
 \frac{\partial S(z,u)}{\partial u} \Bigr|_{\substack{\\u=1}} =
 \sum_{k=0}^\infty \left( \sum_{n=0}^\infty na_{k,n} \right) z^k.
 \end{equation*}
 
-In other words, the coefficients of the this weighted generating function
-are the average number of errors for reads of size $k$ (here we use the
-fact that weights sum up to 1). Differentiating (\ref{eq:Szu}), we obtain
+So the numerator of (\ref{eq:av}) is the coefficient of $z^k$ in
+$S_u(z,1)$ (where $S_u$ is an alternative notation for the partial
+derivative with respect to $u$). Note that $S(z,1)$ and $S_u(z,1)$ are
+actually univariate weighted generating functions, so we can use the
+methods developed earlier to obtain asymptotic estimates for their
+coefficients.
+
+To use this approach, we need to find an explicit expression for $S(z,u)$,
+which we onw do for the case of uniform substitutions.
+
+
+
+
+
+\subsection{Average substitutions in seedless reads}
+\label{sec:Szu}
+
+As we have seen several times, the analytic combinatorics approach is to
+write the generating function of simple objects and then combine them into
+more complex objects. In order to mark substitutions with the variable
+$u$, we update their weighted generating function to $pzu$. As in
+section~\ref{sec:substitutions}, $p$ is the probability of a substitution,
+so it is the weight in this expression. For every subtitution, the powers
+of $z$ and $u$ increase by $1$, and so do the size and the number of
+substitutions of the read.
+
+We could derive the weighted generating function by the transfer matrix
+method described in section~\ref{sec:substitutions}, but we can get an
+immediate result by recalling remark~\ref{rem:alt}, where we observed
+that the weighted generating function of seedless reads can be expressed
+as
+
+\begin{equation*}
+(1+F_d(z)) \sum_{n=0}^\infty \big( pz(1+F_d(z)) \big)^n.
+\end{equation*}
+
+Here the weighted generating function of substitutions appears explicitly
+as $pz$. We can replace it by $pzu$ to obtain directly
+
+\begin{equation}
+\label{eq:Szu}
+S(z,u) = (1+F_d(z)) \sum_{n=0}^\infty \big( pzu(1+F_d(z)) \big)^n
+= \frac{1+F_d(z)}{1-pzu\big( 1+F_d(z) \big)}.
+\end{equation}
+
+
+$S(z,1)$ is simply the weighted generating function of seedless reads
+derived in section~\ref{sec:substitutions}, and for which we already
+derived the coefficient asymptotics. So we already have the denominator of
+(\ref{eq:av}). Now differentiating (\ref{eq:Szu}) with respect to $u$, we
+obtain
 
 \begin{equation*}
 \frac{\partial S(z,u)}{\partial u} \Bigr|_{\substack{\\u=1}} = 
 \frac{pz(1+F_d(z))^2}{\big( 1 - pz(1+F_d(z)) \big)^2}.
 \end{equation*}
 
-We can extract the coefficients of this weighted generating function by
-the same method as above. This does not require additional calculations
-because the dominant singularity is the same as that of $S(z)$, but this
-time, the root has multiplicity 2. In this case, we have different
-asymptotics and the convergence is not exponential if we use only the
-leading term.
-
+Here we cannot use proposition~\ref{th:ass} because all the poles of
+$S(z,u)$ are second order. Instead, we prove a similar proposition showing
+how to extract the coefficient asymptotics in this case.
 
 \begin{proposition}
 \label{th:ass2}
 If a weighted generating function can be expressed as $P(z)/Q(z)^2$, where
 $P$ and $Q$ are polynomials and the roots of $Q$ are simple, then the
-coefficient of $z^k$ in its series expansion is asymptotically equivalent
-to
+coefficient of $z^k$ is asymptotically equivalent to
 
 \begin{equation}
 \label{eq:ass2}
@@ -1760,12 +1798,11 @@ to
 \end{equation}
 
 \noindent
-where $z_1$ is the root of smallest modulus of $Q$,
-and $Q'$ is the derivative of $Q$.
+where $z_1$ is the root of $Q$ with smallest modulus.
 \end{proposition}
 
-As for proposition~\ref{th:ass}, we start by proving a lemma that will
-unlock the asymptotic expansion from the weighted generating function.
+As in proposition~\ref{th:ass}, we start by proving the lemma that will
+give the functional expression of the asymptotic expansion.
 
 \begin{lemma}
 \label{lemma:poles2}
@@ -1784,16 +1821,19 @@ For $|z| < a$ we have
 \end{equation*}
 
 \noindent
-where the last equality is obtained by applying lemma~\ref{lemma:poles}.
+where the last equality is obtained by applying lemma~\ref{lemma:poles}
+and differentiating.
 \end{proof}
 
 We now prove proposition~\ref{th:ass2}.
 
 \begin{proof}
 As in the proof of proposition~\ref{th:ass}, let $z_1, z_2, \ldots, z_n$
-be the complex roots of $Q$ sorted by increasing order of modulus. Since
-the roots of $Q(z)^2$ all have multiplicity 2, the ratio of polynomials
-$P(z)/Q(z)^2$ can be written as
+be the complex roots of $Q$, sorted by increasing order of modulus. Since
+the roots of $Q(z)^2$ all have multiplicity 2, there exists constants
+$\alpha_1, \ldots, \alpha_n$ and $\beta_1, \ldots, \beta_n$ such that the
+partial fraction decomposition of the rational function $P(z)/Q(z)^2$ can
+be written as
 
 \begin{equation*}
 \sum_{j=1}^n \frac{\alpha_j}{(z-z_j)^2} + \frac{\beta_j}{z-z_j} =
@@ -1811,8 +1851,8 @@ the coefficient of $z^k$ in $P(z)/Q(z)^2$ can be expressed as
 \sum_{j=1}^n (k+1)\frac{\alpha_j}{z_j^{k+2}}-\frac{\beta_j}{z_j^{k+1}}.
 \end{equation}
 
-Since $z_1$ is the root with smallest modulus, the sum is asymptotically
-equivalent to
+Since $z_1$ is the root with smallest modulus, the sum above is
+asymptotically equivalent to
 
 \begin{equation*}
 (k+1)\frac{\alpha_1}{z_1^{k+2}}-\frac{\beta_1}{z_1^{k+1}}.
@@ -1826,13 +1866,15 @@ and we write
 \label{eq:misc1}
 \frac{P(z)}{Q(z)^2} =
 \frac{P(z)}{(z-z_1)^2Q_1(z)^2} = \frac{\alpha_1}{(z-z_1)^2} +
-\frac{\beta_1}{z-z_1} + \varepsilon(z).
+\frac{\beta_1}{z-z_1} + \varepsilon(z),
 \end{equation}
 
-Multiplying both sides by $(z-z_1)^2$ and setting $z = z_1$ we obtain the
-expression $\alpha_1 = P(z_1)/Q_1(z_1)^2$.  Differentiating $Q(z) =
-(z-z_1)Q_1(z)$ shows that $Q'(z_1) = Q_1(z_1)$, and thus $\alpha_1 =
-P(z_1) / Q'(z_1)^2$.
+\noindent
+where $\varepsilon(z)$ is the remainder of the partial fraction
+decomposition. Multiplying both sides of the equality by $(z-z_1)^2$ and
+setting $z = z_1$, we obtain the expression $\alpha_1 =
+P(z_1)/Q_1(z_1)^2$.  Differentiating $Q(z) = (z-z_1)Q_1(z)$ shows that
+$Q'(z_1) = Q_1(z_1)$, and thus that $\alpha_1 = P(z_1) / Q'(z_1)^2$.
 
 To find the value of $\beta_1$, we subtract $\alpha_1/(z-z_1)^2$ from
 (\ref{eq:misc1}) and we obtain
@@ -1852,6 +1894,7 @@ $\beta_1 = P'(z_1)/Q'(z_1)^2 - P(z_1)Q''(z_1)/Q'(z_1)^3$, which concludes
 the proof.
 \end{proof}
 
+
 \begin{remark}
 Expression (\ref{eq:ass2}) is asymptotically equivalent to the simpler
 expression
@@ -1861,15 +1904,38 @@ expression
 (k+1)\frac{P(z_1)}{Q'(z_1)^2}\frac{1}{z_1^{k+2}}.
 \end{equation}
 
-However, expression (\ref{eq:ass3}) does not converge exponentially fast.
+However, expression (\ref{eq:ass3}) does not converge exponentially.
 Indeed, dividing the exact expression (\ref{eq:fullass2}) by
 (\ref{eq:ass3}) gives an error term in $O(1/k)$. In comparison, dividing
 (\ref{eq:fullass2}) by (\ref{eq:ass2}) gives an error term in
-$O(|z_1/z_2|^k)$ like in proposition~\ref{th:ass}.
+$O(|z_1/z_2|^k)$, which decreases exponentially, as in
+proposition~\ref{th:ass}.
 \end{remark}
 
 
 
+
+Back to the problem of computing the average number of substitutions in
+seedless reads, we can now use proposition~\ref{th:ass2} to approximate
+the numerator of (\ref{eq:av}). The dominant singularity is the same for
+both the numerator and the denominator, which makes for the spectacular
+cancellation summarized in the following proposition.
+
+\begin{proposition}
+The average number of substitutions in seedless reads is asymptotically
+equivalent to
+\begin{equation*}
+\frac{k+1}{z_1F_d'(z_1)} =
+\frac{(k+1)(1-qz_1)^2}{(d-1)(qz_1)^{d+1}-d(qz_1)^d+qz_1},
+\end{equation*}
+
+\noindent
+where $z_1$ is the only positive root of the polynomial $1-pz(1+F_d(z))$.
+\end{proposition}
+
+\begin{proof}
+Obvious.
+\end{proof}
 
 
 
