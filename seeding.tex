@@ -637,48 +637,43 @@ increasing order of modulus. It is well known that there exists complex
 numbers $s_j$ such that $P(z)/Q(z)$ can be written as
 
 \begin{equation}
-\sum_{j=1}^n \frac{s_j}{z-z_j} =
-\sum_{j=1}^n \frac{s_j/z_j}{1-z/z_j}.
+\sum_{j=1}^n \frac{\beta_j}{z-z_j} =
+-\sum_{j=1}^n \frac{\beta_j/z_j}{1-z/z_j}.
 \end{equation}
 
 Here we assumed without loss of generality that the degree of $P$ is lower
 than the degree of $Q$. If this is not the case, the decomposition above
 also contains a polynomial whose coefficients are eventually null and
 which do not affect the asymptotics. Using lemma~\ref{lemma:poles}, we see
-that the coefficient of $z^k$ in the series expansion of $A(z)$ is equal
+that the coefficient of $z^k$ in the series expansion of $F(z)$ is equal
 to
 
 \begin{equation}
 \label{eq:fullass}
--\sum_{j=1}^n \frac{s_j}{z_j^{k+1}}.
+-\sum_{j=1}^n \frac{\beta_j}{z_j^{k+1}}.
 \end{equation}
 
 Since $z_1$ is the root with smallest modulus, the sum is asymptotically
 equivalent to
 
 \begin{equation*}
--\frac{s_1}{z_1^{k+1}}.
+-\frac{\beta_1}{z_1^{k+1}}.
 \end{equation*}
 
-To find the value of $s_1$, we factorize $Q(z)$ as
+To find the value of $\beta_1$, we factorize $Q(z)$ as
 $(z-z_1)Q_1(z)$, which is possible because $z_1$ is a root of $Q$,
 and we write
 
 \begin{equation*}
 \frac{P(z)}{Q(z)} =
-\frac{P(z)}{(z-z_1)Q_1(z)} = \frac{s_1}{z-z_1} +
+\frac{P(z)}{(z-z_1)Q_1(z)} = \frac{\beta_1}{z-z_1} +
 \varepsilon(z).
 \end{equation*}
 
-Multiplying both sides by $(z-z_1)$ and setting $z = z_1$ we obtain
-the expression
-
-\begin{equation*}
-\frac{P(z_1)}{Q_1(z_1)} = s_1.
-\end{equation*}
-
-Differentiating $Q(z) = (z-z_1)Q_1(z)$ shows that $Q'(z_1) =
-Q_1(z_1)$, and thus $s_1 = P(z_1) / Q'(z_1)$, which concludes the proof.
+Multiplying both sides by $(z-z_1)$ and setting $z = z_1$ we obtain the
+expression $\beta_1 = P(z_1) / Q_1(z_1)$.  Differentiating $Q(z) =
+(z-z_1)Q_1(z)$ shows that $Q'(z_1) = Q_1(z_1)$, and thus $\beta_1 = P(z_1)
+/ Q'(z_1)$, which concludes the proof.
 \end{proof}
 
 \begin{remark}
@@ -691,14 +686,15 @@ exact number.
 \begin{remark}
 The convergence to the asymptotic estimate is exponential. To see this,
 divide the exact expression (\ref{eq:fullass}) by its leading term
-$-s_1/z_1^{k+1}$ and obtain
+$-\beta_1/z_1^{k+1}$ and obtain
 
 \begin{equation*}
-\frac{-\sum_{j=1}^n s_j/z_j^{k+1}}{-s_1/z_1^{k+1}} = 1 + \sum_{j=2}^n
-\frac{s_j}{s_1} \left( \frac{z_1}{z_j} \right)^{k+1}.
+\frac{-\sum_{j=1}^n \beta_j/z_j^{k+1}}{-\beta_1/z_1^{k+1}} =
+1 + \sum_{j=2}^n
+\frac{\beta_j}{\beta_1} \left( \frac{z_1}{z_j} \right)^{k+1}.
 \end{equation*}
 
-Since $z_1 < z_j$ for $2 \leq j \leq n$, the error terms are
+Since $|z_1| < |z_j|$ for $2 \leq j \leq n$, the error terms are
 $O(|z_1/z_2|^k)$ and they decrease exponentially fast as $k$ increases.
 \end{remark}
 
@@ -1657,6 +1653,226 @@ approximately equal to $0.007119 / 0.06271356^{k+1}$.
 
 
 
+%%%%%%%%%%%%%%%%%% Inexact seeding %%%%%%%%%%%%%%%%%%%%%
+\section{Average number of errors}
+
+Analytic combinatorics also allows computing the average of many
+quantities of interest. One with useful applications is the average
+number of errors in seedless reads.
+
+To compute such quantities, we need to introduce a second variable and
+work, at least for some time, with bivariate generating functions. Taking
+the formalism of section~\ref{sec:substitutions} we introduce the variable
+$u$ that will mark the number of errors. All we need to do is replace the
+weighted generating function of errors by $pzu$. The transfer matrix
+is thus
+
+\begin{equation*}
+M(z,u) = \left(
+\begin{matrix}
+0    & pzu \\
+F(z) & pzu
+\end{matrix}
+\right).
+\end{equation*}
+
+As before, we apply proposition~\ref{th:TM2WGF} to find the (bivariate)
+generating function of reads as
+
+\begin{equation*}
+M_*(z,u) = (I-M(z))^{-1}=
+\frac{1}{\lambda(z,u)}
+\left(
+\begin{matrix}
+1-pzu & pzu   \\
+F(z) & 1
+\end{matrix}
+\right)
+\end{equation*}
+
+\noindent
+where $\lambda(z,u) = 1-pzu(1+F(z))$ is the determinant of $I-M(z)$.
+Applying proposition~\ref{th:TM2WGF} with $U(z,u)$ equal to the row vector
+$(F(z), pzu)$ and $V$ the column vector equal to $(1,1)$, the weighted
+generating function of reads is
+
+\begin{equation*}
+R(z,u) = 1 + U(z,u) \cdot M_*(z,u) \cdot V = 
+\frac{1+F(z)}{1-pzu(1+F(z))}.
+\end{equation*}
+
+To find the weighted generating function of seedless reads, we need to
+limit error-free intervals to a maximum size of $d-1$, \textit{i.e.} to
+replace $F(z)$ by its truncation $F_d(z) = qz + (qz)^2 + \ldots
++ (qz)^{d-1}$. We obtain
+
+\begin{equation}
+\label{eq:Szu}
+S(z,u) = \frac{1+F_d(z)}{1-pzu\big( 1+F_d(z) \big)}.
+\end{equation}
+
+$S(z,u)$ is a bivariate weighted generating function whos coefficients
+represent the weights of seedless reads of a given size and a given number
+of errors.
+
+\begin{equation*}
+S(z,u) = \sum_{k=0}^\infty\sum_{n=0}^\infty a_{k,n}z^ku^n.
+\end{equation*}
+
+By taking the derivative of $S(z,u)$ with respecto to $u$, and then
+setting $u=1$, we obtain a univariate weighted generating function such
+that
+
+\begin{equation*}
+\frac{\partial S(z,u)}{\partial u} \Bigr|_{\substack{\\u=1}} =
+\sum_{k=0}^\infty \left( \sum_{n=0}^\infty na_{k,n} \right) z^k.
+\end{equation*}
+
+In other words, the coefficients of the this weighted generating function
+are the average number of errors for reads of size $k$ (here we use the
+fact that weights sum up to 1). Differentiating (\ref{eq:Szu}), we obtain
+
+\begin{equation*}
+\frac{\partial S(z,u)}{\partial u} \Bigr|_{\substack{\\u=1}} = 
+\frac{pz(1+F_d(z))^2}{\big( 1 - pz(1+F_d(z)) \big)^2}.
+\end{equation*}
+
+We can extract the coefficients of this weighted generating function by
+the same method as above. This does not require additional calculations
+because the dominant singularity is the same as that of $S(z)$, but this
+time, the root has multiplicity 2. In this case, we have different
+asymptotics and the convergence is not exponential if we use only the
+leading term.
+
+
+\begin{proposition}
+\label{th:ass2}
+If a weighted generating function can be expressed as $P(z)/Q(z)^2$, where
+$P$ and $Q$ are polynomials and the roots of $Q$ are simple, then the
+coefficient of $z^k$ in its series expansion is asymptotically equivalent
+to
+
+\begin{equation}
+\label{eq:ass2}
+\left( (k+1)\frac{P(z_1)}{z_1 Q'(z_1)^2} - \frac{P'(z_1)}{Q'(z_1)^2} +
+\frac{P(z_1)Q''(z_1)}{Q'(z_1)^3} \right)
+\frac{1}{z_1^{k+1}},
+\end{equation}
+
+\noindent
+where $z_1$ is the root of smallest modulus of $Q$,
+and $Q'$ is the derivative of $Q$.
+\end{proposition}
+
+As for proposition~\ref{th:ass}, we start by proving a lemma that will
+unlock the asymptotic expansion from the weighted generating function.
+
+\begin{lemma}
+\label{lemma:poles2}
+For $|z| < a$ we have
+
+\begin{equation}
+\label{eq:poles2}
+\frac{1}{(1-z/a)^2} = \sum_{k=0}^\infty (k+1)\frac{z^k}{a^k}.
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+\begin{equation*}
+\frac{1}{(1-z/a)^2} = a \left( \frac{1}{1-z/a} \right)'
+= a \sum_{k=0}^\infty \frac{kz^{k-1}}{a^k},
+\end{equation*}
+
+\noindent
+where the last equality is obtained by applying lemma~\ref{lemma:poles}.
+\end{proof}
+
+We now prove proposition~\ref{th:ass2}.
+
+\begin{proof}
+As in the proof of proposition~\ref{th:ass}, let $z_1, z_2, \ldots, z_n$
+be the complex roots of $Q$ sorted by increasing order of modulus. Since
+the roots of $Q(z)^2$ all have multiplicity 2, the ratio of polynomials
+$P(z)/Q(z)^2$ can be written as
+
+\begin{equation*}
+\sum_{j=1}^n \frac{\alpha_j}{(z-z_j)^2} + \frac{\beta_j}{z-z_j} =
+\sum_{j=1}^n \frac{\alpha_j/z_j^2}{(1-z/z_j)^2}
+-\frac{\beta_j/z_j}{1-z/z_j}.
+\end{equation*}
+
+As in the proof of proposition~\ref{th:ass}, we assumed without loss of
+generality that the degree of $P$ is lower than the degree of $Q$. Now
+applying lemmas~\ref{lemma:poles} and \ref{lemma:poles2}, we see that
+the coefficient of $z^k$ in $P(z)/Q(z)^2$ can be expressed as
+
+\begin{equation}
+\label{eq:fullass2}
+\sum_{j=1}^n (k+1)\frac{\alpha_j}{z_j^{k+2}}-\frac{\beta_j}{z_j^{k+1}}.
+\end{equation}
+
+Since $z_1$ is the root with smallest modulus, the sum is asymptotically
+equivalent to
+
+\begin{equation*}
+(k+1)\frac{\alpha_1}{z_1^{k+2}}-\frac{\beta_1}{z_1^{k+1}}.
+\end{equation*}
+
+To find the values of $\alpha_1$ and $\beta_1$, we factorize $Q(z)$ as
+$(z-z_1)Q_1(z)$, which is possible because $z_1$ is a root of $Q$,
+and we write
+
+\begin{equation}
+\label{eq:misc1}
+\frac{P(z)}{Q(z)^2} =
+\frac{P(z)}{(z-z_1)^2Q_1(z)^2} = \frac{\alpha_1}{(z-z_1)^2} +
+\frac{\beta_1}{z-z_1} + \varepsilon(z).
+\end{equation}
+
+Multiplying both sides by $(z-z_1)^2$ and setting $z = z_1$ we obtain the
+expression $\alpha_1 = P(z_1)/Q_1(z_1)^2$.  Differentiating $Q(z) =
+(z-z_1)Q_1(z)$ shows that $Q'(z_1) = Q_1(z_1)$, and thus $\alpha_1 =
+P(z_1) / Q'(z_1)^2$.
+
+To find the value of $\beta_1$, we subtract $\alpha_1/(z-z_1)^2$ from
+(\ref{eq:misc1}) and we obtain
+
+\begin{equation}
+\label{eq:misc2}
+\frac{P(z) - P(z_1)Q_1(z)^2/Q_1(z_1)^2}{(z-z_1)^2Q_1(z)^2} =
+\frac{\beta_1}{z-z_1} + \varepsilon(z).
+\end{equation}
+
+Since $P(z_1) - P(z_1)Q_1(z_1)^2/Q_1(z_1)^2 = 0$, there exists a
+polynomial $Q_2(z)$ such that $P(z) - P(z_1)Q_1(z)^2/Q_1(z_1)^2 =
+(z-z_1)Q_2(z)$.  Multiplying (\ref{eq:misc2}) by $z-z_1$ and setting $z =
+z_1$, we obtain $\beta_1 = Q_2(z_1)/Q_1(z_1)^2$. Differentiating twice the
+defining equality of $Q_1(z)$ and once that of $Q_2(z)$, we finally obtain
+$\beta_1 = P'(z_1)/Q'(z_1)^2 - P(z_1)Q''(z_1)/Q'(z_1)^3$, which concludes
+the proof.
+\end{proof}
+
+\begin{remark}
+Expression (\ref{eq:ass2}) is asymptotically equivalent to the simpler
+expression
+
+\begin{equation}
+\label{eq:ass3}
+(k+1)\frac{P(z_1)}{Q'(z_1)^2}\frac{1}{z_1^{k+2}}.
+\end{equation}
+
+However, expression (\ref{eq:ass3}) does not converge exponentially fast.
+Indeed, dividing the exact expression (\ref{eq:fullass2}) by
+(\ref{eq:ass3}) gives an error term in $O(1/k)$. In comparison, dividing
+(\ref{eq:fullass2}) by (\ref{eq:ass2}) gives an error term in
+$O(|z_1/z_2|^k)$ like in proposition~\ref{th:ass}.
+\end{remark}
+
+
+
+
+
+
 
 
 
@@ -1689,8 +1905,9 @@ uniformly at random within the read. They delimit error-free intervals.
 Inexact seeds (arrows) are the longest stretches of the read that contain
 at most one sbustituttion.}
 \label{fig:sketchinexact}
-
 \end{figure}
+
+
 \begin{definition}
 \label{def:seed}
 An inexact $d$-seed is an interval of size at least $d$ that contains at
@@ -1767,8 +1984,21 @@ is 99.9\%.
 \end{example}
 
 
-
-
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.445]{simulp-inexact.pdf}
+\label{fig:simulpinexact}
+\caption{\textbf{Example estimates for inexact seeding with substitutions
+only}. The analytic combinatorics estimates of proposition~\ref{th:pins}
+are benchmarked against random simulations.  Shown on both panels are the
+probablities that a read of given size contains an inexact seed, either
+estimated by random simulations (dots), or by the method described above
+(lines). The curves are drawn for $d=17$, $p=0.08$, $p=0.10$ or $p=0.12$
+(from top to bottom). 10,000,000 simulations are run on the left panel and
+100,000,000 on the right one.  The difference never exceeds 0.0002 on the
+examples shown here, which is the expected variation for this number of
+random trials.}
+\end{figure}
 
 
 
