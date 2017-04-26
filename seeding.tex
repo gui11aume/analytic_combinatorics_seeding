@@ -1083,8 +1083,7 @@ where $z_1$ is the only real positive root of the denominator of $S(z)$,
 
 \begin{equation}
 \label{eq:Cp}
-C =\frac{(1-qz_1)^2}{p^2\left( 1 + d(qz_1)^{d+1} - (d+1)(qz_1)^d
-\right)}.
+C =\frac{(1-qz_1)^2}{p^2\big( 1-(d+1-dqz_1)(qz_1)^d \big)}.
 \end{equation}
 \end{proposition}
 
@@ -1775,10 +1774,11 @@ derived the coefficient asymptotics. So we already have the denominator of
 (\ref{eq:av}). Now differentiating (\ref{eq:Szu}) with respect to $u$, we
 obtain
 
-\begin{equation*}
+\begin{equation}
+\label{eq:dSdu}
 \frac{\partial S(z,u)}{\partial u} \Bigr|_{\substack{\\u=1}} = 
 \frac{pz(1+F_d(z))^2}{\big( 1 - pz(1+F_d(z)) \big)^2}.
-\end{equation*}
+\end{equation}
 
 Here we cannot use proposition~\ref{th:ass} because all the poles of
 $S(z,u)$ are second order. Instead, we prove a similar proposition showing
@@ -1904,12 +1904,11 @@ expression
 (k+1)\frac{P(z_1)}{Q'(z_1)^2}\frac{1}{z_1^{k+2}}.
 \end{equation}
 
-However, expression (\ref{eq:ass3}) does not converge exponentially.
-Indeed, dividing the exact expression (\ref{eq:fullass2}) by
-(\ref{eq:ass3}) gives an error term in $O(1/k)$. In comparison, dividing
-(\ref{eq:fullass2}) by (\ref{eq:ass2}) gives an error term in
-$O(|z_1/z_2|^k)$, which decreases exponentially, as in
-proposition~\ref{th:ass}.
+However, expression (\ref{eq:ass3}) converges slowly. Indeed, dividing
+the exact expression (\ref{eq:fullass2}) by (\ref{eq:ass3}) gives an error
+term in $O(1/k)$. In comparison, dividing (\ref{eq:fullass2}) by
+(\ref{eq:ass2}) gives an error term in $O(|z_1/z_2|^k)$, which decreases
+exponentially, as in proposition~\ref{th:ass}.
 \end{remark}
 
 
@@ -1918,25 +1917,63 @@ proposition~\ref{th:ass}.
 Back to the problem of computing the average number of substitutions in
 seedless reads, we can now use proposition~\ref{th:ass2} to approximate
 the numerator of (\ref{eq:av}). The dominant singularity is the same for
-both the numerator and the denominator, which makes for the spectacular
-cancellation summarized in the following proposition.
+both the numerator and the denominator, so the terms in $z_1^k$ cancel
+out. What remains is an expression of the form $C_1k + C_2$. In other
+words, the average number of substitutions in seedless reads increases as
+an affine function of the size. We make this result more accurate in the
+following proposition.
+
 
 \begin{proposition}
-The average number of substitutions in seedless reads is asymptotically
-equivalent to
+\label{th:avsub}
+Under the asumptions of the error model of
+section~\ref{sec:substitutions}, the average number of substitutions in
+seedless reads of size $k$ is asymptotically equivalent to
+
 \begin{equation*}
-\frac{k+1}{z_1F_d'(z_1)} =
-\frac{(k+1)(1-qz_1)^2}{(d-1)(qz_1)^{d+1}-d(qz_1)^d+qz_1},
+\frac{(1-qz)(C_1(k+1) - C_2)}{1-(d+1-dqz_1)(qz_1)^d},
 \end{equation*}
 
 \noindent
-where $z_1$ is the only positive root of the polynomial $1-pz(1+F_d(z))$.
+with
+
+\begin{gather*}
+C_1 = 1-(qz_1)^d, \text{ and} \\
+C_2 = \frac{
+\big(1-(2-(1-qz_1)d^2+2d)(qz_1)^d+(1+(1-qz_1)d^2-2d)(qz_1)^{2d} \big)}
+{1-(d+1-dqz_1)(qz_1)^d},
+\end{gather*}
+
+\noindent
+and where $z_1$ is the only positive root of the polynomial
+$1-pz(1+F_d(z))$.
 \end{proposition}
 
 \begin{proof}
-Obvious.
+Apply proposition~\ref{th:ass2} to (\ref{eq:dSdu}), use
+proposition~\ref{th:p} and simplify.
 \end{proof}
 
+\begin{remark}
+The estimate obtained from (\ref{eq:ass3}) instead of (\ref{eq:ass2})
+increases linearly with $k$. In this case, only the relative error
+vanishes asymptotically. The absolute error remains constant.
+\end{remark}
+
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.445]{simulp-average.pdf}
+\caption{\textbf{Example estimates of average number of deletions}. The
+analytic combinatorics estimates of proposition~\ref{th:avsub} are
+benchmarked against random simulations.  The average number of
+substitutions are shown for seedless reads of given size, either estimated
+by 10,000,000 random simulations (dots), or by the method described above
+(lines). The curves are drawn for $d=17$, $p=0.08$, $p=0.10$ $p=0.12$
+(from top to bottom). The difference never exceeds 0.004 on the examples
+shown here.}
+\label{fig:simulpdel}
+\end{figure}
 
 
 

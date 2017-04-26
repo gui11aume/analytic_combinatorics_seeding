@@ -21,7 +21,8 @@ SIMULATIONS=                       \
 	out-.10-average.txt        \
 	out-.12-average.txt
 
-FIGS= simulp.pdf simulpdel.pdf simulpins.pdf simulp-inexact.pdf
+FIGS= simulp.pdf simulpdel.pdf simulpins.pdf simulp-inexact.pdf \
+      simulp-average.pdf
 
 
 

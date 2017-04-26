@@ -5,7 +5,7 @@
 
 #include "mt.h"
 
-#define ITER 1000000
+#define ITER 10000000
 
 int main(int argc, char **argv) {
 
