@@ -119,8 +119,8 @@ interested to the original literature.
 \begin{definition}
 \label{def:GF}
 Let $\mathcal{A}$ be a set of combinatorial objects characterized by a
-size and a weight. The weighted generating function of $\mathcal{A}$ is
-defined as
+size and a weight. The \textbf{weighted generating function} of
+$\mathcal{A}$ is defined as
 
 \begin{equation}
 \label{eq:GF1}
@@ -390,9 +390,9 @@ pz/2$ and that $A(z) = T(z) = qz/2$.
 \label{def:transfermat}
 Let $(\mathcal{A}_i)_{1 \leq i \leq k}$ be sets of combinatorial objects,
 and let $A_i(z)$ be the weighted generating functions of $\mathcal{A}_i$.
-The entry $(i,j)$ of the $k\times n$ transfer matrix is equal to $A_j(z)$
-if an object of $\mathcal{A}_i$ can be followed by an object of
-$\mathcal{A}_j$, and $0$ otherwise.
+The entry $(i,j)$ of the $k\times n$ \textbf{transfer matrix} is equal
+to $A_j(z)$ if an object of $\mathcal{A}_i$ can be followed by an object
+of $\mathcal{A}_j$, and $0$ otherwise.
 \end{definition}
 
 \begin{example}
@@ -821,8 +821,8 @@ some terms that will be used throughout.
 
 \begin{definition}
 \label{def:error-free-interval}
-An error-free interval is a nonempty sequence of correct calls that cannot
-be extended left or right.
+An \textbf{error-free interval} is a nonempty sequence of correct calls
+that cannot be extended left or right.
 \end{definition}
 
 In other words, an error-free interval contains no error, and it is
@@ -836,7 +836,7 @@ $4$.
 
 \begin{definition}
 \label{def:seed}
-An exact $d$-seed is an error-free interval of size at least $d$.
+An \textbf{exact $d$-seed} is an error-free interval of size at least $d$.
 \end{definition}
 
 In what follows, we will refer to a $d$-seed as simply a ``seed''
@@ -960,26 +960,6 @@ S(z) = \frac{1+F_d(z)}{1-pz\big( 1+F_d(z) \big)} =
 \frac{1+qz + \ldots + (qz)^{d-1}}{1-pz \big(1+qz + \ldots +
 (qz)^{d-1} \big)}.
 \end{equation}
-
-\begin{remark}
-\label{rem:alt}
-Observe that equation (\ref{eq:Sp}) can be expressed as
-
-\begin{equation}
-\label{eq:altSp}
-\frac{1+F_d(z)}{1-pz(1+F_d(z))} = (1+F_d(z))
-  \sum_{n=0}^\infty \big( pz(1+F_d(z)) \big)^n.
-\end{equation}
-
-The term $pz(1+F_d(z))$ is the weighted generating function of
-``substitution intervals'', defined as a substitution followed by nothing
-or by an error-free interval. Expression (\ref{eq:altSp}) thus
-highlights that a read can be decomposed as a (potentially empty)
-error-free interval, followed by a sequence of substitution intervals.
-Note that every substitution interval contains exactly one substitution.
-This representation will be useful in section~\ref{sec:av} when deriving
-the average number of substitutions.
-\end{remark}
 
 The task is now to extract the coefficient of $z^k$ in the series
 expansion of expression (\ref{eq:Sp}). Instead of the exact solution, we
@@ -1142,20 +1122,26 @@ insertions and deletions, with typical frequencies that differ from
 substitutions. In order to model more complex behaviors, we need to
 distinguish the different types of errors.
 
-To not jump too fast into the problem, we will first focus on the
-somewhat unrealistic case where errors can be deletions or
-susbtitutions, but not insertions. As in the case of uniform
-substitutions, we assume that every call is false with a probability $p$
-and true with a probability $1-p=q$. But here, we also assume the
-``space''  between consecutive nucleotides can contain a deletion with
-probability $\delta$.
+To not jump too fast into the difficulties, we will first focus on the
+semi-realistic case where errors can be deletions or susbtitutions, but
+not insertions. As in the case of uniform substitutions, we assume that
+every nucletoide call is false with a probability $p$ and true with a
+probability $1-p=q$. Here, we also assume the ``space''  between
+consecutive nucleotides can contain a deletion with probability $\delta$.
 
-A deletion adjacent to a substitution is irrelevant because it does not
-modify the error-free intervals in any way, but it interrupts an
-error-free interval when located between two correct calls. For this
-reason, we simplify the problem without loss of generality and assume that
-deletions exist only between correct calls. Figure~\ref{fig:deletions}
-shows the transition probabilities between errors and correct calls.
+A deletion may be adjacent to a substitution, or lie in between two
+correct nucleotides. In the first case, the deletion does not interrupt
+any error-free intervals so it does not change the probability that the
+read contains a seed. For this reason, we ignore deletions next to
+substitutions. More precisely, we assume that they can occur, but whether
+they do has no importance for the problem.
+
+Figure~\ref{fig:deletions}
+shows the transition probabilities between errors and correct calls. As
+mentioned above, a substitution can be followed or preceded by a deletion
+(each with probability $\delta$), but this information is regarded for
+simplicity. Only the self transition of the state ``Match'' needs to
+explicitly distinguish whether it contains a deletion.
 
 \begin{figure}[h]
 \centering
@@ -1224,13 +1210,13 @@ we obtain the weighted generating function of reads as
 \begin{equation}
 \label{eq:Sdel}
 \begin{split}
-S(z) &= 1 + U(z) \cdot M_*(z) \cdot V \\
+R(z) &= 1 + U(z) \cdot M_*(z) \cdot V \\
 &= \frac{1+(1-\delta)F(z)} {1-pz - \big(pz(1-\delta) + \delta\big)F(z)}
 = \frac{1}{1-z}.
 \end{split}
 \end{equation}
 
-The terms of equation (\ref{eq:Sdel}) cancel out when $F$ is defined as
+The terms of equation (\ref{eq:Sdel}) cancel out when $F$ is defined as in
 (\ref{eq:Fdel}). The result is $1/(1-z) = 1+z +z^2 + \ldots$, which means
 that the total weight of reads of size $k$ is equal to $1$ for every $k
 \geq 0$.
@@ -1243,7 +1229,7 @@ generating function of seedless reads is
 
 \begin{equation}
 \label{eq:Sdel}
-R(z) = \frac{1+(1-\delta)F_d(z)}
+S(z) = \frac{1+(1-\delta)F_d(z)}
   {1-pz - \big(pz(1-\delta) + \delta\big)F_d(z)}.
 \end{equation}
 
@@ -1287,17 +1273,17 @@ out of the constant $C$ in expressions (\ref{eq:Cp}) and (\ref{eq:Cpd}).
 \begin{example}
 \label{ex:num2}
 Let us approximate the probablity that a read of size $k = 100$ is
-seedless for $d=17$, $p = 0.05$ and $\delta = 0.15$, respectively.
-In order to find the dominant singularity of $S$ expressed as
-(\ref{eq:Sdel}), we need to solve the equation $1-0.05z - \big(0.0425z +
-0.15\big) \big(0.95z+0.85(0.95z)^2 + \ldots + 0.85^{15}(0.95z)^{16}\big) =
-0$. We write it as $1-0.05z - \big(0.0425z + 0.15)
-(0.95z-0.85^{16}(0.95z)^{17}) / (1-0.8075z) = 0$ and use bisection to
-solve it, yielding $z_1 \approx 1.006705$. Now substituting the obtained
-value in (\ref{eq:Cpd}) gives $C \approx 1.088876$, so the probability
-that a read contains no seed is approximately $1.088876 / 1.006705^{100}
-\approx 0.558141$. For comparison, a 99\% confidence interval obtained by
-performing 10 billion random simulations is $0.55813-0.55816$.
+seedless for $d=17$, $p = 0.05$ and $\delta = 0.15$. In order to find the
+dominant singularity of $S$ expressed as (\ref{eq:Sdel}), we need to solve
+the equation $1-0.05z - \big(0.0425z + 0.15\big) \big(0.95z+0.85(0.95z)^2
++ \ldots + 0.85^{15}(0.95z)^{16}\big) = 0$. We write it as $1-0.05z -
+\big(0.0425z + 0.15) (0.95z-0.85^{16}(0.95z)^{17}) / (1-0.8075z) = 0$ and
+use bisection to solve it, yielding $z_1 \approx 1.006705$. Now
+substituting the obtained value in (\ref{eq:Cpd}) gives $C \approx
+1.088876$, so the probability that a read contains no seed is
+approximately $1.088876 / 1.006705^{100} \approx 0.558141$. For
+comparison, a 99\% confidence interval obtained by performing 10 billion
+random simulations is $0.55813-0.55816$.
 % The magic number is 5581417733 out of 10 billion.
 \end{example}
 
@@ -1545,8 +1531,8 @@ nonempty.
 
 \begin{definition}
 \label{def:error-interval}
-An error-only interval is a nonempty sequence of errors that cannot be
-extended left or right.
+An \textbf{error-only interval} is a nonempty sequence of errors that
+cannot be extended left or right.
 \end{definition}
 
 If we have empirical probabilities $p_0, p_1, \ldots, p_n$ such that $p_k$
@@ -1674,9 +1660,269 @@ approximately equal to $0.007119 / 0.06271356^{k+1}$.
 
 
 
+%%%%%%%%%%%%%%%%%% sampling seedless reads %%%%%%%%%%%%%%%%%%%%%
 
-%%%%%%%%%%%%%%%%%% Inexact seeding %%%%%%%%%%%%%%%%%%%%%
-\section{Average number of errors}
+\section{Sampling seedless reads}
+
+It is trivial to use the error models presented above to sample reads.
+This approach is suboptimal if we are only interested in seedless
+reads, because they may be sampled at a very low rate. Sampling
+seedless reads at maximum rate, \textit{i.e.} without rejection is
+desirable when they occur at low frequency under the given error model.
+The question is how to sample the reads with a frequency that is equal to
+their expected occurrence among seedless reads.
+
+Here analytic combinatorics offers a simple way to achieve this via the
+symbolic method. The combinatorial construction associated with an
+error model gives us a handle for a sampling algorithm. At each iteration
+of the process, we simulate the length of an error-free interval, which is
+a number between $0$ and $d-1$, followed by an error. The probabilities
+of these $d$ possible outcomes are computed thanks to asymptotic formulas
+given by proposition§~\ref{th:ass}.
+
+
+
+
+\subsection{Substitutions only}
+\label{sec:smplsub}
+
+We start from the weighted generating function of seedless reads, namely
+
+\begin{equation}
+\tag{\ref{eq:Sp}}
+S(z) = \frac{1+F_d(z)}{1-pz\big( 1+F_d(z) \big)}.
+\end{equation}
+
+Notice that according to proposition~\ref{th:sequences}, this expression
+is also equal to
+
+\begin{equation}
+\label{eq:altSp}
+\left( \sum_{n=0}^\infty \big( (1+F_d(z))pz \big)^n \right)
+  (1+F_d(z)).
+\end{equation}
+
+Expression (\ref{eq:altSp}) indicates that a read can be viewed as a
+sequence of objects with weighted generating function $(1+F_d(z))pz$,
+followed by a single object with weighted generating function $1+F_d(z)$.
+Note that $1+F_d(z)$ is the weighted generating function of possibly empty
+error-free intervals of size less than $d$, because it is the sum of the
+weighted generating functions of the empty object and of error-free
+intervals of size less than $d$.
+
+Recalling that $pz$ is the weighted generating function of substitutions,
+the term $(1+F_d(z))pz$ now appears as the weighted generating function of
+a possibly empty error-free interval of size less than $d$, followed by a
+substitution. We introduce this type of combinatorial sequence in the
+definition below.
+
+\begin{definition}
+A \textbf{substitution interval} is a possibly empty error-free
+interval, followed by a substitution.
+\end{definition}
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.89]{sketch_substitution_intervals.pdf}
+\caption{\textbf{Decomposition of a read in substitution intervals}. When
+errors consist of substitutions only, we can segment reads in substitution
+intervals. This decomposition is unique and every substitution belongs to
+a unique interval (the last interval may not contain a substitution). In
+this example, a read of size $23$ with $4$ substitutions (black squares)
+is segmented in $5$ substitution intervals.}
+\label{fig:sketchsubint}
+\end{figure}
+
+The point of this definition is that by expression (\ref{eq:altSp}), a
+read can be decomposed as a sequence of substitution intervals followed by
+a possibly empty error-free interval (Figure~\ref{fig:sketchsubint}).
+
+This observation is the key of a method to sample seedless reads. Assume
+that the read size $k$, the minimum seed length $d$ and the substitution
+rate $p$ are given. We want to generate a read according to its
+probability of occurrence among seedless reads.
+
+If the read starts with a substitution interval of size $m$ ($1 \leq m
+\leq d$), then it consists of an error-free interval of size $m-1$,
+followed by a substitution, followed by a seedless read of size $k-m$.
+The probability of such a read is $q^{m-1} \times p \times C/z_1^{k-m+1}$.
+Since the occurrence of seedless reads of size $k$ is $C/z_1^{k+1}$, the
+probability that a seedless read starts with a substitution interval of
+size $m$ is $pz_1(qz_1)^{m-1}$.
+
+Notice that $pz_1 + pz_1qz_1 + \ldots + pz_1(qz_1)^{d-1} = 1$ because by
+definition, $z_1$ is a root of the polynomial $1-pz(1+F_d(z)) =
+1-pz(1+qz+\ldots+pz_1(qz)^{d-1})$. This shows that the terms
+$pz_1(qz_1)^{m-1}$ can be interpreted as probabilities, giving a
+straightforward way to sample the first substitution interval. This is a
+geometric distribition with parameter $qz_1$, conditioned on the values
+$0, 1, \ldots, d-1$.
+
+The process can be repeated to produce the next substitution intervals.
+When the generated read has size $k$ or greater, the process is stopped,
+and the nucleotides beyond $k$ are removed. The analytic combinatorics
+approaches directly yields a simple and efficient scheme to sample
+seedless reads. Once again, it is unclear how one may obtain the same
+result with a different approach.
+
+
+
+
+
+\subsection{Substitutions and deletions}
+
+We can use the same principle to sample seedless reads under the error
+model descrbibed in section~\ref{sec:deletions}.
+
+\begin{equation}
+\tag{\ref{eq:Sdel}}
+S(z) = \frac{1+F_d(z)(1-\delta)}{1-pz-\big(pz(1-\delta)
+  + \delta\big) F_d(z)}.
+\end{equation}
+
+Using proposition~\ref{th:sequences}, can express (\ref{eq:Sdel}) as
+
+\begin{equation*}
+  \left( \sum_{n=0}^\infty \left( \frac{F_d(z)
+  \big( \delta + (1-\delta)pz \big) }{1-pz}
+  \right)^n \right) \frac{1+(1-\delta)F_d(z)}{1-pz}.
+\end{equation*}
+
+This shows that under the error model of uniform substitutions and
+deletions, reads can be interpreted as sequences of combinatorial objects
+with weighted generating function $F_d(z)\big( \delta + (1-\delta)pz \big)
+/ (1-pz)$, followed by a combinatorial object with weighted generating
+function $(1+F_d(z)(1-\delta))/(1-pz)$.
+
+The first weighted generating function consists of three components. The
+term $1/(1-pz)$ is the weighted generating function of sequences of
+substitutions (possibly interspersed with deletions). The term $F_d(z)$ is
+the weighted generating function of error-free intervals of size less than
+$d$. Finally, the term $\delta  + (1-\delta)pz$ is the weighted generating
+function of a deletion, or a substitution not preceded by a deletion. We
+refer to these components as ``head'', ``body'' and ``tail'',
+respectively, which together make a ``deletion interval''
+(Figure~\ref{fig:sketchdelint}).
+
+\begin{definition}
+A \textbf{deletion interval} is a sequence of deletions (called the head),
+followed by an error-free interval (called the body), followed by either a
+deletion or a substitution (called the tail).
+\end{definition}
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.89]{sketch_deletion_intervals.pdf}
+\caption{\textbf{Decomposition of a read in deletion intervals}. When
+errors consist of either substitutions or deletions, we can segment reads
+in deletions intervals. \textit{Top:} deletions intervals consist of a
+head, a body and a tail. The head is a sequence of substitutions, possibly
+interspersed (but not starting) by deletions. THe body is an error-free
+interval. The tial is either a deletion, or a substitution (not preceded
+but possibly followed by a deletion). This decomposition is unique.
+\textit{Bottom:} Example of a read of size $23$ with $4$ substitutions
+(black squares) and $2$ deletions (bold vertical bars) segmented in $5$
+deletion intervals.}
+\label{fig:sketchdelint}
+\end{figure}
+
+The second generating function, $(1+F_d(z)(1-\delta))/(1-pz)$ consists of
+two terms. The first, $1/(1-pz)$ is the same as the head of a deletion
+interval. The second, $1+F_d(z)(1-\delta)$ is the weighted generating
+function of either the empty object, or an error-free interval not
+followed by a deletion. Such objects account for the fact that the right
+end of the read may not coincide with the tail of a deletion interval. In
+this case, the read may not end with a deletion (this case is covered by
+the tail of deletion intervals).
+
+We can now describe a method to sample seedless reads with this error
+model. Assume that the read size $k$, the minimum seed length $d$, the
+substitution rate $p$ and the deletion rate $\delta$ are given. We want to
+generate a read according to its probability of occurrence among seedless
+reads.
+
+Say that a read starts with a deletion interval whose head and body have
+size $a$ and $b$, respectively ($a \geq 0$ and $1 \leq b \leq d-1$). The
+probability of such a read is $p^a \times (1-\delta)^{b-1}q^b \times
+\delta \times C/z_1^{k+1-a-b}$ if the tail is a deletion, or $p^a \times
+(1-\delta)^{b-1}q^b \times (1-\delta)p \times C/z_1^{k+1-a-b-1}$ if the
+tail is a substitution. Since the occurrence of seedless reads of size
+$k$ is $C/z_1^{k+1}$, this read occurs among seedless reads
+with probability $(pz_1)^a (1-\delta)^{b-1}(qz_1)^b \delta$ if the tail is
+a deletion or $(pz_1)^a (1-\delta)^{b-1}(qz_1)^b (1-\delta)pz_1$ if the
+tail is a substitution.
+
+As in section~\ref{sec:smplsub}, we sample seedless reads one deletion
+interval at at time. Summing over all possible values of $a$ and $b$, and
+over the two types of tail, we obtain a total probability equal to
+
+\begin{equation*}
+\sum_{a=0}^\infty \sum_{b=1}^{d-1} (pz_1)^a (1-\delta)^{b-1}(qz_1)^b
+\big(\delta + (1-\delta)pz_1 \big) = \frac{F_d(z_1)(\delta +
+(1-\delta)pz_1)}{1-pz_1} = 1.
+\end{equation*}
+
+The last equality comes from the fact that by definition, $z_1$ is a root
+of the polynomial $1-pz-F_d(z_1)(\delta +(1-\delta)pz_1)$. Since all the
+terms of the sum are positive, they define a proper probability
+distribution and since the terms are independent, we can use the marginal
+distributions to sample the head, the body and the tail.
+
+According to the marginal distribution, the probability that the head has
+size $a \geq 0$ is $(1-pz_1)(pz_1)^a$. Similarly, the probability that the
+body has size $b$, for $1 \leq b \leq d-1$, is $(1-\delta)^{b-1}(qz_1)^b /
+F_d(z_1)$, and the probability that the tail is a deletion is $\delta /
+(\delta + (1-\delta)pz_1)$. With these probabilities we can sample the
+head, the body and the tail of deletion intervals until size $k$ is
+reached, and delete the nucleotides beyond $k$.
+
+\begin{example}
+Say that we want to sample a read of size $k=50$, without seed of size
+$d=17$, with substitution rate $p = 0.05$ and deletion rate $\delta=0.15$.
+We start by finding $z_1$, the dominant singularity of the weighted
+generating function. Referring to example~\ref{ex:num2}, $z_1 \approx
+1.006705$.
+
+\begin{enumerate}
+
+\item
+From the term $pz_1 \approx 0.050335$, we compute $P(a=0) = 1-pz_1
+\approx 0.94967$, $P(a \leq 1) = P(a=0) + (1-pz_1)pz_1 \approx 0.99747$
+\textit{etc}. Using a pseudo-random number generator, we obtain $0.6671961
+< P(a=0)$ a we thus set the size of the head to $0$ (\textit{i.e.} there
+is no initial substitution).
+
+\item
+For the body, we compute $F_d(z_1) \approx 4.96081$, which yields
+$P(b=1) = qz_1/F_d(z_1) \approx 0.19279$, $P(b \leq 2) = P(b=1)
++ (qz_1)^2(1-\delta)/Fd(z_1) \approx 0.34950$ \textit{etc}. Using a
+pseudo-random number generator gives $P(b \leq 11) < 0.875563 < P(b
+\leq 12)$. So we set the size of the error-free interval to $12$.
+
+\item
+To sample the tail, we compute $\Delta = \delta / (\delta +
+(1-\delta)pz_1) \approx 0.77807$.  Using a pseudo-random number generator,
+we obtain $0.37722 < \Delta$, so the sampled deletion interval consists of
+$12$ correct nucleotides, followed by a deletion.
+\end{enumerate}
+
+The process must be repeated until the total size is at least $50$. At
+that point, the excedent nucleotides are removed so that the size of the
+read is exactly $50$.
+\end{example}
+
+\begin{remark}
+In case the reads are generated from some template, the number of
+nucleotides that are deleted per deletion must be estimated and computed
+separately.
+\end{remark}
+
+
+
+
+
+%%%%%%%%%%%%%%%%%% Average number of errors %%%%%%%%%%%%%%%%%%%%%
+\section{Average quantities}
 \label{sec:av}
 
 Analytic combinatorics also allows computing the average of many
@@ -1750,13 +1996,14 @@ substitutions of the read.
 
 We could derive the weighted generating function by the transfer matrix
 method described in section~\ref{sec:substitutions}, but we can get an
-immediate result by recalling remark~\ref{rem:alt}, where we observed
+immediate result by using equation (\ref{eq:altSp}), where we observed
 that the weighted generating function of seedless reads can be expressed
 as
 
-\begin{equation*}
+\begin{equation}
+\tag{\ref{eq:altSp}}
 (1+F_d(z)) \sum_{n=0}^\infty \big( pz(1+F_d(z)) \big)^n.
-\end{equation*}
+\end{equation}
 
 Here the weighted generating function of substitutions appears explicitly
 as $pz$. We can replace it by $pzu$ to obtain directly
@@ -1976,6 +2223,36 @@ shown here.}
 \end{figure}
 
 
+\subsection{Average size of error-free intervals}
+\label{sec:avsz}
+
+Another quantity of interest is the average size of error-free intervals.
+for this we need to mark two quantites: the total size of intervals and
+the number of intervals. A question we need to decide straight away is
+whether an interal of size zero is an interval. We will get two different
+answers, depend on whether we answer yes or no to this question.
+
+We start from expression
+
+\begin{equation}
+\tag{\ref{eq:altSp}}
+(1+F_d(z)) \sum_{n=0}^\infty \big( pz(1+F_d(z)) \big)^n.
+\end{equation}
+
+We can label every error-free interval with the variable $u$ by replacing
+$F_d(z)$ with $uF_d(z)$. We can also count the cumulative size of
+error-free intervals through the variable $v$ by replacing $F_d(z)$ with
+$F_d(zv)$. We thus obtain the weighted generating function of three
+variables
+
+\begin{equation*}
+(1+uF_d(zv)) \sum_{n=0}^\infty \big( pz(1+uF_d(zv)) \big)^n =
+\frac{1+uF_d(zv)}{1-pz(1+uF_d(zv))}.
+\end{equation*}
+
+From there, we need to derive with respect to $v$ and integrate with
+respect to $u$.
+
 
 
 
@@ -2013,8 +2290,8 @@ at most one sbustituttion.}
 
 \begin{definition}
 \label{def:seed}
-An inexact $d$-seed is an interval of size at least $d$ that contains at
-most a bustitution and no other error.
+An \textbf{inexact $d$-seed} is an interval of size at least $d$ that
+contains at most a bustitution and no other error.
 \end{definition}
 
 In other words, an inexact seed is either an error-free interval of size
