@@ -167,6 +167,24 @@ out-.12-average.txt: sim-average
 	done
 
 
+# Substitutions (short)
+out-.005.txt: sim-sub
+	./sim-sub 25 17 0.005 > out-.005.txt
+	for ((i=26 ; i <= 55; i += 1)) ; do \
+		./sim-sub $$i 17 0.005 >> out-.005.txt ; \
+	done
+out-.010.txt: sim-sub
+	./sim-sub 25 17 0.010 > out-.010.txt
+	for ((i=26 ; i <= 55; i += 1)) ; do \
+		./sim-sub $$i 17 0.010 >> out-.010.txt ; \
+	done
+out-.015.txt: sim-sub
+	./sim-sub 25 17 0.015 > out-.015.txt
+	for ((i=26 ; i <= 55; i += 1)) ; do \
+		./sim-sub $$i 17 0.015 >> out-.015.txt ; \
+	done
+
+
 simulp.pdf: out-.08.txt out-.10.txt out-.12.txt
 	R -f make_figure_simulation_sub.R
 
@@ -184,6 +202,13 @@ simulp-inexact.pdf: out-.08-inexact.txt out-.10-inexact.txt \
 simulp-average.pdf: out-.08-average.txt out-.10-average.txt \
 		out-.12-average.txt
 	R -f make_figure_simulation_average.R
+
+simulp_short.pdf: out-.005.txt out-.010.txt out-.015.txt
+	R -f make_figure_simulation_sub_short.R
+
+simulp_approx.pdf: out-.05-.15-.04-.45.txt out-.05-.15-.05-.45.txt \
+		out-.05-.15-.06-.45.txt
+	R -f make_figure_simulation_sub_approx.R
 
 
 clean:

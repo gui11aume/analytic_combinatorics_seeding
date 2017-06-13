@@ -39,58 +39,54 @@ cst_term = function(z,p,d) {
    (1-(1-p)*z)^2 / p^2 / (1+d*((1-p)*z)^(d+1)-(d+1)*((1-p)*z)^d)
 }
 
+END = 65
+
 d = 17
-k = 1:204
+k = 1:END
 
 L = list()
 
-z = Newton(.02,17)
-C = cst_term(z,.02,17)
-print(1-C/z^52)
-
-stop()
-
-for (p in c(0.08, 0.1, 0.12)) {
+for (p in c(0.005, 0.01, 0.0155)) {
    z = Newton(p,d)
    C = cst_term(z,p,d)
    L[[as.character(p)]] = 1-C/z^(k+2)
 }
 
 S = list(
-   read.table("out-.08.txt"),
-   read.table("out-.10.txt"),
-   read.table("out-.12.txt")
+   read.table("out-.005.txt"),
+   read.table("out-.010.txt"),
+   read.table("out-.015.txt")
 )
 
-pdf("simulp.pdf", width=11, height=5.5, useDingbats=FALSE)
+pdf("simulp_short.pdf", width=11, height=5.5, useDingbats=FALSE)
 par(mfrow=c(1,2))
-subs = seq(1,51,2)
-plot(S[[1]][subs,1], 1-S[[1]][subs,2]/1e7, pch=19, cex=.5, ylim=c(0.5,1),
+subs = seq(1,16)
+plot(S[[1]][subs,1], 1-S[[1]][subs,2]/1e7, pch=19, cex=.5, ylim=c(0.8,1),
      plot.first=grid(),
      xlab="Read size", ylab="Seeding probability")
-lines(k[1:154], L[[1]][1:154])
+lines(k[1:END], L[[1]][1:END])
 
 points(S[[2]][subs,1], 1-S[[2]][subs,2]/1e7, pch=19, cex=.5)
-lines(k[1:154], L[[2]][1:154])
+lines(k[1:END], L[[2]][1:END])
 
 points(S[[3]][subs,1], 1-S[[3]][subs,2]/1e7, pch=19, cex=.5)
-lines(k[1:154], L[[3]][1:154])
+lines(k[1:END], L[[3]][1:END])
 
 legend(x="bottomright", inset=0.05, legend=c("Simulation", "Estimate"),
        pch=c(19, NA), lty=c(NA, 1), pt.cex=.6, bg="white", box.col=NA)
 
 
-subs = seq(51,76)
-plot(S[[1]][subs,1], 1-S[[1]][subs,2]/1e7, pch=19, cex=.5, ylim=c(0.9,1),
+subs = seq(16,31)
+plot(S[[1]][subs,1], 1-S[[1]][subs,2]/1e7, pch=19, cex=.5, ylim=c(0.98,1),
      plot.first=grid(),
      xlab="Read size", ylab="Seeding probability")
-lines(k[146:204], L[[1]][146:204])
+lines(k[1:END], L[[1]][1:END])
 
 points(S[[2]][subs,1], 1-S[[2]][subs,2]/1e7, pch=19, cex=.5)
-lines(k[146:204], L[[2]][146:204])
+lines(k[1:END], L[[2]][1:END])
 
 points(S[[3]][subs,1], 1-S[[3]][subs,2]/1e7, pch=19, cex=.5)
-lines(k[146:204], L[[3]][146:204])
+lines(k[1:END], L[[3]][1:END])
 dev.off()
 
 max(abs(1-S[[1]][,2]/1e7 - L[[1]][S[[1]][,1]]))
