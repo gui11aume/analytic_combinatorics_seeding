@@ -4,20 +4,53 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{amsthm}
+\usepackage{blkarray}
 \usepackage[font=small]{caption}
 \usepackage{cite}
 \usepackage{graphicx}
 
+% ---- Propositions, lemmas, defintions... ---- %
+
 \newtheorem{algorithm}{Algorithm}
 \newtheorem{definition}{Definition}
-\newtheorem{example}{Example}
+%\newtheorem{example}{Example}
 \newtheorem{lemma}{Lemma}
 \newtheorem{proposition}{Proposition}
-\newtheorem{remark}{Remark}
+%\newtheorem{remark}{Remark}
+
+
+% ---- Special environments (examples and remarks) ---- %
+
+\newcounter{examplecounter}
+\newenvironment{example}
+{\small\vspace{0.5\baselineskip}
+  \refstepcounter{examplecounter}%
+  \noindent\textbf{Example \arabic{examplecounter}.}%
+}{\vspace{0.5\baselineskip}}
+
+\newcounter{remarkcounter}
+\newenvironment{remark}
+{\small\it\vspace{0.5\baselineskip}
+  \refstepcounter{remarkcounter}%
+  \noindent\textbf{Remark \arabic{remarkcounter}.}%
+}{\vspace{0.5\baselineskip}}
+
+
+% ---- Macros ---- %
+
+\newcommand{\smA}{\scriptstyle{A}}
+\newcommand{\smC}{\scriptstyle{C}}
+\newcommand{\smD}{\scriptstyle{D}}
+\newcommand{\smG}{\scriptstyle{G}}
+\newcommand{\smI}{\scriptstyle{I}}
+\newcommand{\smS}{\scriptstyle{S}}
+\newcommand{\smT}{\scriptstyle{T}}
+\newcommand{\smDEL}{\scriptstyle{\Delta}}
+
 
 %---------------------------------------------------------------
 
-\title{Analytic combinatorics meets bioinformatics I: applications to
+\title{Analytic combinatorics for bioinformatics I:
 seeding methods}
 \author{
 \textsc{Guillaume Filion and Eduard Valera Zorita} \\ [1ex]
@@ -116,6 +149,8 @@ interested to the original literature.
 \subsection{Weighted generating functions}
 \label{subsec:WGF}
 
+
+% ---------------  Definition of WGFs  --------------- %
 \begin{definition}
 \label{def:GF}
 Let $\mathcal{A}$ be a set of combinatorial objects characterized by a
@@ -140,30 +175,61 @@ By definition $a_k = \sum_{a \in A_k}w(a)$, where $A_k$ is the class of
 objects of size $k$. The number $a_k$ is called the total weight of
 objects of size $k$.
 \end{definition}
+% ---------------------------------------------------- %
+
 
 \begin{remark}
 \label{rem:noweight}
 If the weight of every object $a \in \mathcal{A}$ is $1$, then $A(z)$ is a
-simple generating function and $a_k$ in expression (\ref{eq:GF2}) is
-the number of objects of size $k$.
+simple \emph{generating function}, and $a_k$ in expression (\ref{eq:GF2})
+is the number of objects of size $k$.
 \end{remark}
 
-Note that in definition \ref{def:GF}, the weight is a property of
-combinatorial objects and the total weight is a property of a classes of
-ojects. Expressions (\ref{eq:GF1}) and (\ref{eq:GF2}) are equivalent.
+\begin{remark}
+Typical combinatorial objects include binary trees, permutations,
+derangements, multisets \textit{etc}., but here we will focus exclusively
+on sequences of letters from finite alphabets. The readers in search of
+concreteness can safely replace ``objects'' by ``words''.
+\end{remark}
+
+Expressions (\ref{eq:GF1}) and (\ref{eq:GF2}) are of course equivalent.
 Depending on the context, we will use one or the other.
 
-The essence of analytic combinatorics is that some operations on
-combinatorial objects correspond to some operations on their generatintg
-function. If $A(z)$ and $B(z)$ are the weighted generating functions of
-two mutually exclusive sets $\mathcal{A}$ and $\mathcal{B}$, the weighted
-generating function of $\mathcal{A} \cup \mathcal{B}$ is $A(z) + B(z)$, as
-appears immediately from expression (\ref{eq:GF1}). Size and weight can be
-extended to pairs of objects in $\mathcal{A} \times \mathcal{B}$ by
-defining $|(a,b)| = |a| + |b|$ and $w(a,b) = w(a)w(b)$. With this
-convention, the weighted generating function of $\mathcal{A} \times
-\mathcal{B}$ is $A(z)B(z)$, as shown by expression (\ref{eq:GF1})
-once again
+\begin{example}
+\label{ex:BABA}
+Let $\mathcal{A} = \{a\}$ and $\mathcal{B} = \{b\}$ be alphabets with a
+single letter (of size $1$). Assume $w(a) = p$ and $w(b) = q$. The
+weighted generating functions of $\mathcal{A}$ and $\mathcal{B}$ are then
+$A(z) = pz$ and $B(z) = qz$, respectively.
+\end{example}
+
+The motivation for definition~\ref{def:GF} is to translate some
+combinatorial operations on the objects into algebraic operations on their
+weighted generating functions. Constructing complex objects from simple
+ones, we construct complex weighted generating functions from simple ones.
+The end goal is to count classes of objects with certain properties.
+As will be clarified below, the easiest way to do this is to inspect their
+weighted generating function.
+
+Let us start with the most straightforward ways to obtain new weighted
+generating functions: additions and multiplications. If $A(z)$ and $B(z)$
+are the weighted generating functions of two mutually exclusive sets
+$\mathcal{A}$ and $\mathcal{B}$, the weighted generating function of
+$\mathcal{A} \cup \mathcal{B}$ is $A(z) + B(z)$, as appears immediately
+from expression (\ref{eq:GF1}).
+
+\begin{example}
+With the definitions of example~\ref{ex:BABA}, the weighted generating
+function of the alphabet $\mathcal{A} \cup \mathcal{B}= \{a,b\}$ is $pz +
+qz = A(z) + B(z)$.
+\end{example}
+
+Size and weight can be defined for pairs of objects in $\mathcal{A} \times
+\mathcal{B}$ as $|(a,b)| = |a| + |b|$ and $w(a,b) = w(a)w(b)$. In other
+words the sizes are added and the weights are multiplied.  With this
+convention, the weighted generating function of the Cartesian product
+$\mathcal{A} \times \mathcal{B}$ is $A(z)B(z)$. This simply follows from
+expression (\ref{eq:GF1}) and
 
 \begin{equation*}
 A(z)B(z) =
@@ -172,79 +238,100 @@ A(z)B(z) =
 \end{equation*}
 
 \begin{example}
-\label{ex:simple}
-Assume that $\mathcal{A}$ contains a single object $a$ of size $1$ and of
-weight $p$. The weighted generating function of $\mathcal{A}$ is $pz$.
-The set $\mathcal{A}^2$ contains a single object $(a,a)$ of size $2$ and
-weight $p^2$. Its weighted generating function is $p^2z^2 = pz \cdot pz$.
+With the definitions of example~\ref{ex:BABA}, $\mathcal{A}^2 = \{(a,a)\}$
+contains a single pair of letters, with size $2$ and weight $p^2$. Its
+weighted generating function is $(pz)^2 = A(z)^2$.
 \end{example}
 
-The definition of size and weight can be further extended to any finite
-Cartesian product in the same way\footnote{Explain the interest and give
-some examples.}. The generating function of a cartesian
-product then comes as the product of their generating functions.
+
+\begin{example}
+Still with the definitions of example~\ref{ex:BABA}, $(\mathcal{A} \cup
+\mathcal{B})^2$ contains the four pairs of letters $(a,a)$, $(a,b)$,
+$(b,a)$ and $ (b,b)$. They have size $2$ and respective weight $p^2$,
+$pq$, $qp$, and $q^2$, so the weighted generating function of
+$(\mathcal{A} \cup \mathcal{B})^2$ is $(p^2+2pq+q^2)z^2 =
+\big(A(z)+B(z)\big)^2$.
+\end{example}
+
+
+We can further extend the definition of size and weight to any finite
+Cartesian product in the same way. The sizes are always added and the
+weights are always multiplied. The generating function of a cartesian
+product then comes as the product of their generating functions. This
+allows us to construct finite sequences of objects.
 
 \begin{example}
 \label{ex:sequences}
-Following up on example~\ref{ex:simple}, the set $\mathcal{A}^k$ contains
-a single object of size $k$ and weight $p^k$, and its weighted generating
-function is $p^kz^k$. Since the sets $\mathcal{A}, \mathcal{A}^2,
-\mathcal{A}^3,\ldots$ are mutually exclusive, the weighted generating
-function of their union is
+With the definitions of example~\ref{ex:BABA}, $\mathcal{A}^k = \{(a, a,
+\ldots, a)\}$ contains a single $k$-tuple of letters, with size $k$ and
+weight $p^k$, so its weighted generating function is $(pz)^k$. Since the
+sets $\mathcal{A}, \mathcal{A}^2, \mathcal{A}^3,\ldots$ are mutually
+exclusive, the weighted generating function of their union is
 
 \begin{equation*}
-pz + (pz)^2 + (pz)^3 \ldots
+pz + (pz)^2 + (pz)^3 + \ldots
 \end{equation*}
 
-For any given $k$, notice that $(1-pz) \big(pz + (pz)^2 + \ldots + (pz)^k
-\big) = pz-(pz)^{k+1}$.  If $|z| < 1/p$, the term $(pz)^{k+1}$ vanishes as
-$k$ increases. So the weighted generating function is defined for $|z| <
-1/p$ and is equal to
+This infinite Taylor series can be expressed as a simple function. For any
+$k \geq 1$, $(1-pz) \big(pz + (pz)^2 + \ldots + (pz)^k \big) =
+pz-(pz)^{k+1}$.  If $|z| < 1/p$, the term $(pz)^{k+1}$ vanishes as $k$
+increases. So the weighted generating function is defined for $|z| < 1/p$
+and is equal to
 
 \begin{equation*}
-pz + (pz)^2 + (pz)^3 \ldots = \frac{pz}{1-pz}.
+pz + (pz)^2 + (pz)^3 + \ldots = \frac{pz}{1-pz}.
 \end{equation*}
 \end{example}
 
-Example~\ref{ex:sequences} can be generalized\footnote{Say that
-$\mathcal{A}$ is an alphabet and give an example with two or three
-letters.}. For any set $\mathcal{A}$, objects of $\mathcal{A}^+ =
-\cup_{k=1}^\infty\mathcal{A}^k$ are called non-empty (finite) sequences of
-objects of $\mathcal{A}$. By defining $\mathcal{A}^0$ as the set containg
-only $\varepsilon$, the ``empty'' object of size 0 and weight 1, we can
-also define $\mathcal{A}^* = \cup_{k=0}^\infty\mathcal{A}^k$ as the set of
-sequences of objects of $\mathcal{A}$.
-
-\begin{remark}
-Following the most popular convention, ``sequences'' include $\varepsilon$
-and therefore they can be empty. To avoid confusion, sequences of at least
-one object will be referred to as ``non-empty'' sequences throughout.
-\end{remark}
+Example~\ref{ex:sequences} can be generalized.
 
 \begin{proposition}
-\label{th:sequences}
 Let $\mathcal{A}$ be a set with weighted generating function $A(z)$. The
-generating functions of $\mathcal{A}^+$ and $\mathcal{A}^*$ are defined
-for $|A(z)| < 1$ and are respectively equal to
+weighted generating function of $\mathcal{A}^+ = \cup_{k=1}^\infty
+\mathcal{A}^k$, called the set of \textbf{non-empty sequences} of elements
+of $\mathcal{A}$ is defined for $|A(z)| < 1$ and is equal to
 
 \begin{equation*}
-\begin{split}
-\frac{A(z)}{1-A(z)}&\text{, and} \\
-\frac{1}{1-A(z)}&.
-\end{split}
+\frac{A(z)}{1-A(z)}.
 \end{equation*}
 \end{proposition}
 
 \begin{proof}
-For $k \geq 1$, the generating function of $\mathcal{A}^k$ is $A(z)^k$ and
-since the sets are mutually exclusive, the weighted generating function of
-their union $\mathcal{A}^+$ is $A(z) + A(z)^2 + \ldots = A(z) / (1-A(z))$,
-provided $|A(z)| < 1$.
-
-The generating function of $\mathcal{A}^0$ is $1$ so the weighted
-generating function of $\mathcal{A}^*$ is $1 + A(z) + A(z)^2 + \ldots =
-1 / (1-A(z))$, provided $|A(z)| < 1$.
+For $k \geq 1$, the weighted generating function of $\mathcal{A}^k$ is
+$A(z)^k$. Since the sets $\mathcal{A}^k$ are mutually exclusive, the
+weighted generating function of their union is $A(z) + A(z)^2 + \ldots =
+A(z) / (1-A(z))$, provided $|A(z)| < 1$.
 \end{proof}
+
+We introduce the \textbf{empty object} $\varepsilon$, which has size $0$
+and weight 1. Its weighted generating function is thus $1$. By convention,
+we define the zeroth power of a combinatorial set $\mathcal{A}$ as
+$\mathcal{A}^0 = \{\varepsilon\}$. With this definition, we can state a
+variant of the previous proposition.
+
+\begin{proposition}
+\label{th:sequences}
+Let $\mathcal{A}$ be a set with weighted generating function $A(z)$. The
+weighted generating function of $\mathcal{A}^* = \cup_{k=0}^\infty
+\mathcal{A}^k$, called the set of \textbf{sequences} of elements of
+$\mathcal{A}$ is defined for $|A(z)| < 1$ and is equal to
+
+\begin{equation*}
+\frac{1}{1-A(z)}.
+\end{equation*}
+\end{proposition}
+
+\begin{proof}
+$\mathcal{A}^* = \{\varepsilon\} \cup \mathcal{A}^+$. By proposition
+\ref{th:sequences}, the weighted generating function is $1 + A(z)(1-A(z))
+= 1/(1-A(z))$, provided $|A(z)| < 1$.
+\end{proof}
+
+\begin{remark}
+In what follows we will not state explicitly the conditions of convergence
+of weighted generating functions. We will always assume that $|z|$ is
+lower than the radius of convergence of the given expressions.
+\end{remark}
 
 \begin{remark}
 These expressions are not defined for $A(z) = 1$, \textit{i.e.} when
@@ -252,90 +339,39 @@ $\mathcal{A}$ contains only the empty object. In other words, one cannot
 construct sequences of empty ojects.
 \end{remark}
 
-From here on, we will not state the conditions of definition of the
-generating functions. We will simply assume that $|z|$ is lower than the
-radius of convergence of the given expression.
-
-Let us illustrate how to count with generating functions\footnote{The
-reader has wasted attention on why this is important. Bring this up
-earlier.}. Following remark~\ref{rem:noweight}, if the weights of all the
-objects are equal to $1$, then the coefficient of $z^k$ in (\ref{eq:GF2})
-is the number of objects of size $k$.
+It is important to insist that the expression ``sequences of'' refers to
+the set $\mathcal{A}^*$ and not $\mathcal{A}^+$, \textit{i.e.} the empty
+object $\varepsilon$ is a sequence of anything. For clarity, we will
+systematically use the expression ``non-empty sequences of'' when
+$\varepsilon$ is excluded.
 
 \begin{example}
-\label{ex:noweight}
-Let $\mathcal{A}$ and $\mathcal{B}$ be alphabets with only one symbol
-each. Say $\mathcal{A} = \{a\}$ and $\mathcal{B} = \{b\}$. Each symbol
-has weight $1$, so the simple generating function of each alphabet is $z$.
-The generating function of $\mathcal{A} \cup \mathcal{B}$, the alphabet
-with both symbols is $z+z = 2z$. This means that $\mathcal{A} \cup
-\mathcal{B}$ contains two objects of size $1$ and nothing else.
-
-Let us now combine the symbols into sequences and count them. By
-proposition~\ref{th:sequences}, the generating function of sequences of
-letters from $\mathcal{A} \cup \mathcal{B}$ is
+\label{ex:AUB+}
+Following the definitions of example~\ref{ex:BABA}, $(\mathcal{A} \cup
+\mathcal{B})^*$ is the set of sequences of $a$'s and $b$'s. By
+proposition~\ref{th:sequences}, the weighted generating function of this
+set is
 
 \begin{equation*}
-\frac{1}{1-2z} = 1 + 2z + (2z)^2 + (2z)^3 + \ldots
+\frac{1}{1-(p+q)z}.
 \end{equation*}
 
-The coefficient of $z^k$ in this expression is $2^k$. In other words,
-there are $2^k$ sequences of size $k$ made of the two symbols $a$ and $b$.
+The function $1 / (1-(p+q)z)$ is just a compact representation of the
+infinite series $1, (p+q), (p+q)^2, (p+q)^3, \ldots$ It thus carries all
+the information about the total weights of the sequences of any size. If
+$p = q = 1$, \textit{i.e.} if we count the total amount of sequences with
+simple generating functions (see remark~\ref{rem:noweight}), we obtain
+$1/(1-2z) = 1+ 2z + 4z^2 + 8z^3 + 16z^4 + \ldots$ meaning that there are
+$2^k$ sequences of size $k$. If $p$ and $q$ are the respective
+probabilities of ocurrence of $a$ and $b$, with $p + q \leq 1$, then the
+equality $1 / (1-(p+q)z) = 1+ (p+q)z + (p+q)^2z^2 + (p+q)^3z^3 + \ldots$
+means that the probability that a sequence of size $k$ contains only $a$'s
+and $b$'s is $(p+q)^k$.
 \end{example}
 
-If some objects are more frequent or more common than others, we can give
-them different weights. Let us revisit the previous example with a slight
-modification.
-
-\begin{example}
-\label{ex:wweights}
-Assume once again that $\mathcal{A} = \{a\}$ and $\mathcal{B} = \{b\}$,
-but this time $a$ has frequency $1/3$ and $b$ has frequency $2/3$. The
-weighted generating function of $\mathcal{A}$ is $z/3$ and that of
-$\mathcal{B}$ is $2z/3$. The generating function of $\mathcal{A} \cup
-\mathcal{B}$ is $z/3 + 2z/3 = z$. This does not say how many objects are
-in $\mathcal{A} \cup \mathcal{B}$ but it says that there are only objects
-of size $1$ and that their total weight is $1$.
-
-As in example~\ref{ex:noweight}, let us combine the symbols into
-sequences. The generating function of sequences of letters from
-$\mathcal{A} \cup \mathcal{B}$ is
-
-\begin{equation*}
-\frac{1}{1-z} = 1 + z + z^2 + z^3 + \ldots
-\end{equation*}
-
-For every $k \geq 0$, the coefficient of $z^k$ in this expression is $1$,
-so there are sequences of all sizes. This does not give the number of
-sequences of each size, but it says that their total weight is $1$.
-
-This may seem useless, but let us now evaluate the probatility that a
-sequence does not contain any $b$. In that case, it is a sequence of
-elements of $\mathcal{A}$, of which the weighted generating function is
-
-\begin{equation*}
-\frac{1}{1-z/3} = 1 + z/3 + (z/3)^2 + (z/3)^3 + \ldots
-\end{equation*}
-
-The coefficient of $z^k$ is $1/3^k$ so sequences of size $k$ that contain
-no $b$ have a total weight equal to $1/3^k$. Since the total weight of
-sequences of size $k$ is $1$, the total weight of sequences that do not
-contain any $b$ is $1/3^k \big/ 1 = 1/3^k$.
-\end{example}
-
-In example~\ref{ex:wweights}, the weighted generating function of the
-sequence $aaaba$ is $z/3 \times z/3 \times z/3 \times 2z/3 \times z/3 =
-2z^5/243$, which is another way of saying that $aaaba$ has size $5$ and
-weight $2/243$. Observe that if the symbols are chosen independently of
-each other, $2/243$ is the probability that a sequence of size $5$ is
-equal to $aaaba$. This is a general feature of weights. In the
-applications below, they will always be equal to the probability
-of occurrence of the objects they mark.
-
-The coefficients of weighted generating functions expressed as in
-(\ref{eq:GF2}) thus represent the probabilities of occurrence of some
-objects of interest. This observation motivates to find easy ways to
-calculate their weighted generating function.
+These trivial examples are better solved by intuition. However, we will
+soon see that analytic combinatorics allows us to solve a wide range of
+problems where intuition does not help.
 
 
 
@@ -368,14 +404,16 @@ Arranging the nodes in alphabetical order, the adjacency matrix of the
 directed graph is\footnote{Put the letters as index for row and column.}
 
 \begin{equation*}
-M = \left[
-\begin{matrix}
-1 & 1 & 1 & 1 \\
-1 & 1 & 0 & 1 \\
-1 & 1 & 1 & 1 \\
-1 & 1 & 1 & 1
-\end{matrix}
-\right].
+M = 
+\begin{blockarray}{ccccc}
+     & \smA & \smC & \smG & \smT \\
+\begin{block}{c[cccc]}
+\smA & 1 & 1 & 1 & 1 \\
+\smC & 1 & 1 & 0 & 1 \\
+\smG & 1 & 1 & 1 & 1 \\
+\smT & 1 & 1 & 1 & 1 \\
+\end{block}
+\end{blockarray}.
 \end{equation*}
 
 The entry of the matrix $M^n$ at position $(i,j)$ corresponds to the
@@ -413,14 +451,17 @@ as $(A(z), C(z), G(z), T(z))$, the transfer matrix of sequences without
 
 \begin{equation}
 \label{eq:Mz_CG}
-M(z) = \left[
-\begin{matrix}
-A(z) & C(z) & G(z) & T(z) \\
-A(z) & C(z) &  0   & T(z) \\
-A(z) & C(z) & G(z) & T(z) \\
-A(z) & C(z) & G(z) & T(z)
-\end{matrix}
-\right] = z/2 \left[
+M(z) =
+\begin{blockarray}{ccccc}
+     & \smA & \smC & \smG & \smT \\
+\begin{block}{c[cccc]}
+\smA & A(z) & C(z) & G(z) & T(z) \\
+\smC & A(z) & C(z) &  0   & T(z) \\
+\smG & A(z) & C(z) & G(z) & T(z) \\
+\smT & A(z) & C(z) & G(z) & T(z) \\
+\end{block}
+\end{blockarray}
+= z/2 \left[
 \begin{matrix}
 q & p & p & q \\
 q & p & 0 & q \\
@@ -458,7 +499,8 @@ A_i(z) \cdot \left( I - M(z) \right)^{-1}_{i,j},
 \end{equation}
 
 \noindent
-provided the eigenvalues of $M(z)$ all have modulus less than $1$.
+provided the eigenvalues of $M(z)$ all have \textit{modulus} less than
+$1$.
 \end{proposition}
 
 \begin{proof}
@@ -492,9 +534,9 @@ with an object from $\mathcal{A}_j$ is
 \end{equation*}
 
 Now observe that $(I-M(z)) \cdot (I+M(z)+M(z)^2+ \ldots + M(z)^n) =
-I-M(z)^{n+1}$, so if all the eigenvalues of $M(z)$ have modulus less than
-$1$, the right hand size converges to $I$ as $n$ goes to infinity, which
-proves (\ref{eq:I-Mz}).
+I-M(z)^{n+1}$, so if all the eigenvalues of $M(z)$ have \textit{modulus}
+less than $1$, the right hand size converges to $I$ as $n$ goes to
+infinity, which proves (\ref{eq:I-Mz}).
 \end{proof}
 
 \begin{remark}
@@ -610,7 +652,7 @@ $z^k$ in its series expansion is asymptotically equivalent to
 \end{equation}
 
 \noindent
-where $z_1$ is the root of $Q$ with smallest modulus.
+where $z_1$ is the root of $Q$ with smallest \textit{modulus}.
 \end{proposition}
 
 The roots of $Q$ are called the ``singularities'' of the weighted
@@ -620,9 +662,9 @@ multiplicity 1), they also referred to as ``simple poles'' of $A$.
 
 Proposition~\ref{th:ass} says that the asymptotic growth of the
 coefficients of the series expansion of $A(z)$ is dictated by the
-singularity of smallest modulus, also known as the ``dominant
-singularity'' of $A$. We will first state a lemma that will be
-important to improve the asymptotic approximation of the coefficients.
+singularity of smallest \textit{modulus}, also known as the ``dominant
+singularity'' of $A$. We will first state a lemma that will be important
+to improve the asymptotic approximation of the coefficients.
 
 \begin{lemma}
 \label{lemma:poles}
@@ -642,9 +684,10 @@ We now prove proposition~\ref{th:ass}.
 
 \begin{proof}
 Let $z_1, z_2, \ldots, z_n$ be the complex roots of $Q$, sorted by
-increasing order of modulus. Since $Q$ has only simple roots, there exists
-constants $\beta_1, \ldots, \beta_n$ such that the partial fraction
-decomposition of the rational function $P(z)/Q(z)$ can be written as
+increasing order of \textit{modulus}. Since $Q$ has only simple roots,
+there exists constants $\beta_1, \ldots, \beta_n$ such that the partial
+fraction decomposition of the rational function $P(z)/Q(z)$ can be written
+as
 
 \begin{equation}
 R(z) + \sum_{j=1}^n \frac{\beta_j}{z-z_j} =
@@ -663,8 +706,8 @@ the coefficient of $z^k$ in the series expansion of $F(z)$ is equal to
 -\sum_{j=1}^n \frac{\beta_j}{z_j^{k+1}}.
 \end{equation}
 
-Since $z_1$ is the root with smallest modulus, the sum is asymptotically
-equivalent to
+Since $z_1$ is the root with smallest \textit{modulus}, the sum is
+asymptotically equivalent to
 
 \begin{equation*}
 -\frac{\beta_1}{z_1^{k+1}}.
@@ -921,13 +964,16 @@ followed by either an error-free interval or another substitution. So the
 transfer matrix for the states ``match'' and ``substitution'' is
 
 \begin{equation*}
-M(z) = \left(
-\begin{matrix}
-0    & pz \\
-F(z) & pz
-\end{matrix}
-\right).
+M(z) = 
+\begin{blockarray}{ccc}
+       & \smDEL & \smS \\
+\begin{block}{c[cc]}
+\smDEL & 0    & pz \\
+\smS   & F(z) & pz \\
+\end{block}
+\end{blockarray}.
 \end{equation*}
+
 
 To find the weighted generating function of reads from
 proposition~\ref{th:TM2WGF}, we need to find the inverse of $I-M(z)$.
@@ -993,7 +1039,7 @@ circle and their rotation angles are not exactly regular.
 \centering
 \includegraphics[scale=0.4]{singularityS.pdf}
 \caption{\textbf{Singularities of $S$}. $Q(z)$ denotes the
-denominator of $S(z)$ from expression (\ref{eq:Sp}) with $p=0.01$ and
+denominator of $S(z)$ from expression (\ref{eq:Sp}) with $p=0.10$ and
 $d=17$. \textit{Left}: The value of $Q(z)$ is represented for $z$ real by
 the bold line. \textit{Right}: The value of $|1/Q(z)|$ is represented for
 $z$ complex by the heat map on the complex plane. Darker pixels correspond
@@ -1018,16 +1064,17 @@ singularity. This is the dominant singularity and it is greater than $1$.
 \begin{proof}
 Write $S(z) = P(z)/Q(z)$ and search the roots of $Q$. First we show that
 $Q$ has no real root in the interval $(0,1)$. For a real number $x$ such
-that $0\leq x \leq 1$, we have $1+qx+\ldots+(qx)^{d-1} < 1/p$, so $Q(x) >
-0$.
+that $0\leq x \leq 1$, we have $1+qx+\ldots+(qx)^{d-1} > (1-q^d)/p$,
+so $Q(x) > 0$.
 
 Second, we show that $Q$ has exactly one real root great than $1$. Because
 $Q'(x) < 0$ for $x \geq 0$ there can be only one positive root.  Since
 $Q(1) = q^d > 0$ and $\lim_{x\rightarrow \infty} Q(x) = -\infty$, $Q$
 vanishes for a real number greater than $1$.
 
-Third, we show that this is the root with smallest modulus.  Express the
-complex roots of $Q$ as $Re^{i\theta}$. They satisfy the equation
+Third, we show that this is the root with smallest \textit{modulus}.
+Express the complex roots of $Q$ as $Re^{i\theta}$. They satisfy the
+equation
 
 \begin{equation*}
 1-pRe^{i\theta}\frac{1-q^dR^de^{id\theta}}{1-qRe^{i\theta}} = 0,
@@ -1054,9 +1101,9 @@ R^2 = (pq^dR^{d+1})^2 + 2R \cos(\theta) -1.
 
 Since $R > 0$, the solution of this equation is minimal when
 $2R\cos(\theta)$ is maximal, \textit{i.e.} when $\theta = 0$. In other
-words, if there is a positive real root, its modulus is the minimum among
-the roots. We have seen above that there exsists exactly one and that it
-is greater than $1$.
+words, if there is a positive real root, its \textit{modulus} is the
+minimum among the roots. We have seen above that there exsists exactly one
+and that it is greater than $1$.
 \end{proof}
 
 We now have all the tools to approximate the coefficients of $S(z)$ using
@@ -1095,7 +1142,7 @@ explaining how the calculations are done in practice.
 Let us approximate the probability that a read of size $k=100$ is seedless
 for $d=17$ and for a substitution rate $p=0.1$. To find the dominant
 singularity of $S$, we need to solve
-$1-0.1z\times(1+0.9z+\ldots+(0.9z)^{16}) = 0$.  We rewrite the equation as
+$1-0.1z\times(1+0.9z+\ldots+(0.9z)^{16}) = 0$. We rewrite the equation as
 $1 - 0.1z\times(1-(0.9 z)^{17})/(1-0.9z) = 0$ and use bisection to solve
 it numerically, yielding $z_1 \approx 1.0268856$. Substituting this value
 in (\ref{eq:Cp}) yields $C \approx 1.433681$, so the probability that a
@@ -1103,6 +1150,9 @@ read contains no seed is approximately $1.433681 / 1.0268856^{102} \approx
 0.095763$. For comparison, a 99\% confidence interval obtained by
 performing 10 billion random simulations is $0.09575-0.09577$.
 % The magic number is 957598614 out of 10 billion.
+The computational cost of the analytic combinatorics approach is
+infinitesimal compared to the random simulations, and the precision
+is much higher.
 \end{example}
 
 \begin{figure}[h]
@@ -1191,13 +1241,16 @@ section~\ref{sec:substitutions} is that an error-free interval can follow
 another error-free interval, provided there is a deletion between them.
 Since the weight of this deletion is $\delta$, the transfer matrix is
 
+
 \begin{equation*}
-M(z) = \left(
-\begin{matrix}
-\delta F(z) & pz \\
-F(z)        & pz
-\end{matrix}
-\right).
+M(z) = 
+\begin{blockarray}{ccc}
+       & \smDEL & \smS \\
+\begin{block}{c[cc]}
+\smDEL & \delta F(z) & pz \\
+\smS   &        F(z) & pz \\
+\end{block}
+\end{blockarray}.
 \end{equation*}
 
 To apply proposition~\ref{th:TM2WGF} we need to invert $I-M(z)$, which is
@@ -1372,14 +1425,18 @@ conventions, the transfer matrix for the states ``match'',
 ``substitution'' and ``insertion'' is
 
 \begin{equation*}
-M(z) = \left(
-\begin{matrix}
-\delta F(z) & pz      & rz  \\
-F(z)        & pz      & rz  \\
-\frac{1-\tilde{r}}{1-r}F(z)   & \frac{1-\tilde{r}}{1-r}pz & \tilde{r}z
-\end{matrix}
-\right).
+M(z) = 
+\begin{blockarray}{cccc}
+       & \smDEL & \smS & \smI \\
+\begin{block}{c[ccc]}
+\smDEL & \delta F(z) & pz & rz \\
+\smS   &        F(z) & pz & rz \\
+\smI   & \frac{1-\tilde{r}}{1-r}F(z)
+           & \frac{1-\tilde{r}}{1-r}pz & \tilde{r}z \\
+\end{block}
+\end{blockarray}.
 \end{equation*}
+
 
 The expression of $M_*(z) = (I-M(z))^{-1}$ is omitted because it is
 cumbersome and all we need is the value if $1+U(z)\cdot M_*(z)\cdot V$.
@@ -1610,7 +1667,7 @@ general not equal to $pz/(1-pz)$. This means that the total weight of
 reads of size $k$ is not equal to $1$, so we will need to take this
 into account in our approximations. As usual, we will use
 proposition~\ref{th:ass}, implying that we have to find the root with
-smallest modulus of the polynomial $1-qz\big(1+E(z)\big)$.
+smallest \textit{modulus} of the polynomial $1-qz\big(1+E(z)\big)$.
 
 To find the weighted generating function of seedless reads, we need to
 replace $F(z)$ by its truncation $F_d(z) = qz + (1-\delta)(qz)^2 + \ldots
@@ -1625,7 +1682,7 @@ S(z) = \frac{\big(1+E(z)\big)\big( 1-(1-\delta)^d(qz)^d \big)}
 \end{equation}
 
 To estimate the total weight of seedless reads, we need to find the root
-with smallest modulus of $1-qz\big(1+E(z)\big) +
+with smallest \textit{modulus} of $1-qz\big(1+E(z)\big) +
 (1-\delta)^{d-1}(qz)^{d-1}\big(\delta+E(z)\big)$. The solution depends on
 the particular expression of $E(z)$. Even though the process can be
 automated using proposition~\ref{th:ass}, every case is different and
@@ -1797,7 +1854,7 @@ coefficient of $z^k$ is asymptotically equivalent to
 \end{equation}
 
 \noindent
-where $z_1$ is the root of $Q$ with smallest modulus.
+where $z_1$ is the root of $Q$ with smallest \textit{modulus}.
 \end{proposition}
 
 As in proposition~\ref{th:ass}, we start by proving the lemma that will
@@ -1828,11 +1885,11 @@ We now prove proposition~\ref{th:ass2}.
 
 \begin{proof}
 As in the proof of proposition~\ref{th:ass}, let $z_1, z_2, \ldots, z_n$
-be the complex roots of $Q$, sorted by increasing order of modulus. Since
-the roots of $Q(z)^2$ all have multiplicity 2, there exists constants
-$\alpha_1, \ldots, \alpha_n$ and $\beta_1, \ldots, \beta_n$ such that the
-partial fraction decomposition of the rational function $P(z)/Q(z)^2$ can
-be written as
+be the complex roots of $Q$, sorted by increasing order of
+\textit{modulus}. Since the roots of $Q(z)^2$ all have multiplicity 2,
+there exists constants $\alpha_1, \ldots, \alpha_n$ and $\beta_1, \ldots,
+\beta_n$ such that the partial fraction decomposition of the rational
+function $P(z)/Q(z)^2$ can be written as
 
 \begin{equation*}
 \sum_{j=1}^n \frac{\alpha_j}{(z-z_j)^2} + \frac{\beta_j}{z-z_j} =
@@ -1850,7 +1907,7 @@ the coefficient of $z^k$ in $P(z)/Q(z)^2$ can be expressed as
 \sum_{j=1}^n (k+1)\frac{\alpha_j}{z_j^{k+2}}-\frac{\beta_j}{z_j^{k+1}}.
 \end{equation}
 
-Since $z_1$ is the root with smallest modulus, the sum above is
+Since $z_1$ is the root with smallest \textit{modulus}, the sum above is
 asymptotically equivalent to
 
 \begin{equation*}
@@ -1925,7 +1982,7 @@ following proposition.
 
 \begin{proposition}
 \label{th:avsub}
-Under the asumptions of the error model of
+Under the assumptions of the error model of
 section~\ref{sec:substitutions}, the average number of substitutions in
 seedless reads of size $k$ is asymptotically equivalent to
 
@@ -2072,12 +2129,11 @@ substitution.  The matrix $M(z)$ is $16\times16$ and the weighted
 generating function $1+U(z)\cdot(I-M(z))^{-1}\cdot V$ can be written as
 $P(z)/Q(z)$, where $P$ is a polynomial of degree 152 and $Q$ is a
 polynomial of degree 153.  Using numerical methods to find the root of $Q$
-with smallest modulus, we obtain $z_1 \approx 1.079244$. Likewise,
-we obtain $-P(z_1)/Q'(z_1) \approx 2.326700$, so the probability
-that the read is seedless is approximately
-$2.326700/1.079244^{101} \approx 0.0010511$.
-For comparison, a 99\% confidence interval obtained by performing 10
-billion random simulations is $0.001049-0.001054$.
+with smallest \textit{modulus}, we obtain $z_1 \approx 1.079244$.
+Likewise, we obtain $-P(z_1)/Q'(z_1) \approx 2.326700$, so the probability
+that the read is seedless is approximately $2.326700/1.079244^{101}
+\approx 0.0010511$.  For comparison, a 99\% confidence interval obtained
+by performing 10 billion random simulations is $0.001049-0.001054$.
 % The magic number is 1051660 out of 10 billion.
 In these conditions, the chances that the read contains an exact seed is
 90.4\%, whereas the chances that it contains a seed with one substitution
@@ -2106,20 +2162,88 @@ random trials.}
 
 
 
+%%%%%%%%%%%%%%%%%% False positives %%%%%%%%%%%%%%%%%%%%%
+\section{False positives}
+
+As a heuristic approach, seeding can make two types of errors: false
+positives and false negatives. So far we have been concerned with the
+probability of false negatives because useful estimates were readily
+available from the standard analytic combinatorics theory. Such estimates
+are significantly more difficult to obtain for false positives. The main
+reason is that the results largely depend on the repeat structure of the
+genome.
+
+Genomes are not a succession of random nucleotides. Large sequences are
+often duplicated, to the extent that the majority of the genome can...
 
 
 
 
 
 
-%%%%%%%%%%%%%%%%%% Inexact seeding %%%%%%%%%%%%%%%%%%%%%
-\section{Caveats and complements}
+
+\section{Caveats}
 
 \subsection{Low error rates}
+All the examples chosen so far indicated that the analytic combinatorics
+estimates are accurate. This is not surprising because the estimates
+derived here converge exponentially fast to the target value.
+Propositions~\ref{th:ass} and \ref{th:avsub} show that the rate of
+convergence is dominated by the ratio between the dominant singularity and
+the second singularity. Convergence accelerates as the dominant
+singularity stands out from the others, and \textit{vice versa}. The worst
+case for the approximation is thus when the reads are small and when the
+first two singularities have close \textit{moduli}.
 
-In case the error rate is low...
+In practice, these are the conditions of the Illumina technology, where
+errors are almost always substitutions, occurring at a frequency around
+1\% on current instruments. This corresponds to the error model of
+section~\ref{sec:substitutions} with substitutions only, where the
+probability of substitution $p$ is approximately equal to $0.01$. As $p$
+approaches $0$, the \textit{modulus} of the dominant singularity get
+closer to the others, so the rate of convergence slows down.
+
+Since the reads are often around 50 nucleotides, the analytic
+combinatorics estimates of the seeding probabilities are typically less
+accurate than suggested in the previous sections. The example below shows
+the accuracy of the estimates in one of the worst cases.
+
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.445]{simulp_short.pdf}
+\label{fig:simulp_short}
+\caption{\textbf{Example worst case estimates for seeding with
+substitutions only}. The analytic combinatorics estimates of
+proposition~\ref{th:p} are benchmarked against 10,000,000 random
+simulations. Shown on both panels are the probablities that a read of
+given size contains a seed of size $d=17$, either estimated by random
+simulations (dots), or by the estimate derived in
+section~\ref{sec:substitutions}. The curves are drawn for $p=0.005$,
+$p=0.010$ or $p=0.015$ (from top to bottom). The largest difference
+between the estimates and the simulations is around $0.01$.}
+\end{figure}
 
 \subsection{Other divergence models}
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.445]{simulp_approx.pdf}
+\label{fig:simulp_approx}
+\caption{\textbf{Example estimates for inexact seeding with substitutions
+only}. The analytic combinatorics estimates of proposition~\ref{th:pins}
+are benchmarked against random simulations.  Shown on both panels are the
+probablities that a read of given size contains an inexact seed, either
+estimated by random simulations (dots), or by the method described above
+(lines). The curves are drawn for $d=17$, $p=0.08$, $p=0.10$ or $p=0.12$
+(from top to bottom). 10,000,000 simulations are run on the left panel and
+100,000,000 on the right one.  The difference never exceeds 0.0002 on the
+examples shown here, which is the expected variation for this number of
+random trials.}
+\end{figure}
+
+
+
 
 The difference between the sequences does not have to be sequencing
 errors, they can also be evolutionary distances.
