@@ -43,6 +43,9 @@ sim-inexact-sub: sim-inexact-sub.c mt.o
 sim-average: sim-average.c mt.o
 	$(CC) $(CFLAGS) sim-average.c mt.o -o sim-average
 
+sim-fp: sim-fp.c mt.o
+	$(CC) $(CFLAGS) sim-fp.c mt.o -o sim-fp
+
 
 
 # Substitutions.
@@ -184,6 +187,22 @@ out-.015.txt: sim-sub
 		./sim-sub $$i 17 0.015 >> out-.015.txt ; \
 	done
 
+# False positives
+out-.02-fp.txt: sim-fp
+	./sim-fp 25 17 0.02 0.02 > out-.02-fp.txt
+	for ((i=26 ; i <= 100; i += 1)) ; do \
+		./sim-fp $$i 17 0.02 0.02 >> out-.02-fp.txt ; \
+	done
+out-.05-fp.txt: sim-fp
+	./sim-fp 25 17 0.02 0.05 > out-.05-fp.txt
+	for ((i=26 ; i <= 100; i += 1)) ; do \
+		./sim-fp $$i 17 0.02 0.05 >> out-.05-fp.txt ; \
+	done
+out-.08-fp.txt: sim-fp
+	./sim-fp 25 17 0.02 0.08 > out-.08-fp.txt
+	for ((i=26 ; i <= 100; i += 1)) ; do \
+		./sim-fp $$i 17 0.02 0.08 >> out-.08-fp.txt ; \
+	done
 
 simulp.pdf: out-.08.txt out-.10.txt out-.12.txt
 	R -f make_figure_simulation_sub.R
@@ -209,6 +228,9 @@ simulp_short.pdf: out-.005.txt out-.010.txt out-.015.txt
 simulp_approx.pdf: out-.05-.15-.04-.45.txt out-.05-.15-.05-.45.txt \
 		out-.05-.15-.06-.45.txt
 	R -f make_figure_simulation_sub_approx.R
+
+simulp_false_positives.pdf: out-.02-fp.txt out-.05-fp.txt out-.08-fp.txt
+	R -f make_figure_simulation_false_positives.R
 
 
 clean:

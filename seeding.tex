@@ -41,11 +41,13 @@
 \newcommand{\smA}{\scriptstyle{A}}
 \newcommand{\smC}{\scriptstyle{C}}
 \newcommand{\smD}{\scriptstyle{D}}
+\newcommand{\smE}{\scriptstyle{E}}
 \newcommand{\smG}{\scriptstyle{G}}
 \newcommand{\smI}{\scriptstyle{I}}
 \newcommand{\smS}{\scriptstyle{S}}
 \newcommand{\smT}{\scriptstyle{T}}
-\newcommand{\smDEL}{\scriptstyle{\Delta}}
+\newcommand{\smDELz}{\scriptstyle{\Delta_0}}
+\newcommand{\smDELs}{\scriptstyle{\Delta_*}}
 
 
 %---------------------------------------------------------------
@@ -966,10 +968,10 @@ transfer matrix for the states ``match'' and ``substitution'' is
 \begin{equation*}
 M(z) = 
 \begin{blockarray}{ccc}
-       & \smDEL & \smS \\
+       & \smDELz & \smS \\
 \begin{block}{c[cc]}
-\smDEL & 0    & pz \\
-\smS   & F(z) & pz \\
+\smDELz & 0    & pz \\
+\smS    & F(z) & pz \\
 \end{block}
 \end{blockarray}.
 \end{equation*}
@@ -1245,10 +1247,10 @@ Since the weight of this deletion is $\delta$, the transfer matrix is
 \begin{equation*}
 M(z) = 
 \begin{blockarray}{ccc}
-       & \smDEL & \smS \\
+       & \smDELz & \smS \\
 \begin{block}{c[cc]}
-\smDEL & \delta F(z) & pz \\
-\smS   &        F(z) & pz \\
+\smDELz & \delta F(z) & pz \\
+\smS    &        F(z) & pz \\
 \end{block}
 \end{blockarray}.
 \end{equation*}
@@ -1427,11 +1429,11 @@ conventions, the transfer matrix for the states ``match'',
 \begin{equation*}
 M(z) = 
 \begin{blockarray}{cccc}
-       & \smDEL & \smS & \smI \\
+       & \smDELz & \smS & \smI \\
 \begin{block}{c[ccc]}
-\smDEL & \delta F(z) & pz & rz \\
-\smS   &        F(z) & pz & rz \\
-\smI   & \frac{1-\tilde{r}}{1-r}F(z)
+\smDELz & \delta F(z) & pz & rz \\
+\smS    &        F(z) & pz & rz \\
+\smI    & \frac{1-\tilde{r}}{1-r}F(z)
            & \frac{1-\tilde{r}}{1-r}pz & \tilde{r}z \\
 \end{block}
 \end{blockarray}.
@@ -1630,14 +1632,16 @@ Similarly, a deletion can only be followed by an error-free inerval. The
 transfer matrix of the objects ``error-free interval'', ``error-only
 interval'' and ``deletion'' is
 
+
 \begin{equation*}
-M(z) = \left(
-\begin{matrix}
-0    & E(z) & \delta  \\
-F(z) & 0    & 0       \\
-F(z) & 0    & 0
-\end{matrix}
-\right).
+M(z) = 
+\begin{blockarray}{ccc}
+       & \smDELz & \smDELs \\
+\begin{block}{c[cc]}
+\smDELz & \delta F(z)  & E(z) \\
+\smDELs & F(z)         & 0    \\
+\end{block}
+\end{blockarray}.
 \end{equation*}
 
 Since the sequence may neither start nor end with a deletion, the row
@@ -2068,13 +2072,13 @@ at most one sbustituttion.}
 
 \begin{definition}
 \label{def:seed}
-An \textbf{inexact $d$-seed} is an interval of size at least $d$ that
-contains at most a bustitution and no other error.
+An \textbf{inexact $d$-seed} is an interval of size $d$ or greater that
+contains at most a substitution and no other error.
 \end{definition}
 
 In other words, an inexact seed is either an error-free interval of size
-at least $d$, or the concatenation of two error-free intervals and a
-substitution, with total size at least $d$. An exact $d$-seed is an
+$d$ or greater, or the concatenation of two error-free intervals separated
+by a substitution, with total size $d$ or greater. An exact $d$-seed is an
 inexact $d$-seed, but the converse is not true. In this section, a
 ``seedless'' read will designate a read that does not contain any inexact
 seed.
@@ -2088,25 +2092,32 @@ of the intervals on the left hand side and on the right hand side must not
 exceed $d-2$ (the substitution adds $1$ to the size of the seed).
 
 In other words, an error-free interval of size $k$ can be followed by an
-error-free interval of size $0$, or size $1$, or size $2$, \ldots, or size
-$d-k-2$. These intervals have respective weighted generating function $1$,
-$qz$, $(qz)^2$, \ldots, $(qz)^{d-k-2}$, so the transfer matrix is
+error-free interval of size $0$, $1$, $2$, \ldots, or $d-k-2$. These
+intervals have respective weighted generating function $1$, $qz$,
+$(qz)^2$, \ldots, $(qz)^{d-k-2}$, so the transfer matrix is
 
-\begin{equation}
-M(z) = pz\left[
-\begin{matrix}
-1 & qz  & (qz)^2 & (qz)^3 & \ldots & (qz)^{d-3} & (qz)^{d-2} \\
-1 & qz  & (qz)^2 & (qz)^3 & \ldots & (qz)^{d-3} & 0          \\
-1 & qz  & (qz)^2 & (qz)^3 & \ldots & 0          & 0          \\
-\vdots & \vdots & \vdots & \vdots & \ddots & \vdots & \vdots \\
-1 & qz  & (qz)^2 & 0      & \ldots & 0          & 0          \\
-1 & qz  & 0      & 0      & \ldots & 0          & 0          \\
-1 & 0   & 0      & 0      & \ldots & 0          & 0
-\end{matrix}
-\right].
-\end{equation}
+\begin{equation*}
+M(z) = 
+\begin{blockarray}{ccccccc}
+       & \scriptstyle{0} & \scriptstyle{1} & \scriptstyle{2} &
+    \ldots &  \scriptstyle{d-2} & \scriptstyle{d-1} \\
+\begin{block}{c[cccccc]}
+\scriptstyle{0} & pz  & (qz)pz & (qz)^2pz & \ldots &
+    (qz)^{d-3}pz & (qz)^{d-2}pz \\
+\scriptstyle{1} & pz  & (qz)pz & (qz)^2pz & \ldots &
+    (qz)^{d-3}pz & 0 \\
+\scriptstyle{2} & pz  & (qz)pz & (qz)^2pz & \ldots &
+    0 & 0 \\
+\vdots & \vdots  & \vdots & \vdots & \ddots & \vdots & \vdots  \\
+\scriptstyle{d-3} & pz  & (qz)pz & (qz)^2pz & \ldots & 0 & 0 \\
+\scriptstyle{d-2} & pz  & (qz)pz & 0 & \ldots & 0 & 0 \\
+\scriptstyle{d-1} & pz  & 0      & 0 & \ldots & 0 & 0 \\
+\end{block}
+\end{blockarray}.
+\end{equation*}
 
-Note that all the terms are multiplied by $pz$ because we have to prepend
+
+Note that all the terms are multiplied by $pz$ because we have to append
 a substitutoin, with weighted generating function $pz$.
 
 Since the sequence may start with an error-only interval of any size from
@@ -2177,23 +2188,127 @@ Genomes are not a succession of random nucleotides. Large sequences are
 often duplicated, to the extent that the majority of the genome can...
 
 
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.88]{sketch_dual_mutations.pdf}
+\caption{\textbf{False seeding}. Some description.}
+\label{fig:sketchdual}
+\end{figure}
 
+Each decoded nucleotide can match 1. both sequences, 2. only the target
+sequence, 3. match only the duplicate sequence or 4. match none of them.
+The probabilities of these events are denoted $a$, $b$, $c$ and $d$, and
+we obviously have $a+b+c+d=1$.
+A nucleotide is a mismatch for both sequences if it is a read error
+(probability $q$) and if either the decoy is identical to the target
+(probability $1-\varepsilon$) or is different from both the target and the
+decoded nucleotide (probability $2\varepsilon/3$).
 
+\begin{equation*}
+\begin{blockarray}{cccccccc}
+   & \scriptstyle{0,0} & \scriptstyle{0,1} & 
+    \ldots & \scriptstyle{0,d-1} &
+    \scriptstyle{1,0} & \ldots &
+    \scriptstyle{d-1,0}\\
+\begin{block}{c[ccccccc]}
+\scriptstyle{0,0} & dz\frac{1-(az)^d}{1-az}  & cz & \ldots &
+    a^{d-2}cz^{d-1} & bz & \ldots & a^{d-2}bz^{d-1} \\
+\scriptstyle{0,1} & dz\frac{1-(az)^{d-1}}{1-az} \\
+\scriptstyle{0,2} & dz\frac{1-(az)^{d-2}}{1-az} \\
+\vdots & \vdots & & A(z) & & & B(z) \\
+\scriptstyle{0,d-1} & dz \\
+\scriptstyle{1,0} & dz\frac{1-(az)^{d-1}}{1-az} \\
+\scriptstyle{2,0} & dz\frac{1-(az)^{d-2}}{1-az} \\
+\vdots & \vdots & & C(z) & & & D(z) \\
+\scriptstyle{d-1,0} & dz \\
+\end{block}
+\end{blockarray},
+\end{equation*}
 
+\noindent
+where $A(z)$, $B(z)$, $C(z)$ and $D(z)$ are square matrices defined as
 
+\begin{equation*}
+A(z) = 
+\begin{blockarray}{cccccc}
+   & \scriptstyle{0,1} & \scriptstyle{0,2} & \ldots &
+    \scriptstyle{0,d-2} & \scriptstyle{0,d-1} \\
+\begin{block}{c[ccccc]}
+\scriptstyle{0,1} & 0 & cz & \ldots &
+    a^{d-3}cz^{d-2} & a^{d-2}cz^{d-1} \\
+\scriptstyle{0,2} & 0 & 0 & \ldots &
+    a^{d-4}cz^{d-3} & a^{d-3}cz^{d-2} \\
+\vdots & \vdots & \vdots & \ddots & \vdots & \vdots \\
+\scriptstyle{0,d-2} & 0 & 0 & \ldots & 0 & cz \\
+\scriptstyle{0,d-1} & 0 & 0 & \ldots & 0 & 0 \\
+\end{block}
+\end{blockarray},
+\end{equation*}
+
+\begin{equation*}
+B(z) = 
+\begin{blockarray}{cccccc}
+   & \scriptstyle{1,0} & \scriptstyle{2,0} & \ldots &
+    \scriptstyle{d-2,0} & \scriptstyle{d-1,0} \\
+\begin{block}{c[ccccc]}
+\scriptstyle{0,1} & bz & abz^2 & \ldots &
+    a^{d-3}bz^{d-2} & a^{d-2}bz^{d-1} \\
+\scriptstyle{0,2} & bz & abz^2 & \ldots & a^{d-3}bz^{d-2} & 0 \\
+\vdots & \vdots & \vdots & \ddots & \vdots & \vdots \\
+\scriptstyle{0,d-2} & bz & abz^2 & \ldots & 0 & 0 \\
+\scriptstyle{0,d-1} & bz & 0 & \ldots & 0 & 0 \\
+\end{block}
+\end{blockarray},
+\end{equation*}
+
+\begin{equation*}
+C(z) = 
+\begin{blockarray}{cccccc}
+   & \scriptstyle{0,1} & \scriptstyle{0,2} & \ldots &
+    \scriptstyle{0,d-2} & \scriptstyle{0,d-1} \\
+\begin{block}{c[ccccc]}
+\scriptstyle{1,0} & cz & acz^2 & \ldots &
+    a^{d-3}cz^{d-2} & a^{d-2}cz^{d-1} \\
+\scriptstyle{2,0} & cz & acz^2 & \ldots & a^{d-3}cz^{d-2} & 0 \\
+\vdots & \vdots & \vdots & \ddots & \vdots & \vdots \\
+\scriptstyle{d-2,0} & cz & acz^2 & \ldots & 0 & 0 \\
+\scriptstyle{d-1,0} & cz & 0 & \ldots & 0 & 0 \\
+\end{block}
+\end{blockarray},
+\end{equation*}
+
+\begin{equation*}
+D(z) = 
+\begin{blockarray}{cccccc}
+   & \scriptstyle{1,0} & \scriptstyle{2,0} & \ldots &
+    \scriptstyle{d-2,0} & \scriptstyle{d-1,0} \\
+\begin{block}{c[ccccc]}
+\scriptstyle{1,0} & 0 & bz & \ldots &
+    a^{d-3}bz^{d-2} & a^{d-2}bz^{d-1} \\
+\scriptstyle{2,0} & 0 & 0 & \ldots &
+    a^{d-4}bz^{d-3} & a^{d-3}bz^{d-2} \\
+\vdots & \vdots & \vdots & \ddots & \vdots & \vdots \\
+\scriptstyle{d-2,0} & 0 & 0 & \ldots & 0 & bz \\
+\scriptstyle{d-1,0} & 0 & 0 & \ldots & 0 & 0 \\
+\end{block}
+\end{blockarray},
+\end{equation*}
 
 \section{Caveats}
 
 \subsection{Low error rates}
-All the examples chosen so far indicated that the analytic combinatorics
-estimates are accurate. This is not surprising because the estimates
-derived here converge exponentially fast to the target value.
-Propositions~\ref{th:ass} and \ref{th:avsub} show that the rate of
+The main motivation for the analytic combinatorics approach developed
+above is to find estimates that converge exponentially fast to the target
+value. Propositions~\ref{th:ass} and \ref{th:avsub} show that the rate of
 convergence is dominated by the ratio between the dominant singularity and
-the second singularity. Convergence accelerates as the dominant
-singularity stands out from the others, and \textit{vice versa}. The worst
-case for the approximation is thus when the reads are small and when the
-first two singularities have close \textit{moduli}.
+the second largest singularity. This means that convergence slows down as
+the dominant singularity 
+
+The worst case for the approximation is thus when the reads are
+small and when the first two singularities have close \textit{moduli}.
+
+All the examples chosen so far showed that the analytic combinatorics
+estimates are accurate.
 
 In practice, these are the conditions of the Illumina technology, where
 errors are almost always substitutions, occurring at a frequency around

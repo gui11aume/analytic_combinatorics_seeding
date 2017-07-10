@@ -44,12 +44,6 @@ k = 1:204
 
 L = list()
 
-z = Newton(.02,17)
-C = cst_term(z,.02,17)
-print(1-C/z^52)
-
-stop()
-
 for (p in c(0.08, 0.1, 0.12)) {
    z = Newton(p,d)
    C = cst_term(z,p,d)
