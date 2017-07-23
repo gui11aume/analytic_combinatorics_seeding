@@ -38,13 +38,10 @@ int main(int argc, char **argv) {
       // Accept-reject loop.
       while (redo) {
 
-         // Redo if there is a seed.
-         redo = 0;
-
-         // Initialize number of errors.
-         nerr = 0;
-         // Initialize stack.
-         int stack = 0;
+         
+         redo = 0;       // Redo if there is a seed.
+         nerr = 0;       // Initialize number of errors.
+         int stack = 0;  // Initialize stack.
 
          for (int i = 0 ; i < K ; i++) {
             if (stack > 0) {

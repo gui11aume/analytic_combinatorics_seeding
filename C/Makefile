@@ -175,22 +175,22 @@ out-.12-average-sub.txt: sim-average-sub
 
 # Average number of deletions
 out-.05-.14-average-del.txt: sim-average-del
-	./sim-average-del 50 17 0.05 0.14 > out-.08-average-del.txt
+	./sim-average-del 50 17 0.05 0.14 > out-.05-.14-average-del.txt
 	for ((i=52 ; i <= 150; i += 2)) ; do \
-		./sim-average-del $$i 17 0.08 \
-			>> out-.08-average-del.txt ; \
+		./sim-average-del $$i 17 0.05 0.14 \
+			>> out-.05-.14-average-del.txt ; \
 	done
 out-.05-.15-average-del.txt: sim-average-del
-	./sim-average-del 50 17 0.05 0.15 > out-.10-average-del.txt
+	./sim-average-del 50 17 0.05 0.15 > out-.05-.15-average-del.txt
 	for ((i=52 ; i <= 150; i += 2)) ; do \
-		./sim-average-del $$i 17 0.10 \
-			>> out-.10-average-del.txt ; \
+		./sim-average-del $$i 17 0.05 0.15 \
+			>> out-.05-.15-average-del.txt ; \
 	done
 out-.05-.16-average-del.txt: sim-average-del
-	./sim-average-del 50 17 0.05 0.16 > out-.12-average-del.txt
+	./sim-average-del 50 17 0.05 0.16 > out-.05-.16-average-del.txt
 	for ((i=52 ; i <= 150; i += 2)) ; do \
-		./sim-average-del $$i 17 0.12 \
-			>> out-.12-average-del.txt ; \
+		./sim-average-del $$i 17 0.05 0.16 \
+			>> out-.05-.16-average-del.txt ; \
 	done
 
 

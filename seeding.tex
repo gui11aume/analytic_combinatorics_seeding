@@ -759,7 +759,7 @@ $O(|z_1/z_2|^k)$ and they decrease exponentially fast as $k$ increases.
 \begin{remark}
 Proposition~\ref{th:ass} does not hold if $z_1$ is not a simple pole.
 The proof can be beneralized, but the resulting asymptotic formula is
-different. Proposition~\ref{th:ass2} in section~\ref{sec:Szu} shows the
+different. Proposition~\ref{th:ass2} in section~\ref{sec:avsub} shows the
 coefficient asymptotics for poles of second order.
 \end{remark}
 
@@ -768,7 +768,7 @@ Recall from example~\ref{ex:CGmat2} that the weighted generating function
 of sequences without \texttt{CG} is
 
 \begin{equation*}
-F(z) = \frac{4z-(pz)^2}{4-4z+(pz)^2}.
+F(z) = \frac{4}{4-4z+(pz)^2}.
 \end{equation*}
 
 Here $Q(z) = 4-4z+(pz)^2$ has two distinct roots, $z_1 =
@@ -1118,7 +1118,7 @@ The probability that a read of size $k$ is seedless is
 asymptotically equivalent to
 
 \begin{equation*}
-\frac{C}{z_1^{k+2}},
+\frac{C}{z_1^{k+1}},
 \end{equation*}
 
 \noindent
@@ -1127,7 +1127,7 @@ where $z_1$ is the only real positive root of the denominator of $S(z)$,
 
 \begin{equation}
 \label{eq:Cp}
-C =\frac{(1-qz_1)^2}{p^2\big( 1-(d+1-dqz_1)(qz_1)^d \big)}.
+C =\frac{(1-qz_1)^2}{p^2 z_1 \big( 1-(d+1-dqz_1)(qz_1)^d \big)}.
 \end{equation}
 \end{proposition}
 
@@ -1147,8 +1147,8 @@ singularity of $S$, we need to solve
 $1-0.1z\times(1+0.9z+\ldots+(0.9z)^{16}) = 0$. We rewrite the equation as
 $1 - 0.1z\times(1-(0.9 z)^{17})/(1-0.9z) = 0$ and use bisection to solve
 it numerically, yielding $z_1 \approx 1.0268856$. Substituting this value
-in (\ref{eq:Cp}) yields $C \approx 1.433681$, so the probability that a
-read contains no seed is approximately $1.433681 / 1.0268856^{102} \approx
+in (\ref{eq:Cp}) yields $C \approx 1.396145$, so the probability that a
+read contains no seed is approximately $1.396145 / 1.0268856^{101} \approx
 0.095763$. For comparison, a 99\% confidence interval obtained by
 performing 10 billion random simulations is $0.09575-0.09577$.
 % The magic number is 957598614 out of 10 billion.
@@ -1312,7 +1312,7 @@ The probability that a read of size $k$ is seedless is asymptotically
 equivalent to
 
 \begin{equation*}
-\frac{C}{z_1^k},
+\frac{C}{z_1^{k+1}},
 \end{equation*}
 
 \noindent
@@ -1325,7 +1325,7 @@ where $z_1$ is the only real positive root of the denominator of $S(z)$,
 \label{eq:Cpd}
 \begin{split}
 C &=
-\frac{ \big(1-(1-\delta)(1-p)z_1\big)^2 }
+\frac{ z_1 \big(1-(1-\delta)(1-p)z_1\big)^2 }
 { \big((p+q\delta)z_1  -\gamma^*(1-\delta)^{d-1}(qz_1)^d \big)
 \big(\delta+(1-\delta)pz_1\big) }, \\
 \gamma^* &= d\delta -(1-\delta)\big((d-1)\delta-p((d-1)\delta+d+1)\big)z_1
@@ -1344,14 +1344,14 @@ out of the constant $C$ in expressions (\ref{eq:Cp}) and (\ref{eq:Cpd}).
 \label{ex:num2}
 Let us approximate the probablity that a read of size $k = 100$ is
 seedless for $d=17$, $p = 0.05$ and $\delta = 0.15$. In order to find the
-dominant singularity of $S$ expressed as (\ref{eq:Sdel}), we need to solve
-the equation $1-0.05z - \big(0.0425z + 0.15\big) \big(0.95z+0.85(0.95z)^2
-+ \ldots + 0.85^{15}(0.95z)^{16}\big) = 0$. We write it as $1-0.05z -
-\big(0.0425z + 0.15) (0.95z-0.85^{16}(0.95z)^{17}) / (1-0.8075z) = 0$ and
-use bisection to solve it, yielding $z_1 \approx 1.006705$. Now
-substituting the obtained value in (\ref{eq:Cpd}) gives $C \approx
-1.088876$, so the probability that a read contains no seed is
-approximately $1.088876 / 1.006705^{100} \approx 0.558141$. For
+dominant singularity of $S$ expressed as in (\ref{eq:Sdel}), we need to
+solve the equation $1-0.05z - \big(0.0425z + 0.15\big)
+\big(0.95z+0.85(0.95z)^2 + \ldots + 0.85^{15}(0.95z)^{16}\big) = 0$. We
+write it as $1-0.05z - \big(0.0425z + 0.15) (0.95z-0.85^{16}(0.95z)^{17})
+/ (1-0.8075z) = 0$ and use bisection to solve it, yielding $z_1 \approx
+1.006705$. Now substituting the obtained value in (\ref{eq:Cpd}) gives $C
+\approx 1.096177$, so the probability that a read contains no seed is
+approximately $1.096177 / 1.006705^{101} \approx 0.558141$. For
 comparison, a 99\% confidence interval obtained by performing 10 billion
 random simulations is $0.55813-0.55816$.
 % The magic number is 5581417733 out of 10 billion.
@@ -1481,16 +1481,15 @@ F_d(z) &= qz + (1-\delta)(qz)^2 + (1-\delta)^2(qz)^3 \ldots +
 \end{split}
 \end{equation*}
 
-We obtain the following expression
+We obtain the following expression, where $a(z)$ and $b(z)$ are defined in
+(\ref{eq:a+b})
 
 \begin{equation}
 \label{eq:Sindel}
 S(z) = \frac{(1-r)\big( 1-(\tilde{r}-r)z \big) \left(1+(1-\delta)F_d(z)
-\right)}{1-a(z)-b(z)F_d(z)},
+\right)}{1-a(z)-b(z)F_d(z)}.
 \end{equation}
 
-\noindent
-where the terms $a(z)$ and $b(z)$ are defined in (\ref{eq:a+b}).
 
 \begin{proposition}
 \label{th:pins}
@@ -1549,7 +1548,6 @@ $0.77373-0.77376$.
 \begin{figure}[h]
 \centering
 \includegraphics[scale=0.445]{simulpins.pdf}
-\label{fig:simulpins}
 \caption{\textbf{Example estimates for substitutions, deletions and
 insertions}. The analytic combinatorics estimates of
 proposition~\ref{th:pins} are benchmarked against random simulations.
@@ -1560,6 +1558,7 @@ $p=0.05$, $\delta=0.15$, $\tilde{r} = 0.45$ and $r=0.04$, $r=0.05$ or
 $r=0.06$ (from top to bottom). The difference never exceeds 0.0002 on the
 examples shown here, which is the expected variation for this number of
 random trials.}
+\label{fig:simulpins}
 \end{figure}
 
 
@@ -1731,309 +1730,117 @@ approximately equal to $0.007119 / 0.06271356^{k+1}$.
 
 
 
-
-
-
-
-
-%%%%%%%%%%%%%%%%%% Average number of errors %%%%%%%%%%%%%%%%%%%%%
-\section{Average quantities}
-\label{sec:av}
-
-Analytic combinatorics also allows computing the average of many
-quantities of interest such as the average number of errors.  It is
-challenging to compute the average of errors for the class of seedless
-reads.
-
-So far, reads were characterized by a single quantity: their size. Now we
-need to introduce a second quantity, namely the number of substitutions so
-we will bring in a second variable. More specifically, if $a_{k,n}$ is the
-total weight of seedless reads of size $k$ and with $n$ substitutions, the
-average number of substitutions for reads of size $k$ is by definition
-
-
-\begin{equation}
-\label{eq:av}
-\left( \sum_{n=0}^\infty na_{k,n} \right) \Big/
- \left( \sum_{n=0}^\infty a_{k,n} \right).
-\end{equation}
-
-To compute this quantity, we will manipulate bivariate generating
-functions. We introduce the variable $u$ marking the number of
-substitutions and we write
-
-\begin{equation*}
-S(z,u) = \sum_{k=0}^\infty\sum_{n=0}^\infty a_{k,n}z^ku^n.
-\end{equation*}
-
-Finding an explicit formula for $S(z,u)$ is the focus of
-section~\ref{sec:Szu} .  For now, observe that (\ref{eq:av}) can be
-expressed from the coefficients of $S(z,u)$. On the one hand, we have
-
-\begin{equation*}
-S(z,1) = \sum_{k=0}^\infty \left( \sum_{n=0}^\infty a_{k,n} \right) z^k.
-\end{equation*}
-
-So the denominator of (\ref{eq:av}) is the coefficient of $z^k$ in
-$S(z,1)$. On the other hand, by taking the derivative of $S(z,u)$ with
-respect to $u$, and setting $u=1$, we obtain
-
-\begin{equation*}
-\frac{\partial S(z,u)}{\partial u} \Bigr|_{\substack{\\u=1}} =
-\sum_{k=0}^\infty \left( \sum_{n=0}^\infty na_{k,n} \right) z^k.
-\end{equation*}
-
-So the numerator of (\ref{eq:av}) is the coefficient of $z^k$ in
-$S_u(z,1)$ (where $S_u$ is an alternative notation for the partial
-derivative with respect to $u$). Note that $S(z,1)$ and $S_u(z,1)$ are
-actually univariate weighted generating functions, so we can use the
-methods developed earlier to obtain asymptotic estimates for their
-coefficients.
-
-To use this approach, we need to find an explicit expression for $S(z,u)$,
-which we onw do for the case of uniform substitutions.
-
-
-
-\subsection{Average substitutions in seedless reads}
-\label{sec:Szu}
-
-As we have seen several times, the analytic combinatorics approach is to
-write the generating function of simple objects and then combine them into
-more complex objects. In order to mark substitutions with the variable
-$u$, we update their weighted generating function to $pzu$. As in
-section~\ref{sec:substitutions}, $p$ is the probability of a substitution,
-so it is the weight in this expression. For every subtitution, the powers
-of $z$ and $u$ increase by $1$, and so do the size and the number of
-substitutions of the read.
-
-We could derive the weighted generating function by the transfer matrix
-method described in section~\ref{sec:substitutions}, but we can get an
-immediate result by using equation (\ref{eq:altSp}), where we observed
-that the weighted generating function of seedless reads can be expressed
-as
-
-\begin{equation}
-\tag{\ref{eq:altSp}}
-(1+F_d(z)) \sum_{n=0}^\infty \big( pz(1+F_d(z)) \big)^n.
-\end{equation}
-
-Here the weighted generating function of substitutions appears explicitly
-as $pz$. We can replace it by $pzu$ to obtain directly
-
-\begin{equation}
-\label{eq:Szu}
-S(z,u) = (1+F_d(z)) \sum_{n=0}^\infty \big( pzu(1+F_d(z)) \big)^n
-= \frac{1+F_d(z)}{1-pzu\big( 1+F_d(z) \big)}.
-\end{equation}
-
-
-$S(z,1)$ is simply the weighted generating function of seedless reads
-derived in section~\ref{sec:substitutions}, and for which we already
-derived the coefficient asymptotics. So we already have the denominator of
-(\ref{eq:av}). Now differentiating (\ref{eq:Szu}) with respect to $u$, we
-obtain
-
-\begin{equation}
-\label{eq:dSdu}
-\frac{\partial S(z,u)}{\partial u} \Bigr|_{\substack{\\u=1}} = 
-\frac{pz(1+F_d(z))^2}{\big( 1 - pz(1+F_d(z)) \big)^2}.
-\end{equation}
-
-Here we cannot use proposition~\ref{th:ass} because all the poles of
-$S(z,u)$ are second order. Instead, we prove a similar proposition showing
-how to extract the coefficient asymptotics in this case.
-
-\begin{proposition}
-\label{th:ass2}
-If a weighted generating function can be expressed as $P(z)/Q(z)^2$, where
-$P$ and $Q$ are polynomials and the roots of $Q$ are simple, then the
-coefficient of $z^k$ is asymptotically equivalent to
-
-\begin{equation}
-\label{eq:ass2}
-\left( (k+1)\frac{P(z_1)}{z_1 Q'(z_1)^2} - \frac{P'(z_1)}{Q'(z_1)^2} +
-\frac{P(z_1)Q''(z_1)}{Q'(z_1)^3} \right)
-\frac{1}{z_1^{k+1}},
-\end{equation}
-
-\noindent
-where $z_1$ is the root of $Q$ with smallest \textit{modulus}.
-\end{proposition}
-
-As in proposition~\ref{th:ass}, we start by proving the lemma that will
-give the functional expression of the asymptotic expansion.
-
-\begin{lemma}
-\label{lemma:poles2}
-For $|z| < a$ we have
-
-\begin{equation}
-\label{eq:poles2}
-\frac{1}{(1-z/a)^2} = \sum_{k=0}^\infty (k+1)\frac{z^k}{a^k}.
-\end{equation}
-\end{lemma}
-
-\begin{proof}
-\begin{equation*}
-\frac{1}{(1-z/a)^2} = a \left( \frac{1}{1-z/a} \right)'
-= a \sum_{k=0}^\infty \frac{kz^{k-1}}{a^k},
-\end{equation*}
-
-\noindent
-where the last equality is obtained by applying lemma~\ref{lemma:poles}
-and differentiating.
-\end{proof}
-
-We now prove proposition~\ref{th:ass2}.
-
-\begin{proof}
-As in the proof of proposition~\ref{th:ass}, let $z_1, z_2, \ldots, z_n$
-be the complex roots of $Q$, sorted by increasing order of
-\textit{modulus}. Since the roots of $Q(z)^2$ all have multiplicity 2,
-there exists constants $\alpha_1, \ldots, \alpha_n$ and $\beta_1, \ldots,
-\beta_n$ such that the partial fraction decomposition of the rational
-function $P(z)/Q(z)^2$ can be written as
-
-\begin{equation*}
-\sum_{j=1}^n \frac{\alpha_j}{(z-z_j)^2} + \frac{\beta_j}{z-z_j} =
-\sum_{j=1}^n \frac{\alpha_j/z_j^2}{(1-z/z_j)^2}
--\frac{\beta_j/z_j}{1-z/z_j}.
-\end{equation*}
-
-As in the proof of proposition~\ref{th:ass}, we assumed without loss of
-generality that the degree of $P$ is lower than the degree of $Q$. Now
-applying lemmas~\ref{lemma:poles} and \ref{lemma:poles2}, we see that
-the coefficient of $z^k$ in $P(z)/Q(z)^2$ can be expressed as
-
-\begin{equation}
-\label{eq:fullass2}
-\sum_{j=1}^n (k+1)\frac{\alpha_j}{z_j^{k+2}}-\frac{\beta_j}{z_j^{k+1}}.
-\end{equation}
-
-Since $z_1$ is the root with smallest \textit{modulus}, the sum above is
-asymptotically equivalent to
-
-\begin{equation*}
-(k+1)\frac{\alpha_1}{z_1^{k+2}}-\frac{\beta_1}{z_1^{k+1}}.
-\end{equation*}
-
-To find the values of $\alpha_1$ and $\beta_1$, we factorize $Q(z)$ as
-$(z-z_1)Q_1(z)$, which is possible because $z_1$ is a root of $Q$,
-and we write
-
-\begin{equation}
-\label{eq:misc1}
-\frac{P(z)}{Q(z)^2} =
-\frac{P(z)}{(z-z_1)^2Q_1(z)^2} = \frac{\alpha_1}{(z-z_1)^2} +
-\frac{\beta_1}{z-z_1} + \varepsilon(z),
-\end{equation}
-
-\noindent
-where $\varepsilon(z)$ is the remainder of the partial fraction
-decomposition. Multiplying both sides of the equality by $(z-z_1)^2$ and
-setting $z = z_1$, we obtain the expression $\alpha_1 =
-P(z_1)/Q_1(z_1)^2$.  Differentiating $Q(z) = (z-z_1)Q_1(z)$ shows that
-$Q'(z_1) = Q_1(z_1)$, and thus that $\alpha_1 = P(z_1) / Q'(z_1)^2$.
-
-To find the value of $\beta_1$, we subtract $\alpha_1/(z-z_1)^2$ from
-(\ref{eq:misc1}) and we obtain
-
-\begin{equation}
-\label{eq:misc2}
-\frac{P(z) - P(z_1)Q_1(z)^2/Q_1(z_1)^2}{(z-z_1)^2Q_1(z)^2} =
-\frac{\beta_1}{z-z_1} + \varepsilon(z).
-\end{equation}
-
-Since $P(z_1) - P(z_1)Q_1(z_1)^2/Q_1(z_1)^2 = 0$, there exists a
-polynomial $Q_2(z)$ such that $P(z) - P(z_1)Q_1(z)^2/Q_1(z_1)^2 =
-(z-z_1)Q_2(z)$.  Multiplying (\ref{eq:misc2}) by $z-z_1$ and setting $z =
-z_1$, we obtain $\beta_1 = Q_2(z_1)/Q_1(z_1)^2$. Differentiating twice the
-defining equality of $Q_1(z)$ and once that of $Q_2(z)$, we finally obtain
-$\beta_1 = P'(z_1)/Q'(z_1)^2 - P(z_1)Q''(z_1)/Q'(z_1)^3$, which concludes
-the proof.
-\end{proof}
-
-
-\begin{remark}
-Expression (\ref{eq:ass2}) is asymptotically equivalent to the simpler
-expression
-
-\begin{equation}
-\label{eq:ass3}
-(k+1)\frac{P(z_1)}{Q'(z_1)^2}\frac{1}{z_1^{k+2}}.
-\end{equation}
-
-However, expression (\ref{eq:ass3}) converges slowly. Indeed, dividing
-the exact expression (\ref{eq:fullass2}) by (\ref{eq:ass3}) gives an error
-term in $O(1/k)$. In comparison, dividing (\ref{eq:fullass2}) by
-(\ref{eq:ass2}) gives an error term in $O(|z_1/z_2|^k)$, which decreases
-exponentially, as in proposition~\ref{th:ass}.
-\end{remark}
-
-
-
-
-Back to the problem of computing the average number of substitutions in
-seedless reads, we can now use proposition~\ref{th:ass2} to approximate
-the numerator of (\ref{eq:av}). The dominant singularity is the same for
-both the numerator and the denominator, so the terms in $z_1^k$ cancel
-out. What remains is an expression of the form $C_1k + C_2$. In other
-words, the average number of substitutions in seedless reads increases as
-an affine function of the size. We make this result more accurate in the
-following proposition.
-
-
-\begin{proposition}
-\label{th:avsub}
-Under the assumptions of the error model of
-section~\ref{sec:substitutions}, the average number of substitutions in
-seedless reads of size $k$ is asymptotically equivalent to
-
-\begin{equation*}
-\frac{(1-qz)(C_1(k+1) - C_2)}{1-(d+1-dqz_1)(qz_1)^d},
-\end{equation*}
-
-\noindent
-with
-
-\begin{gather*}
-C_1 = 1-(qz_1)^d, \text{ and} \\
-C_2 = \frac{
-\big(1-(2-(1-qz_1)d^2+2d)(qz_1)^d+(1+(1-qz_1)d^2-2d)(qz_1)^{2d} \big)}
-{1-(d+1-dqz_1)(qz_1)^d},
-\end{gather*}
-
-\noindent
-and where $z_1$ is the only positive root of the polynomial
-$1-pz(1+F_d(z))$.
-\end{proposition}
-
-\begin{proof}
-Apply proposition~\ref{th:ass2} to (\ref{eq:dSdu}), use
-proposition~\ref{th:p} and simplify.
-\end{proof}
-
-\begin{remark}
-The estimate obtained from (\ref{eq:ass3}) instead of (\ref{eq:ass2})
-increases linearly with $k$. In this case, only the relative error
-vanishes asymptotically. The absolute error remains constant.
-\end{remark}
+\section{Caveats}
+
+\subsection{Short reads with low error rates}
+The main motivation for the analytic combinatorics approach developed
+above is to find estimates that converge exponentially fast to the target
+value. Propositions~\ref{th:ass} and \ref{th:avsub} show that the rate of
+convergence is dominated by the ratio between the dominant singularity and
+the second largest singularity. This means that convergence slows down as
+the dominant singularity 
+
+The worst case for the approximation is thus when the reads are
+small and when the first two singularities have close \textit{moduli}.
+
+All the examples chosen so far showed that the analytic combinatorics
+estimates are accurate.
+
+In practice, these are the conditions of the Illumina technology, where
+errors are almost always substitutions, occurring at a frequency around
+1\% on current instruments. This corresponds to the error model of
+section~\ref{sec:substitutions} with substitutions only, where the
+probability of substitution $p$ is approximately equal to $0.01$. As $p$
+approaches $0$, the \textit{modulus} of the dominant singularity get
+closer to the others, so the rate of convergence slows down.
+
+Since the reads are often around 50 nucleotides, the analytic
+combinatorics estimates of the seeding probabilities are typically less
+accurate than suggested in the previous sections. The example below shows
+the accuracy of the estimates in one of the worst cases.
 
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.445]{simulp-average.pdf}
-\caption{\textbf{Example estimates of average number of deletions}. The
-analytic combinatorics estimates of proposition~\ref{th:avsub} are
-benchmarked against random simulations.  The average number of
-substitutions are shown for seedless reads of given size, either estimated
-by 10,000,000 random simulations (dots), or by the method described above
-(lines). The curves are drawn for $d=17$, $p=0.08$, $p=0.10$ $p=0.12$
-(from top to bottom). The difference never exceeds 0.004 on the examples
-shown here.}
-\label{fig:simulpdel}
+\includegraphics[scale=0.445]{simulp_short.pdf}
+\caption{\textbf{Example worst case estimates for seeding with
+substitutions only}. The analytic combinatorics estimates of
+proposition~\ref{th:p} are benchmarked against 10,000,000 random
+simulations. Shown on both panels are the probablities that a read of
+given size contains a seed of size $d=17$, either estimated by random
+simulations (dots), or by the estimate derived in
+section~\ref{sec:substitutions}. The curves are drawn for $p=0.005$,
+$p=0.010$ or $p=0.015$ (from top to bottom). The largest difference
+between the estimates and the simulations is around $0.01$.}
+\label{fig:simulp_short}
 \end{figure}
+
+
+
+
+
+\subsection{Simplified error models}
+
+For the purpose of computing the asymptotic seeding probabilities, the
+substitutions error model of section~\ref{sec:substitutions} is
+substantially simpler than the models with deletions and insertions
+described in sections~\ref{sec:deletions} and \ref{sec:insertions}.
+
+When dealing with insertions and deletions, it is thus tempting to
+approximate the error model by a substitution model with equivalent error
+rate. A natural choice is to set the parameter $q$ of the first model to
+the value of $q(1-\delta)$ because they both represent the probability of
+decoding a nucleotide without error.
+
+However, this approach is substantially less accurate. To show this, let
+us revisit example~\ref{ex:num3} with an approximate substitution model
+instead of the full error model with substitutions, insertions and
+deletions.
+
+\begin{example}
+\label{ex:num4}
+In example~\ref{ex:num3}, we computed the approximate probability that a
+read of size $k=100$ contains no $17$-seed, where the probability of
+substitution $p=0.05$, the probability of deletion $\delta=0.15$, the
+probability of insertion $r=0.05$ and the probability of continued
+insertion $\tilde{r}=0.45$. In such conditions, the probability of
+decoding a nucleotide without error is $(1-p-r)(1-\delta) = 0.765$.
+Now using a substitution model where $q = 0.765$ and thus $p = 0.235$, the
+analytic combinatorics estimate comes out as $1.03726/1.002591^{101}
+\approx 0.79870$. This number is outside the 99\% confidence
+$0.77373-0.77376$ by about $2.5$ percentage points.
+\end{example}
+
+The approximation error does not vanish. Actually, in the conditions of
+example~\ref{ex:num4} it increases with the read size $k$.
+Figure~\ref{fig:simulp_approx} shows the same data as
+figure~\ref{fig:simulpins}, now fitted by an approximate substitution
+error. The error can be as high as $5$ percentage points.
+
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.445]{simulp_approx.pdf}
+\caption{\textbf{Title} Caption.} 
+\label{fig:simulp_approx}
+\end{figure}
+
+The conclusion is that the quality of the approximation collapses when
+using approximate error models. One may argue that an error of 5
+percentage points may be tolerable, but the actual amount of error when
+using an approximate error model is unknown in genereal. Unsing simplified
+error models is unsafe because convergence is slow and the error cannot be
+controlled.
+
+Nevertheless, complexity comes at a cost. It is important to remember that
+the parameters of the error model may be inaccurate, in which case the
+error can also not be controlled. If these parameters are hard to
+estimate, it may be preferrable to use a simplified model. But in general,
+the amount of data available in a sequencing run is sufficient to estimate
+the parameters of the error model. In practice, the safest approach to
+compute seeding probabilities is to use the full error model described in
+section~\ref{sec:insertions} and estimate the four parameters of the full
+error model from the alignment data generated during the mapping.
 
 
 
@@ -2082,6 +1889,14 @@ by a substitution, with total size $d$ or greater. An exact $d$-seed is an
 inexact $d$-seed, but the converse is not true. In this section, a
 ``seedless'' read will designate a read that does not contain any inexact
 seed.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.88]{inexact_graph.pdf}
+\caption{\textbf{Transfer in inexact seeding}.
+Legend goes here.}
+\label{fig:simulp_fp}
+\end{figure}
 
 As in the case of exact seeding, we will give a construction of seedless
 reads, find the corresponding weighted generating function and extract the
@@ -2294,85 +2109,461 @@ D(z) =
 \end{blockarray},
 \end{equation*}
 
-\section{Caveats}
-
-\subsection{Low error rates}
-The main motivation for the analytic combinatorics approach developed
-above is to find estimates that converge exponentially fast to the target
-value. Propositions~\ref{th:ass} and \ref{th:avsub} show that the rate of
-convergence is dominated by the ratio between the dominant singularity and
-the second largest singularity. This means that convergence slows down as
-the dominant singularity 
-
-The worst case for the approximation is thus when the reads are
-small and when the first two singularities have close \textit{moduli}.
-
-All the examples chosen so far showed that the analytic combinatorics
-estimates are accurate.
-
-In practice, these are the conditions of the Illumina technology, where
-errors are almost always substitutions, occurring at a frequency around
-1\% on current instruments. This corresponds to the error model of
-section~\ref{sec:substitutions} with substitutions only, where the
-probability of substitution $p$ is approximately equal to $0.01$. As $p$
-approaches $0$, the \textit{modulus} of the dominant singularity get
-closer to the others, so the rate of convergence slows down.
-
-Since the reads are often around 50 nucleotides, the analytic
-combinatorics estimates of the seeding probabilities are typically less
-accurate than suggested in the previous sections. The example below shows
-the accuracy of the estimates in one of the worst cases.
+As above, the weighted generating function of reads with no hit is given
+by $1+U \cdot (I-M(z))^{-1} \cdot V(z)$. In this case the row vector $U$
+is equal to $(1,0,0,\ldots,0)$ and the column vector $V(z)$ is equal to
+$(1+az+\ldots+(az)^d, \ldots, 1+az, 1)$.
 
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.445]{simulp_short.pdf}
-\label{fig:simulp_short}
-\caption{\textbf{Example worst case estimates for seeding with
-substitutions only}. The analytic combinatorics estimates of
-proposition~\ref{th:p} are benchmarked against 10,000,000 random
-simulations. Shown on both panels are the probablities that a read of
-given size contains a seed of size $d=17$, either estimated by random
-simulations (dots), or by the estimate derived in
-section~\ref{sec:substitutions}. The curves are drawn for $p=0.005$,
-$p=0.010$ or $p=0.015$ (from top to bottom). The largest difference
-between the estimates and the simulations is around $0.01$.}
+\includegraphics[scale=0.445]{simulp_false_positives.pdf}
+\caption{\textbf{Example estimates of false positive rates}. The analytic
+combinatorics estimates are benchmarked against random simulations. Shown
+on both panels are the probablities that a read of given size contains a
+seed, either estimated by 10,000,000 (left) or 100,000,000 (right) random
+simulations (dots), or by the method described above (lines). The curves
+are drawn for $d=17$ and $\kappa=0.05$, $p=0.15$ or $p=0.25$ (from top to
+bottom).}
+\label{fig:simulp_fp}
 \end{figure}
 
-\subsection{Other divergence models}
+
+The result is a rational function
+$P(z)/Q(z)$ where $P$ and $Q$ are polynomials with too many terms to fit
+in this document. For instance, for seeds of size $d=17$, the degrees of
+$P$ and $Q$ are 576 and 578, respectively.
+
+All that is required in order to compute the asymptotic coefficients is
+the dominant singularity $z_1$, together with the multiplicative constant
+$C$ of proposition~\ref{th:ass}. Since the weighted generating function is
+fully determined by the minimum seed size $d$, the error rate $p$, the
+divergence rate  $\kappa$, we can pre-compute $z_1$ and $C$ for a useful
+range of $d$, $p$ and $\kappa$.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%% Average number of errors %%%%%%%%%%%%%%%%%%%%%
+\section{Average quantities}
+\label{sec:av}
+
+\subsection{General approach}
+\label{sec:genapp}
+Analytic combinatorics also allows computing the average of many
+quantities of interest such as the average number of errors.  So far,
+reads were characterized by a single quantity: their size. Now we need to
+introduce a second quantity, namely the number of substitutions so we will
+bring in a second variable. More specifically, if $a_{k,n}$ is the total
+weight of seedless reads of size $k$ and with $n$ substitutions, the
+average number of substitutions for reads of size $k$ is by definition
+
+
+\begin{equation}
+\label{eq:av}
+\left( \sum_{n=0}^\infty na_{k,n} \right) \Big/
+ \left( \sum_{n=0}^\infty a_{k,n} \right).
+\end{equation}
+
+To compute this quantity, we will manipulate bivariate generating
+functions. We introduce the variable $u$ marking the number of
+substitutions and we write
+
+\begin{equation*}
+S(z,u) = \sum_{k=0}^\infty\sum_{n=0}^\infty a_{k,n}z^ku^n.
+\end{equation*}
+
+Finding an explicit formula for $S(z,u)$ is the focus of
+section~\ref{sec:avsub} .  For now, observe that (\ref{eq:av}) can be
+expressed from the coefficients of $S(z,u)$. On the one hand, we have
+
+\begin{equation*}
+S(z,1) = \sum_{k=0}^\infty \left( \sum_{n=0}^\infty a_{k,n} \right) z^k.
+\end{equation*}
+
+So the denominator of (\ref{eq:av}) is the coefficient of $z^k$ in
+$S(z,1)$. On the other hand, by taking the derivative of $S(z,u)$ with
+respect to $u$, and setting $u=1$, we obtain
+
+\begin{equation*}
+\frac{\partial S(z,u)}{\partial u} \Bigr|_{\substack{\\u=1}} =
+\sum_{k=0}^\infty \left( \sum_{n=0}^\infty na_{k,n} \right) z^k.
+\end{equation*}
+
+So the numerator of (\ref{eq:av}) is the coefficient of $z^k$ in
+$S_u(z,1)$ (where $S_u$ is an alternative notation for the partial
+derivative with respect to $u$).
+
+Note that $S(z,1)$ and $S_u(z,1)$ are
+actually univariate weighted generating functions, so we can use the
+methods developed earlier to obtain asymptotic estimates for their
+coefficients.
+
+To use this approach, we need to find an explicit expression for $S(z,u)$,
+which we onw do for the case of uniform substitutions.
+
+
+
+
+
+\begin{proposition}
+\label{th:ass2}
+If a weighted generating function can be expressed as $P(z)/Q(z)^2$, where
+$P$ and $Q$ are polynomials and the roots of $Q$ are simple, then the
+coefficient of $z^k$ is asymptotically equivalent to
+
+\begin{equation}
+\label{eq:ass2}
+\left( (k+1)\frac{P(z_1)}{z_1 Q'(z_1)^2} - \frac{P'(z_1)}{Q'(z_1)^2} +
+\frac{P(z_1)Q''(z_1)}{Q'(z_1)^3} \right)
+\frac{1}{z_1^{k+1}},
+\end{equation}
+
+\noindent
+where $z_1$ is the root of $Q$ with smallest \textit{modulus}.
+\end{proposition}
+
+As in proposition~\ref{th:ass}, we start by proving the lemma that will
+give the functional expression of the asymptotic expansion.
+
+\begin{lemma}
+\label{lemma:poles2}
+For $|z| < a$ we have
+
+\begin{equation}
+\label{eq:poles2}
+\frac{1}{(1-z/a)^2} = \sum_{k=0}^\infty (k+1)\frac{z^k}{a^k}.
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+\begin{equation*}
+\frac{1}{(1-z/a)^2} = a \left( \frac{1}{1-z/a} \right)'
+= a \sum_{k=0}^\infty \frac{kz^{k-1}}{a^k},
+\end{equation*}
+
+\noindent
+where the last equality is obtained by applying lemma~\ref{lemma:poles}
+and differentiating.
+\end{proof}
+
+We now prove proposition~\ref{th:ass2}.
+
+\begin{proof}
+As in the proof of proposition~\ref{th:ass}, let $z_1, z_2, \ldots, z_n$
+be the complex roots of $Q$, sorted by increasing order of
+\textit{modulus}. Since the roots of $Q(z)^2$ all have multiplicity 2,
+there exists constants $\alpha_1, \ldots, \alpha_n$ and $\beta_1, \ldots,
+\beta_n$ such that the partial fraction decomposition of the rational
+function $P(z)/Q(z)^2$ can be written as
+
+\begin{equation*}
+\frac{P(z)}{Q(z)^2} = 
+\sum_{j=1}^n \frac{\alpha_j}{(z-z_j)^2} + \frac{\beta_j}{z-z_j} =
+\sum_{j=1}^n \frac{\alpha_j/z_j^2}{(1-z/z_j)^2}
+-\frac{\beta_j/z_j}{1-z/z_j}.
+\end{equation*}
+
+As in the proof of proposition~\ref{th:ass}, we assumed without loss of
+generality that the degree of $P$ is lower than the degree of $Q$. Now
+applying lemmas~\ref{lemma:poles} and \ref{lemma:poles2}, we see that
+the coefficient of $z^k$ in $P(z)/Q(z)^2$ can be expressed as
+
+\begin{equation}
+\label{eq:fullass2}
+\sum_{j=1}^n (k+1)\frac{\alpha_j}{z_j^{k+2}}-\frac{\beta_j}{z_j^{k+1}}.
+\end{equation}
+
+The sum above is dominated by the term with the highest exponential rate
+of increase, \textit{i.e.} the first because $z_1$ has smallest modulus by
+definition. Thus, the coefficient of $z^k$ in $P(z)/Q(z)^2$ is
+asymptotically equivalent to 
+
+\begin{equation*}
+(k+1)\frac{\alpha_1}{z_1^{k+2}}-\frac{\beta_1}{z_1^{k+1}}.
+\end{equation*}
+
+We now need to find the values of $\alpha_1$ and $\beta_1$. As $z_1$ is a
+root of $Q$, there exists a polynomial $Q_1(z)$ such that
+
+\begin{equation}
+\label{eq:Q1}
+Q(z) = (z-z_1)Q_1(z).
+\end{equation}
+
+We can thus write $P(z)/Q(z)^2$ as
+
+\begin{equation}
+\label{eq:misc1}
+\frac{P(z)}{(z-z_1)^2Q_1(z)^2} = \frac{\alpha_1}{(z-z_1)^2} +
+\frac{\beta_1}{z-z_1} +
+\sum_{j=2}^n \frac{\alpha_j}{(z-z_j)^2} + \frac{\beta_j}{z-z_j}.
+\end{equation}
+
+Multiplying both sides of (\ref{eq:misc1}) by $(z-z_1)^2$ and setting $z =
+z_1$ shows that $\alpha_1 = P(z_1)/Q_1(z_1)^2$. To find the value of
+$Q_1(z_1)$ we differentiate (\ref{eq:Q1}) and set $z = z_1$, yielding
+$Q'(z_1) = Q_1(z_1)$. Finally we obtain $\alpha_1 = P(z_1) / Q'(z_1)^2$.
+
+To find the value of $\beta_1$, we subtract $\alpha_1/(z-z_1)^2$ on both
+sides of (\ref{eq:misc1}) and obtain
+
+\begin{equation}
+\label{eq:misc2}
+\frac{P(z) - P(z_1)Q_1(z)^2/Q_1(z_1)^2}{(z-z_1)^2Q_1(z)^2} =
+\frac{\beta_1}{z-z_1} + 
+\sum_{j=2}^n \frac{\alpha_j}{(z-z_j)^2} + \frac{\beta_j}{z-z_j}.
+\end{equation}
+
+Since $P(z_1) - P(z_1)Q_1(z_1)^2/Q_1(z_1)^2 = 0$, there exists a
+polynomial $Q_2(z)$ such that
+
+\begin{equation}
+\label{eq:Q2}
+P(z) - P(z_1)Q_1(z)^2/Q_1(z_1)^2 = (z-z_1)Q_2(z).
+\end{equation}
+
+
+Multiplying (\ref{eq:misc2}) by $z-z_1$ and setting $z =
+z_1$, we obtain $\beta_1 = Q_2(z_1)/Q_1(z_1)^2$. To find the value of
+$Q_2(z_1)$ we differentiate (\ref{eq:Q1}) two times and (\ref{eq:Q2})
+one time, finally obtaining
+$\beta_1 = P'(z_1)/Q'(z_1)^2 - P(z_1)Q''(z_1)/Q'(z_1)^3$, which concludes
+the proof.
+\end{proof}
+
+
+\begin{remark}
+Expression (\ref{eq:ass2}) is asymptotically equivalent to the simpler
+expression
+
+\begin{equation}
+\label{eq:ass3}
+(k+1)\frac{P(z_1)}{Q'(z_1)^2}\frac{1}{z_1^{k+2}}.
+\end{equation}
+
+However, the convergence of expression (\ref{eq:ass3}) is slow. Indeed,
+dividing the exact expression (\ref{eq:fullass2}) by (\ref{eq:ass3}) gives
+an error term in $O(1/k)$. In comparison, dividing (\ref{eq:fullass2}) by
+(\ref{eq:ass2}) gives an error term in $O(|z_1/z_2|^k)$, which decreases
+exponentially, as in proposition~\ref{th:ass}. \end{remark}
+
+
+
+
+
+\subsection{Substitutions}
+\label{sec:avsub}
+
+As we have seen several times, the analytic combinatorics approach is to
+write the generating function of simple objects and then combine them into
+more complex objects. In order to mark substitutions with the variable
+$u$, we update their weighted generating function to $pzu$. As in
+section~\ref{sec:substitutions}, $p$ is the probability of a substitution,
+so it is the weight in this expression. For every subtitution, the powers
+of $z$ and $u$ increase by $1$, and so do the size and the number of
+substitutions of the read.
+
+We could derive the weighted generating function by the transfer matrix
+method described in section~\ref{sec:substitutions}, but we can get an
+immediate result by using equation (\ref{eq:Sp}), where we observed
+that the weighted generating function of seedless reads can be expressed
+as
+
+\begin{equation}
+\tag{\ref{eq:Sp}}
+\frac{1+F_d(z)}{1-pz(1+F_d(z))} =
+(1+F_d(z)) \sum_{n=0}^\infty \big( pz(1+F_d(z)) \big)^n.
+\end{equation}
+
+Here the weighted generating function of substitutions appears explicitly
+as $pz$. We can replace it by $pzu$ to obtain directly
+
+\begin{equation}
+\label{eq:Szu}
+(1+F_d(z)) \sum_{n=0}^\infty \big( pzu(1+F_d(z)) \big)^n
+= \frac{1+F_d(z)}{1-pzu\big( 1+F_d(z) \big)}.
+\end{equation}
+
+
+$S(z,1)$ is simply the weighted generating function of seedless reads
+derived in section~\ref{sec:substitutions}, and for which we already
+derived the coefficient asymptotics. So we already have the denominator of
+(\ref{eq:av}). Now differentiating (\ref{eq:Szu}) with respect to $u$, we
+obtain
+
+\begin{equation}
+\label{eq:dSdu}
+\frac{\partial }{\partial u}
+\left(\frac{1+F_d(z)}{1-pzu\big( 1+F_d(z) \big)}
+\right) \Biggr|_{\substack{\\u=1}} = 
+\frac{pz(1+F_d(z))^2}{\big( 1 - pz(1+F_d(z)) \big)^2}.
+\end{equation}
+
+Because of the form of the weighted generating function, we have to use
+proposition~\ref{th:ass2}. The dominant singularity is the same for both
+the numerator and the denominator, so the terms in $z_1^{k+1}$ cancel out.
+What remains is an expression of the form $C_1k + C_2$. In other words,
+the average number of substitutions in seedless reads increases as an
+affine function of the size. We make this result more accurate in the
+following proposition.
+
+
+\begin{proposition}
+\label{th:avsub}
+Under the assumptions of the error model of
+section~\ref{sec:substitutions}, the average number of substitutions in
+seedless reads of size $k$ is asymptotically equivalent to
+
+\begin{equation*}
+\frac{(1-qz)(C_1(k+1) - C_2)}{1-(d+1-dqz_1)(qz_1)^d},
+\end{equation*}
+
+\noindent
+with
+
+\begin{gather*}
+C_1 = 1-(qz_1)^d, \text{ and} \\
+C_2 = \frac{
+\big(1-(2-(1-qz_1)d^2+2d)(qz_1)^d+(1+(1-qz_1)d^2-2d)(qz_1)^{2d} \big)}
+{1-(d+1-dqz_1)(qz_1)^d},
+\end{gather*}
+
+\noindent
+and where $z_1$ is the only positive root of the polynomial
+$1-pz(1+F_d(z))$.
+\end{proposition}
+
+\begin{proof}
+Apply proposition~\ref{th:ass2} to (\ref{eq:dSdu}), use
+proposition~\ref{th:p} and simplify.
+\end{proof}
+
+\begin{remark}
+The estimate obtained from (\ref{eq:ass3}) instead of (\ref{eq:ass2})
+increases linearly with $k$. In this case, only the relative error
+vanishes asymptotically. The absolute error remains constant.
+\end{remark}
+
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.445]{simulp_approx.pdf}
-\label{fig:simulp_approx}
-\caption{\textbf{Example estimates for inexact seeding with substitutions
-only}. The analytic combinatorics estimates of proposition~\ref{th:pins}
-are benchmarked against random simulations.  Shown on both panels are the
-probablities that a read of given size contains an inexact seed, either
-estimated by random simulations (dots), or by the method described above
-(lines). The curves are drawn for $d=17$, $p=0.08$, $p=0.10$ or $p=0.12$
-(from top to bottom). 10,000,000 simulations are run on the left panel and
-100,000,000 on the right one.  The difference never exceeds 0.0002 on the
-examples shown here, which is the expected variation for this number of
-random trials.}
+\includegraphics[scale=0.445]{simulp-average.pdf}
+\caption{\textbf{Estimating the average number of substitutions}.
+The average numbers of substitutions are shown for seedless reads of given
+size, either estimated by 10,000,000 random simulations (dots), or by
+analytic combinatorics (lines). The curves are drawn for $d=17$, $p=0.08$,
+$p=0.10$ $p=0.12$ (from bottom to top). The difference never exceeds 0.004
+on the examples shown here.}
+\label{fig:simulavsub}
 \end{figure}
 
 
 
 
-The difference between the sequences does not have to be sequencing
-errors, they can also be evolutionary distances.
 
-\subsection{Inexact seeding with more than one error}
+\subsection{Substitutions and deletions}
+\label{sec:avdel}
 
-This is fucking impossible...
+We now take the weighted generating function of the seedless reads in the
+error model of section~\ref{sec:deletions}
+
+\begin{equation}
+\tag{\ref{eq:Sdel}}
+\frac{1+(1-\delta)F_d(z)}
+  {1-pz - \big(pz(1-\delta) + \delta\big)F_d(z)}.
+\end{equation}
+
+As observed in the previous section, $pz$ is the weighted generating
+function of substitutions. To count them with parameter $u$, we need to
+replace $pz$ by $pzu$ and differentiate with respect to $u$. We obtain the
+counting function
+
+\begin{align}
+\frac{\partial}{\partial u}
+\left( \frac{1+(1-\delta)F_d(z)}
+  {1-pzu - \big(pzu(1-\delta) + \delta\big)F_d(z)} \right)
+\Biggr|_{\substack{\\u=1}} = \nonumber \\
+\frac{pz\big(1+(1-\delta)F_d(z)\big)^2}
+  {\big( 1-pz - \big(pz(1-\delta) + \delta\big)F_d(z) \big)^2}.
+\label{eq:dSdu_del}
+\end{align}
+
+Similarly, the weighted generating function of deletions is simply
+$\delta$, so in order to count them with parameter $v$ we have to replace
+$\delta$ by $\delta v$ in (\ref{eq:Sdel}). The counting function for
+substitutions and deletions is thus
+
+\begin{align}
+\frac{\partial}{\partial v}
+\left( \frac{1+(1-\delta v)F_d(z)}
+  {1-pz - \big(pz(1-\delta v) + \delta v\big)F_d(z)} \right)
+\Biggr|_{\substack{\\v=1}} = \nonumber \\
+\frac{\delta F_d(z)^2}{\big(
+  1-pz - \big(pz(1-\delta) + \delta\big)F_d(z) \big)^2}.
+\label{eq:dSdv_del}
+\end{align}
+
+As in the section~\ref{sec:avsub}, we derive the asymptotics by applying
+proposition~\ref{th:ass2} to (\ref{eq:dSdu_del}) and (\ref{eq:dSdv_del}),
+and by applying proposition~\ref{th:ass} to (\ref{eq:Sdel}). The terms
+$z_1^{k+1}$ cancel out when taking the ratio as per equation
+(\ref{eq:av}), so the number of substitutions or deletions in seedless
+reads is asymptotically linear, \textit{i.e.} of the form $C_1k+C_2$,
+where $C_1$ and $C_2$ are constants. In both cases, $C_1$ and $C_2$ have
+cumbersome expressions, but they are easy to compute from
+propositions~\ref{th:ass} and \ref{th:ass2}.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.445]{simuldel-average.pdf}
+\caption{\textbf{Example estimates of average number of deletions}. The
+average numbers of deletions are shown for seedless reads of given size,
+either estimated by 10,000,000 random simulations (dots), or by analytinc
+combinatorics (lines). The curves are drawn for $d=17$, $p=0.05$, and
+$\delta=0.14$, $\delta=0.15$ or $\delta=0.16$ (from bottom to top). The
+difference never exceeds 0.003 on the examples shown here.}
+\label{fig:simulavdel}
+\end{figure}
 
 
 
 
+\subsection{Substitutions, deletions and insertions}
 
+Finally, we take the weighted generating function of the seedless reads in
+the error model of section~\ref{sec:insertions}
 
-%%%%%%%%%%%%%%%%%% Inexact seeding %%%%%%%%%%%%%%%%%%%%%
+\begin{equation}
+\tag{\ref{eq:Sindel}}
+\frac{(1-r)\big( 1-(\tilde{r}-r)z \big) \left(1+(1-\delta)F_d(z)
+\right)}{1-a(z)-b(z)F_d(z)}.
+\end{equation}
+
 \section{Discussion}
 
 Some discussion goes here.
