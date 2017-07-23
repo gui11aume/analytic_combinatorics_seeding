@@ -40,8 +40,11 @@ sim-del: sim-del.c mt.o
 sim-inexact-sub: sim-inexact-sub.c mt.o
 	$(CC) $(CFLAGS) sim-inexact-sub.c mt.o -o sim-inexact-sub
 
-sim-average: sim-average.c mt.o
-	$(CC) $(CFLAGS) sim-average.c mt.o -o sim-average
+sim-average-sub: sim-average-sub.c mt.o
+	$(CC) $(CFLAGS) sim-average-sub.c mt.o -o sim-average-sub
+
+sim-average-del: sim-average-del.c mt.o
+	$(CC) $(CFLAGS) sim-average-del.c mt.o -o sim-average-del
 
 sim-fp: sim-fp.c mt.o
 	$(CC) $(CFLAGS) sim-fp.c mt.o -o sim-fp
@@ -149,24 +152,45 @@ out-.12-inexact.txt: sim-inexact-sub
 		>> out-.12-inexact.txt ; \
 	done
 
+
 # Average number of substitutions
-out-.08-average.txt: sim-average
-	./sim-average 50 17 0.08 > out-.08-average.txt
+out-.08-average-sub.txt: sim-average-sub
+	./sim-average-sub 50 17 0.08 > out-.08-average-sub.txt
 	for ((i=52 ; i <= 150; i += 2)) ; do \
-		./sim-average $$i 17 0.08 \
-			>> out-.08-average.txt ; \
+		./sim-average-sub $$i 17 0.08 \
+			>> out-.08-average-sub.txt ; \
 	done
-out-.10-average.txt: sim-average
-	./sim-average 50 17 0.10 > out-.10-average.txt
+out-.10-average-sub.txt: sim-average-sub
+	./sim-average-sub 50 17 0.10 > out-.10-average-sub.txt
 	for ((i=52 ; i <= 150; i += 2)) ; do \
-		./sim-average $$i 17 0.10 \
-			>> out-.10-average.txt ; \
+		./sim-average-sub $$i 17 0.10 \
+			>> out-.10-average-sub.txt ; \
 	done
-out-.12-average.txt: sim-average
-	./sim-average 50 17 0.12 > out-.12-average.txt
+out-.12-average-sub.txt: sim-average-sub
+	./sim-average-sub 50 17 0.12 > out-.12-average-sub.txt
 	for ((i=52 ; i <= 150; i += 2)) ; do \
-		./sim-average $$i 17 0.12 \
-			>> out-.12-average.txt ; \
+		./sim-average-sub $$i 17 0.12 \
+			>> out-.12-average-sub.txt ; \
+	done
+
+# Average number of deletions
+out-.05-.14-average-del.txt: sim-average-del
+	./sim-average-del 50 17 0.05 0.14 > out-.08-average-del.txt
+	for ((i=52 ; i <= 150; i += 2)) ; do \
+		./sim-average-del $$i 17 0.08 \
+			>> out-.08-average-del.txt ; \
+	done
+out-.05-.15-average-del.txt: sim-average-del
+	./sim-average-del 50 17 0.05 0.15 > out-.10-average-del.txt
+	for ((i=52 ; i <= 150; i += 2)) ; do \
+		./sim-average-del $$i 17 0.10 \
+			>> out-.10-average-del.txt ; \
+	done
+out-.05-.16-average-del.txt: sim-average-del
+	./sim-average-del 50 17 0.05 0.16 > out-.12-average-del.txt
+	for ((i=52 ; i <= 150; i += 2)) ; do \
+		./sim-average-del $$i 17 0.12 \
+			>> out-.12-average-del.txt ; \
 	done
 
 
@@ -188,21 +212,31 @@ out-.015.txt: sim-sub
 	done
 
 # False positives
-out-.02-fp.txt: sim-fp
-	./sim-fp 25 17 0.02 0.02 > out-.02-fp.txt
-	for ((i=26 ; i <= 100; i += 1)) ; do \
-		./sim-fp $$i 17 0.02 0.02 >> out-.02-fp.txt ; \
-	done
 out-.05-fp.txt: sim-fp
-	./sim-fp 25 17 0.02 0.05 > out-.05-fp.txt
-	for ((i=26 ; i <= 100; i += 1)) ; do \
-		./sim-fp $$i 17 0.02 0.05 >> out-.05-fp.txt ; \
+	./sim-fp 25 17 0.05 0.05 10000000 > out-.05-fp.txt
+	for ((i=29 ; i <= 101; i += 4)) ; do \
+		./sim-fp $$i 17 0.05 0.05 10000000 >> out-.05-fp.txt ; \
 	done
-out-.08-fp.txt: sim-fp
-	./sim-fp 25 17 0.02 0.08 > out-.08-fp.txt
-	for ((i=26 ; i <= 100; i += 1)) ; do \
-		./sim-fp $$i 17 0.02 0.08 >> out-.08-fp.txt ; \
+	for ((i=103 ; i <= 151; i += 2)) ; do \
+		./sim-fp $$i 17 0.05 0.05 100000000 >> out-.05-fp.txt ; \
 	done
+out-.15-fp.txt: sim-fp
+	./sim-fp 25 17 0.05 0.15 10000000 > out-.15-fp.txt
+	for ((i=29 ; i <= 101; i += 4)) ; do \
+		./sim-fp $$i 17 0.05 0.15 10000000 >> out-.15-fp.txt ; \
+	done
+	for ((i=103 ; i <= 151; i += 2)) ; do \
+		./sim-fp $$i 17 0.05 0.15 100000000 >> out-.15-fp.txt ; \
+	done
+out-.25-fp.txt: sim-fp
+	./sim-fp 25 17 0.05 0.25 10000000 > out-.25-fp.txt
+	for ((i=29 ; i <= 101; i += 4)) ; do \
+		./sim-fp $$i 17 0.05 0.25 10000000 >> out-.25-fp.txt ; \
+	done
+	for ((i=103 ; i <= 151; i += 2)) ; do \
+		./sim-fp $$i 17 0.05 0.25 100000000 >> out-.25-fp.txt ; \
+	done
+
 
 simulp.pdf: out-.08.txt out-.10.txt out-.12.txt
 	R -f make_figure_simulation_sub.R

@@ -46,7 +46,7 @@ k = 1:END
 
 L = list()
 
-for (p in c(.24, .25, .26)) {
+for (p in c(.2265, .2350, .2435)) {
    z = Newton(p,d)
    C = cst_term(z,p,d)
    L[[as.character(p)]] = 1-C/z^(k+2)
@@ -67,15 +67,15 @@ plot(S[[1]][subs1,1], 1-S[[1]][subs1,2]/1e7,
      plot.first=grid(),
      xlab="Read size", ylab="Seeding probability")
 points(S[[1]][subs2,1], 1-S[[1]][subs2,2]/1e7, pch=19, cex=.5)
-lines(k[100:804], L[[1]][100:804], lty=3)
+lines(k[100:804], L[[1]][100:804])
 
 points(S[[2]][subs1,1], 1-S[[2]][subs1,2]/1e7, pch=19, cex=.5)
 points(S[[2]][subs2,1], 1-S[[2]][subs2,2]/1e7, pch=19, cex=.5)
-lines(k[100:804], L[[2]][100:804], lty=3)
+lines(k[100:804], L[[2]][100:804])
 
 points(S[[3]][subs1,1], 1-S[[3]][subs1,2]/1e7, pch=19, cex=.5)
 points(S[[3]][subs2,1], 1-S[[3]][subs2,2]/1e7, pch=19, cex=.5)
-lines(k[100:804], L[[3]][100:804], lty=3)
+lines(k[100:804], L[[3]][100:804])
 
 legend(x="bottomright", inset=0.05, legend=c("Simulation", "Estimate"),
        pch=c(19, NA), lty=c(NA, 1), pt.cex=.6, bg="white", box.col=NA)
@@ -85,13 +85,13 @@ subs = seq(68,92)
 plot(S[[1]][subs,1], 1-S[[1]][subs,2]/1e7, pch=19, cex=.5, ylim=c(0.7,1),
      plot.first=grid(),
      xlab="Read size", ylab="Seeding probability")
-lines(k[792:1008], L[[1]][792:1008], lty=3)
+lines(k[792:1008], L[[1]][792:1008])
 
 points(S[[2]][subs,1], 1-S[[2]][subs,2]/1e7, pch=19, cex=.5)
-lines(k[792:1008], L[[2]][792:1008], lty=3)
+lines(k[792:1008], L[[2]][792:1008])
 
 points(S[[3]][subs,1], 1-S[[3]][subs,2]/1e7, pch=19, cex=.5)
-lines(k[792:1008], L[[3]][792:1008], lty=3)
+lines(k[792:1008], L[[3]][792:1008])
 dev.off()
 
 max(abs(1-S[[1]][,2]/1e7 - L[[1]][S[[1]][,1]]))

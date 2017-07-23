@@ -64,9 +64,9 @@ for (p in c(0.08, 0.1, 0.12)) {
 }
 
 S = list(
-   read.table("out-.08-average.txt"),
-   read.table("out-.10-average.txt"),
-   read.table("out-.12-average.txt")
+   read.table("out-.08-average-sub.txt"),
+   read.table("out-.10-average-sub.txt"),
+   read.table("out-.12-average-sub.txt")
 )
 
 pdf("simulp-average.pdf", width=5, height=5.5, useDingbats=FALSE)

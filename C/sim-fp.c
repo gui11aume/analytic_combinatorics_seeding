@@ -5,8 +5,6 @@
 
 #include "mt.h"
 
-#define ITER 10000000
-
 int main(int argc, char **argv) {
 
    char **ignore;
@@ -15,6 +13,7 @@ int main(int argc, char **argv) {
    unsigned int D     = atoi(argv[2]);
    double       prob  = strtod(argv[3], ignore);
    double       kappa = strtod(argv[4], ignore);
+   long int     ITER  = atoi(argv[5]);
 
    if (K == 0 || D == 0 || prob == 0) {
       fprintf(stderr, "argument error\n");
@@ -28,17 +27,15 @@ int main(int argc, char **argv) {
    // Set the random seed.
    seedMT(123);
 
-   long int total = 0; //ITER;
+   long int total = ITER;
 
    // Run the simulation.
    for (long int iter = 0 ; iter < ITER ; iter++) {
 
-      int false_found = 0;
-      int true_found = 0;
-
       // Initialize stacks.
       int stack_true = 0;
       int stack_false = 0;
+      int false_positive = 0;
 
       for (int i = 0 ; i < K ; i++) {
          if (randomMT() < p) {
@@ -53,7 +50,9 @@ int main(int argc, char **argv) {
                // Error and duplicate has the same nucleotide.
                // Increase the stack of the false positive.
                stack_false++;
-               if (stack_false >= D) false_found = 1;
+               if (stack_false >= D) {
+                  false_positive = 1;
+               }
             }
          }
          else {
@@ -68,18 +67,19 @@ int main(int argc, char **argv) {
                // No error and duplicate has the same nucleotide.
                // Increase the stack of the false positive.
                stack_false++;
-               if (stack_false >= D) false_found = 1;
+               if (stack_false >= D) {
+                  false_positive = 1;
+               }
             }
             if (stack_true >= D) {
-               // We have a seed.
-//               total--;
-               true_found = 1;
+               // We have a true positive.
+               false_positive = 0;
                break;
             }
          }
       }
 
-      if (false_found && !true_found) total++;
+      if (!false_positive) total--;
 
    }
 
