@@ -46,8 +46,14 @@ sim-average-sub: sim-average-sub.c mt.o
 sim-average-del: sim-average-del.c mt.o
 	$(CC) $(CFLAGS) sim-average-del.c mt.o -o sim-average-del
 
+sim-average-del2: sim-average-del2.c mt.o
+	$(CC) $(CFLAGS) sim-average-del2.c mt.o -o sim-average-del2
+
 sim-fp: sim-fp.c mt.o
 	$(CC) $(CFLAGS) sim-fp.c mt.o -o sim-fp
+
+sim-MEM: sim-MEM.c mt.o
+	$(CC) $(CFLAGS) sim-MEM.c mt.o -o sim-MEM
 
 
 
@@ -193,6 +199,26 @@ out-.05-.16-average-del.txt: sim-average-del
 			>> out-.05-.16-average-del.txt ; \
 	done
 
+# Average number of deletions (2)
+out-.05-.14-average-del2.txt: sim-average-del2
+	./sim-average-del2 50 17 0.05 0.14 > out-.05-.14-average-del2.txt
+	for ((i=52 ; i <= 150; i += 2)) ; do \
+		./sim-average-del2 $$i 17 0.05 0.14 \
+			>> out-.05-.14-average-del2.txt ; \
+	done
+out-.05-.15-average-del2.txt: sim-average-del2
+	./sim-average-del2 50 17 0.05 0.15 > out-.05-.15-average-del2.txt
+	for ((i=52 ; i <= 150; i += 2)) ; do \
+		./sim-average-del2 $$i 17 0.05 0.15 \
+			>> out-.05-.15-average-del2.txt ; \
+	done
+out-.05-.16-average-del2.txt: sim-average-del2
+	./sim-average-del2 50 17 0.05 0.16 > out-.05-.16-average-del2.txt
+	for ((i=52 ; i <= 150; i += 2)) ; do \
+		./sim-average-del2 $$i 17 0.05 0.16 \
+			>> out-.05-.16-average-del2.txt ; \
+	done
+
 
 # Substitutions (short)
 out-.005.txt: sim-sub
@@ -237,6 +263,23 @@ out-.25-fp.txt: sim-fp
 		./sim-fp $$i 17 0.05 0.25 100000000 >> out-.25-fp.txt ; \
 	done
 
+other:
+	./sim-fp 25 17 0.02 0.05 10000000
+	./sim-fp 25 18 0.02 0.05 10000000
+	./sim-fp 25 19 0.02 0.05 10000000
+	./sim-fp 25 20 0.02 0.05 10000000
+	./sim-fp 25 21 0.02 0.05 10000000
+	./sim-fp 25 22 0.02 0.05 10000000
+
+# MEMs
+out-.05-MEM.txt: sim-MEM
+	./sim-MEM 25 9 0.05 0.10 10000000 > out-.05-MEM.txt
+	for ((i=29 ; i <= 80; i += 1)) ; do \
+		./sim-MEM $$i 9 0.05 0.1 10000000 >> out-.05-MEM.txt ; \
+	done
+#	for ((i=103 ; i <= 151; i += 2)) ; do \
+#		./sim-MEM $$i 9 0.02 0.05 100000000 >> out-.05-MEM.txt ; \
+#	done
 
 simulp.pdf: out-.08.txt out-.10.txt out-.12.txt
 	R -f make_figure_simulation_sub.R
@@ -254,7 +297,15 @@ simulp-inexact.pdf: out-.08-inexact.txt out-.10-inexact.txt \
 
 simulp-average.pdf: out-.08-average.txt out-.10-average.txt \
 		out-.12-average.txt
-	R -f make_figure_simulation_average.R
+	R -f make_figure_simulation_average_sub.R
+
+simuldel-average.pdf: out-.05-.14-average-del.txt \
+		out-.05-.15-average-del.txt out-.05-.16-average-del.txt
+	R -f make_figure_simulation_average_del.R
+
+simuldel-average2.pdf: out-.05-.14-average-del2.txt \
+		out-.05-.15-average-del2.txt out-.05-.16-average-del2.txt
+	R -f make_figure_simulation_average_del2.R
 
 simulp_short.pdf: out-.005.txt out-.010.txt out-.015.txt
 	R -f make_figure_simulation_sub_short.R

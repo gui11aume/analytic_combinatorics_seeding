@@ -12,6 +12,7 @@
 % ---- Propositions, lemmas, defintions... ---- %
 
 \newtheorem{algorithm}{Algorithm}
+\newtheorem{corollary}{Corollary}
 \newtheorem{definition}{Definition}
 %\newtheorem{example}{Example}
 \newtheorem{lemma}{Lemma}
@@ -382,16 +383,21 @@ problems where intuition does not help.
 \subsection{Sequences and transfer matrices}
 
 In many combinatorial applications, one needs to count the sequences where
-a pattern does or does not occur. A convenient way to find the weighted
-generating functions of such sequences is to use transfer matrices in
-order to encode the allowed or disallowed patterns. We will illustrate
-the process informally with an example from biology, before introducing
-the formal definitions.
+a pattern does not occur, or where some symbols may not follow each other.
+A convenient way to find the weighted generating functions of such
+sequences is to encode this information in so-called ``transfer
+matrices''. We will illustrate the process with an example from biology,
+before introducing the formal definitions.
 
-DNA methylation can only occur on the dinucleotide \texttt{CG}s in many
-animal genomes. Because of this property, it is interesting to count the
-sequences that have no \texttt{CG}. Such a sequence is a walk on the
-graph with restricted transitions shown in figure~\ref{fig:CG_transtions}.
+In many animal genomes, DNA methylation can only occur on the dinucleotide
+\texttt{CG}. Because of this property, it is interesting to count the
+sequences that have no \texttt{CG}. Sequences without \texttt{CG} can be
+thought of as walks on a directed graph with restricted transitions.
+Nucleotides are represtend as nodes, and an edge indicates that the
+nucleotide at the tip of the edge can follow the nucleotide at the base of
+the edge. Sequences without \texttt{CG} correspond to a complete graph
+where the edge from \texttt{C} to \texttt{G} was removed (see
+figure~\ref{fig:CG_transtions}).
 
 \begin{figure}[h]
 \centering
@@ -402,8 +408,10 @@ All the transitions are allowed, except \texttt{C} to \texttt{G}.}
 \label{fig:CG_transtions}
 \end{figure}
 
-Arranging the nodes in alphabetical order, the adjacency matrix of the
-directed graph is\footnote{Put the letters as index for row and column.}
+The same graph can also be represted as an adjacency matrix $M$, where a
+$1$ at position $(i,j)$ indicates that there is an edge from node $i$ to
+node $j$, and a $0$ indicates that there is no such edge. For instance,
+the adjacency matrix of the graph of figure~\ref{fig:CG_transtions} is
 
 \begin{equation*}
 M = 
@@ -418,15 +426,84 @@ M =
 \end{blockarray}.
 \end{equation*}
 
-The entry of the matrix $M^n$ at position $(i,j)$ corresponds to the
-number of paths on this graph that start with nucleotide $i$, end with
-nucleotide $j$ and contain $n$ steps. So a way to count sequences without
-\texttt{CG} is to compute the powers of the adjacency matrix $M$.
+The main advantage of the adjacency matrix representation is that the
+powers of $M$ give an analytical way to count the walks on a graph. The
+entry of $M^n$ at position $(i,j)$ is the number of walks of $n$ steps
+that start with node $i$ and end with node $j$. So we can count
+sequences without \texttt{CG} by computing the successive powers of the
+adjacency matrix $M$ above.
 
-Instead of just their numbers, we can go one step furhter and get the
-weighted generating functions of those sequences. Replacing the $1$s in the
-adjacency matrix by the weighted generating functions of the objects they
-represent, we obtain what is called the transfer matrix of the sequence.
+The same idea can be used to find the weighted generating function of
+sequences of combinatorial objects. We can replace the entries of $M$ by
+generating functions to obtain a matrix $M(z)$ whose successive owers give
+the generating fuctions of finite sequences of objects.
+
+\begin{definition}
+\label{def:transfermat}
+Let $(\mathcal{A}_i)_{1 \leq i \leq m}$ be classes of combinatorial
+objects arranged in finite sequences. A \textbf{transfer matrix} is a
+$m\times m$ square matrix $M(z)$ such that for any sequence with weighted
+generating function $F(z)$ ending with an object from $\mathcal{A}_i$,
+sequences obtained by appending an object from $\mathcal{A}_j$ have
+weighted generating function $F(z)M(z)_{i,j}$.
+\end{definition}
+
+\begin{example}
+Let $\mathcal{A} = \{a\}$ be an alphabet with a single letter. Denote its
+weighted generating function $pz$. A finite sequence of objects from
+$\mathcal{A}$ is an object from $\mathcal{A}^k$ with weighted generating
+function $(pz)^k$ for some $k \geq 0$. Appending an object from
+$\mathcal{A}$, we obtain an object from $\mathcal{A}^{k+1}$ with weighted
+generating function $(pz)^{k+1}$. Therefore, the transfer matrix of
+sequences of objects from $\mathcal{A}$ is $M(z) = [pz]$.
+\end{example}
+
+\begin{example}
+\label{ex:transmat_ab}
+Let $\mathcal{A} = \{a\}$ and $\mathcal{B} = \{b\}$ be alphabets with a
+single letter. Denote their weighted generating functions $pz$ and $qz$,
+respectively. Let $\mathcal{S}$ be the class of sequences of objects from
+either $\mathcal{A}$ or $\mathcal{B}$. It is easy to see that elements of
+$\mathcal{S}$ have weighted generating functions that are products of $pz$
+and $qz$. Appending an element of $\mathcal{A}$ or $\mathcal{B}$ amounts
+to multiplying the weighted generating function by $pz$ or $qz$,
+respectively. The transfer matrix of sequences of $\mathcal{S}$ is thus
+
+\begin{equation*}
+M(z) =
+\begin{blockarray}{ccc}
+     & \mathcal{A} & \mathcal{B} \\
+\begin{block}{c[cc]}
+\mathcal{A} & pz & qz \\
+\mathcal{B} & pz & qz \\
+\end{block}
+\end{blockarray}.
+\end{equation*}
+\end{example}
+
+\begin{example}
+As in example~\ref{ex:transmat_ab}, let $\mathcal{A} = \{a\}$ and
+$\mathcal{B} = \{b\}$ be alphabets with a single letter and denote their
+weighted generating functions $pz$ and $qz$, respectively. This time, let
+$\mathcal{S}$ be the class of sequences of objects from either
+$\mathcal{A}$ or $\mathcal{B}$ such that two elements of $\mathcal{A}$
+never follow each other. In this case, appending an element of
+$\mathcal{A}$ to a sequence ending with an element of $\mathcal{A}$ is
+impossible and so yields a weighted generating function equal to $0$.
+Based on the previous example, the transfer matrix of sequences in
+$\mathcal{S}$ is thus
+
+\begin{equation*}
+M(z) =
+\begin{blockarray}{ccc}
+     & \mathcal{A} & \mathcal{B} \\
+\begin{block}{c[cc]}
+\mathcal{A} & 0  & qz \\
+\mathcal{B} & pz & qz \\
+\end{block}
+\end{blockarray}.
+\end{equation*}
+\end{example}
 
 This background in mind, we now introduce transfer matrices on the problem
 at hand to find the weighted generating function of sequences without
@@ -434,16 +511,6 @@ at hand to find the weighted generating function of sequences without
 frequency $p/2$ and that \texttt{A}s and \texttt{T}s occur with frequency
 $q/2$, where $q = 1-p$. With obvious notations we see that $C(z) = G(z) =
 pz/2$ and that $A(z) = T(z) = qz/2$.
-
-\begin{definition}
-\label{def:transfermat}
-Let $(\mathcal{A}_i)_{1 \leq i \leq k}$ be sets of combinatorial objects,
-and let $A_i(z)$ be the weighted generating functions of $\mathcal{A}_i$.
-The entry $(i,j)$ of the square $k\times k$ \textbf{transfer matrix} is
-equal to $A_j(z)$ if an object of $\mathcal{A}_i$ can be followed by an
-object of $\mathcal{A}_j$, and $0$ otherwise\footnote{Perhaps mention that
-the transition probability is the frequency of the landing point.}.
-\end{definition}
 
 \begin{example}
 \label{ex:CGmat}
@@ -480,20 +547,60 @@ find the weighted generating function of combinatorial sequences.
 
 \begin{proposition}
 \label{th:transfermatrices}
-Let $(\mathcal{A}_i)_{1 \leq i \leq m}$ be sets of combinatorial objects
-and let $A_i(z)$ be the weighted generating function of $\mathcal{A}_i$.
-Let $M(z)$ be a square transfer matrix. The weighted generating function
-of a sequence of $n+1$ items starting with an object from $\mathcal{A}_i$
-and ending with an object from $\mathcal{A}_j$ is
+Let $(\mathcal{A}_i)_{1 \leq i \leq m}$ be classes of combinatorial
+objects with generating functions $A_i(z)$. Let $M(z)$ be the transfer
+matrix of some class of sequences of objects from $(\mathcal{A}_i)_{1 \leq
+i \leq m}$. The weighted generating function of sequences of $n+1$
+objects, starting with an object from $\mathcal{A}_i$ and ending with an
+object from $\mathcal{A}_j$ is
 
 \begin{equation}
 \label{eq:mznij}
 A_i(z) \cdot \left( M(z)^n \right)_{i,j}.
 \end{equation}
 
-It follows that the the weighted generating function of sequences of items
+\end{proposition}
+
+\begin{proof}
+Proceed by induction. For $n = 0$, the sequences have only one item.
+Expression (\ref{eq:mznij}) is equal to $A_i(z)$ if $i = j$ and $0$
+otherwise, which is the generating function of sequences of one item
 starting with an object from $\mathcal{A}_i$ and ending with an object
-from $\mathcal{A}_j$ is
+from $\mathcal{A}_j$.
+
+Assume that (\ref{eq:mznij}) holds for $n \geq 0$. A sequence of $n+2$
+items starting with an object from $\mathcal{A}_i$ and ending with an
+object from $\mathcal{A}_j$ is a sequence of $n+1$ items starting with an
+object from $\mathcal{A}_i$ and ending with an object from some
+$\mathcal{A}_k$, followed by an object from $\mathcal{A}_j$. Using the
+recurrence hypothesis, the weighted generating function of sequences of
+$n+1$ items starting with an object from $\mathcal{A}_i$ and ending with
+an object from $\mathcal{A}_k$ is $A_i(z) \cdot (M(z)^n)_{i,k}$. Using the
+deifinition of transfer matrices, $A_i(z) \cdot (M(z)^n)_{i,k} \cdot
+M(z)_{k,j}$ is the weighted generating function of sequences of $n+2$
+objects, starting with an object from $\mathcal{A}_i$ and ending with an
+object from $\mathcal{A}_k$ followed by an object from $\mathcal{A}_j$.
+
+Now summing on all $\mathcal{A}_k$, we see that the weighted generating
+function of sequences of $n+2$ objects, starting with an element from
+$\mathcal{A}_i$ and ending with an element from $\mathcal{A}_j$ is
+
+\begin{equation*}
+\sum_{k = 1}^m A_i(z)\left( M(z)^n \right)_{i,k} M(z)_{k,j} 
+ = A_i(z) \left( M(z)^{n+1} \right)_{i,j},
+\end{equation*}
+
+\noindent
+which concludes the induction.
+\end{proof}
+
+
+% --- The corollary --- %
+
+\begin{corollary}
+The weighted generating function of sequences of items starting with an
+object from $\mathcal{A}_i$ and ending with an object from $\mathcal{A}_j$
+is
 
 \begin{equation}
 \label{eq:I-Mz}
@@ -503,49 +610,32 @@ A_i(z) \cdot \left( I - M(z) \right)^{-1}_{i,j},
 \noindent
 provided the eigenvalues of $M(z)$ all have \textit{modulus} less than
 $1$.
-\end{proposition}
+\end{corollary}
 
 \begin{proof}
-For the first part of the proposition we proceed by recurrence. For $n =
-0$, the sequences have only one item.  Expression (\ref{eq:mznij}) is
-equal to $A_i(z)$ if $i = j$ and $0$ otherwise, which is the generating
-function of sequences of one item starting with an object from
-$\mathcal{A}_i$ and ending with an object from $\mathcal{A}_j$.
-
-Assume that (\ref{eq:mznij}) holds for $n \geq 0$. A sequence of $n+2$
-items starting with an object from $\mathcal{A}_i$ and ending with an
-object from $\mathcal{A}_j$ is a sequence of $n+1$ items starting with an
-object from $\mathcal{A}_i$ and ending with an object from any
-$\mathcal{A}_k$, followed by an object from $\mathcal{A}_j$. Using the
-recurrence hypothesis and the fact that an object from $\mathcal{A}_k$ can
-be followed by an object from $\mathcal{A}_j$ if and only if $M(z)_{k,j}
-\neq 0$, we obtain the weighted generating function as
-
-\begin{equation*}
-\sum_{k = 1}^m A_i(z)\left( M(z)^n \right)_{i,k} M(z)_{k,j} 
- = A_i(z) \left( M(z)^{n+1} \right)_{i,j}.
-\end{equation*}
-
-To prove (\ref{eq:I-Mz}), observe that the weighted generating function of
-sequences of items starting with an object from $\mathcal{A}_i$ and ending
-with an object from $\mathcal{A}_j$ is
+Summing (\ref{eq:mznij}) on all $n$, the weighted generating function of
+sequences of objects starting with an object from $\mathcal{A}_i$ and
+ending with an object from $\mathcal{A}_j$ appears as
 
 \begin{equation*}
 \sum_{n=0}^\infty A_i(z) \cdot \left(M(z)^n \right)_{i,j} =
- A_i(z) \cdot \left( \sum_{n=0}^\infty M(z)^n\right)_{i,j} .
+ A_i(z) \cdot \left( \sum_{n=0}^\infty M(z)^n\right)_{i,j}.
 \end{equation*}
 
-Now observe that $(I-M(z)) \cdot (I+M(z)+M(z)^2+ \ldots + M(z)^n) =
-I-M(z)^{n+1}$, so if all the eigenvalues of $M(z)$ have \textit{modulus}
-less than $1$, the right hand size converges to $I$ as $n$ goes to
-infinity, which proves (\ref{eq:I-Mz}).
+Observe that $(I-M(z)) \cdot (I+M(z)+M(z)^2+ \ldots + M(z)^n) =
+I-M(z)^{n+1}$. If all the eigenvalues of $M(z)$ have \textit{modulus} less
+than $1$, the right hand size converges to the identity matrix $I$ as $n$
+goes to infinity. This translates to
+
+\begin{equation*}
+\sum_{n=0}^\infty M(z)^n = (I-M(z))^{-1},
+\end{equation*}
+
+\noindent
+concluding the proof that the weighted generating function is as shown in
+(\ref{eq:I-Mz}).
 \end{proof}
 
-\begin{remark}
-When the forbidden transitions involve more than two items (\textit{e.g.}
-sequences of $\{a,b\}$ without $baa$), the transfer matrix can be modified
-to...
-\end{remark}
 
 \begin{example}
 \label{ex:CGmat2}
@@ -557,8 +647,7 @@ sequences without \texttt{CG} that start with a \texttt{C} and end with a
 C(z) \cdot (I-M(z))^{-1}_{2,3}.
 \end{equation*}
 
-All the entries of $M(z)$ are less than $1$ for $|z| < 1$ and $M_*(z)$,
-the inverse of $I-M(z)$, is found to be equal to 
+The inverse of $I-M(z)$ is equal to 
 
 \begin{equation*}
 \frac{1}{\lambda(z)} \left[
@@ -573,18 +662,18 @@ the inverse of $I-M(z)$, is found to be equal to
 
 \noindent
 where $\lambda(z) = (pz)^2 - 4z + 4$ is the determinant of $I-M(z)$. Now
-picking the entry at coordinates $(2,3)$, we find that the weighted
-generating function is
+picking the entry at coordinates $(2,3)$, and multiplying by $C(z) =
+pz/2$, we find that the weighted generating function is
 
 \begin{equation*}
-pz/2\frac{2pqz^2}{(pz)^2 - 4z + 4}
+\frac{pz}{2} \cdot \frac{2pqz^2}{(pz)^2 - 4z + 4}
 = \frac{p^2qz^3}{(pz)^2 - 4z + 4}.
 \end{equation*}
 \end{example}
 
-We can also find the weighted generating function of all sequences that do
-not contain \texttt{CG} by summing over all possible objects at the
-beginning and at the end of the sequence.
+Finally, we introduce the ``head-body-tail'' decomposition, which allows
+us to find the weighted generating functions of general combinatorial
+sequences.
 
 \begin{proposition}
 \label{th:TM2WGF}
@@ -592,15 +681,10 @@ The weighted generating function of all possible sequences described by
 the transfer matrix $M(z)$ is 
 
 \begin{equation}
-1 + U(z) \cdot (I-M(z))^{-1} \cdot V,
+1 + H \cdot B(z) \cdot T.
 \end{equation}
 
-\noindent
-where $U(z)$ is the row vector such the $i$-th element is equal to
-$A_i(z)$ if the sequence can start with an object from $\mathcal{A}_i$ and
-$0$ otherwise, and $V$ is the column vector such that the $j$-th element
-is equal to $1$ if the sequence end with an object from $\mathcal{A}_j$
-and $0$ otherwise.
+BLAH BLAH.
 \end{proposition}
 
 \begin{proof}
@@ -937,13 +1021,18 @@ One of the simplest and yet useful models is to assume that errors consist
 of substitutions only, and that they occur with the same probability $p$
 for every nucleotide. This describes reasonably well the error model of
 the Illumina platforms (where $p$ is around $0.01$).
-Figure~\ref{fig:subonly} shows the transition probabilities between
-correct nucleotides and error-free nucleotides.
+
+A read can be thought of as a walk on the graph shown in
+figure~\ref{fig:subonly}. Each nucleotide is represented as a node that
+can be either a match or a substitution. The weights on the edges indicate
+the probabilities of transitions between the states. In this model, the
+transitions are simply equal to the proportions of the different states
+(\textit{i.e.} the error rate).
 
 \begin{figure}[h]
 \centering
 \includegraphics[scale=0.9]{substitutions_only.pdf}
-\caption{\textbf{Substitutions only}. 
+\caption{\textbf{Error model with substitutions only}. 
 The substitution rate $p$ is assumed to be constant throughout the read.
 Every decoded nucleotide is correct with probability $q = 1-p$.}
 \label{fig:subonly}
@@ -1203,34 +1292,38 @@ read contains a seed. For this reason, we ignore deletions next to
 substitutions. More precisely, we assume that they can occur, but whether
 they do has no importance for the problem.
 
-Figure~\ref{fig:deletions}
-shows the transition probabilities between errors and correct calls. As
-mentioned above, a substitution can be followed or preceded by a deletion
-(each with probability $\delta$), but this information is regarded for
-simplicity. Only the self transition of the state ``Match'' needs to
-explicitly distinguish whether it contains a deletion.
+A read can be thought of as a walk on the graph shown in
+figure~\ref{fig:deletions}. Each nucleotide is represented as a node that
+can be either a match or a substitution. The weights on the edges indicate
+the probabilities of transitions between the states. As mentioned above,
+deletions adjacent to substitutions are ignored; only those occurring
+between matches are registered. The transition shown as a dashed line
+indicates that there was a deletion between two correct nucleotides.
+The other self transition of the ``Match'' state indicates that the
+nucleotides are not separated by a deletion. The probabilities of these
+events are $\delta q$ and $(1-\delta)q$, respectively, \textit{i.e.} the
+probability that a deletion does or does not occur, times the probability
+that the nucleotide is correct. The other transitions are as in the error
+model with substitutions shown in
+figure~\ref{fig:subonly}.
 
 \begin{figure}[h]
 \centering
 \includegraphics[scale=0.9]{deletions.pdf}
-\caption{\textbf{Substitutions and deletions}. 
-Substitution and deletion rates $\delta$ and $p$ are assumed to be
-constant throughout the read. Deletions do not have a state of their own
-because they have size $0$ and never ``appear'' in the structure of the
-read. Deletions before or after a substitution are ignored because they
-have no effect on the error-free intervals. For instance, the transition
-from ``Match'' to ``Substitution'' is $\delta p + (1-\delta)p = p$. The
-same holds for the other transitions to and from ``Substitution''.}
+\caption{\textbf{Error model with substitutions and deletions}. 
+Substitution and deletion rates $p$ and $\delta$ are assumed to be
+constant throughout the read. Deletions are implicit and do not have a
+state of their own. Deletions before or after a substitution are ignored
+because they do not affect whether the read has a seed or not.}
 \label{fig:deletions}
 \end{figure}
 
-The weighted generating function of error-free intervals of size $1$ is
-simply $qz$. They are either at the beginning of the read or after a
-substitution and in both cases deletions are irrelevant. For an error-free
-interval of size $k$, we must ensure that there is no deletion in the
-$k-1$ ``spaces'' between the nucleotide calls, so the weighted generating
-function is $(1-\delta)^{k-1}(qz)^k$. Summing for all the possible sizes,
-we obtain the weighted generating function of error-free intervals as
+As in section~\ref{sec:substitutions}, we need to find the weighted
+generating function of error-free intervals. When their size is $1$, this
+is just $qz$. In an error-free interval of size $k$, there are $k-1$
+``spaces'' between the nucleotides, so the weighted generating function is
+$(1-\delta)^{k-1}(qz)^k$. Summing for all the possible sizes, we obtain
+the weighted generating function of error-free intervals as
 
 \begin{equation}
 \label{eq:Fdel}
@@ -1239,9 +1332,9 @@ F(z) = qz + (1-\delta)(qz)^2 + (1-\delta)^2(qz)^3 \ldots =
 \end{equation}
 
 The only difference with the transfer matrix of
-section~\ref{sec:substitutions} is that an error-free interval can follow
-another error-free interval, provided there is a deletion between them.
-Since the weight of this deletion is $\delta$, the transfer matrix is
+section~\ref{sec:substitutions} is that an error-free interval can now
+follow another error-free interval if there is a deletion between them.
+Since the probability of this deletion is $\delta$, the transfer matrix is
 
 
 \begin{equation*}
@@ -1403,12 +1496,13 @@ insertions.
 \begin{figure}[h]
 \centering
 \includegraphics[scale=0.9]{insertions.pdf}
-\caption{\textbf{Substitutions, deletions and insertions}. Rates of
-substitution ($p$), deletion ($\delta$) and insertion ($r$) are assumed to
-be contant throughout the read. The prolongation rate of insertions
-($\tilde{r}$) is also assumed to be constant. Here $q = 1-p-r$ and the
-transitions from ``Inertion'' to ``Match'' and ``Substitution'' are
-normalized to maintain a constant rate of substitution.}
+\caption{\textbf{Error model with substitutions, deletions and
+insertions}. Rates of substitution ($p$), deletion ($\delta$) and
+insertion ($r$) are assumed to be contant throughout the read. The
+prolongation rate of insertions ($\tilde{r}$) is also assumed to be
+constant. Here $q = 1-p-r$ and the transitions from ``Inertion'' to
+``Match'' and ``Substitution'' are normalized to maintain a constant rate
+of substitution.}
 \label{fig:insertions}
 \end{figure}
 
@@ -2110,9 +2204,11 @@ D(z) =
 \end{equation*}
 
 As above, the weighted generating function of reads with no hit is given
-by $1+U \cdot (I-M(z))^{-1} \cdot V(z)$. In this case the row vector $U$
-is equal to $(1,0,0,\ldots,0)$ and the column vector $V(z)$ is equal to
-$(1+az+\ldots+(az)^d, \ldots, 1+az, 1)$.
+by\footnote{This time the empty sequence in includedin the matrix
+multiplication so there is no need to add $1$.} $H \cdot (I-M(z))^{-1}
+\cdot T$. In this case the row vector $H$ is equal to
+$(1,0,0,\ldots,0)$ and the column vector $T$ is equal to
+$(1+az+\ldots+(az)^{d-1}, \ldots, 1+az, 1)$.
 
 
 \begin{figure}[h]
@@ -2143,22 +2239,33 @@ range of $d$, $p$ and $\kappa$.
 
 
 
+\subsection{MEM seeds}
 
+This is the transfer matrix for the reads that contain no MEM seed of size
+$d$ or greater, given that the target sequence has exactly one duplicate.
 
+\begin{equation*}
+M(z) =
+\begin{blockarray}{ccccccc}
+   & \scriptstyle{0,0} & \scriptstyle{0,1} & \scriptstyle{0,2}
+   & \ldots & \scriptstyle{0,d-1} & \scriptstyle{*,0} \\
+\begin{block}{c[cccccc]}
+\scriptstyle{0,0} & dz\frac{1-(az)^d}{1-az} &
+    cz & acz^2 & \ldots & a^{d-2}cz^{d-1} & bz\frac{1}{1-az} \\
+\scriptstyle{0,1} & dz \frac{1-(az)^{d-1}}{1-az} & 0 & cz &
+    \ldots & a^{d-3}cz^{d-2} & bz\frac{1-(az)^{d-1}}{1-az} \\
+\scriptstyle{0,2} & dz\frac{1-(az)^{d-2}}{1-az} & 0 & 0 &
+    \ldots & a^{d-4}cz^{d-3} & bz\frac{1-(az)^{d-2}}{1-az}  \\
+\vdots & \vdots & \vdots & \vdots & \ddots & \vdots & \vdots \\
+\scriptstyle{0,d-1} & dz & 0 & 0 & \ldots & 0 & bz \\
+\scriptstyle{*,0} & dz\frac{1}{1-az} & cz & acz^2 &
+    \ldots & a^{d-2}cz^{d-1} & bz\frac{1}{1-az} \\
+\end{block}
+\end{blockarray}.
+\end{equation*}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+$H=(1,0,\ldots,0)$ and $T=(1+az+\ldots+(az)^{d-1}, \ldots, 1+az, 1,
+1/(1-az))$.
 
 
 
@@ -2498,49 +2605,90 @@ error model of section~\ref{sec:deletions}
   {1-pz - \big(pz(1-\delta) + \delta\big)F_d(z)}.
 \end{equation}
 
-As observed in the previous section, $pz$ is the weighted generating
-function of substitutions. To count them with parameter $u$, we need to
-replace $pz$ by $pzu$ and differentiate with respect to $u$. We obtain the
-counting function
+Here it is important to remember that for simplicity, equation
+(\ref{eq:Sdel}) ignores the deletions that occur immediately before and
+after substitutions, because they have no impact on the presence of a
+seed. For the purpose of counting deletions, we need to take them all into
+consideration, but this requires working with the proper weighted
+generating function.
 
-\begin{align}
-\frac{\partial}{\partial u}
-\left( \frac{1+(1-\delta)F_d(z)}
-  {1-pzu - \big(pzu(1-\delta) + \delta\big)F_d(z)} \right)
-\Biggr|_{\substack{\\u=1}} = \nonumber \\
-\frac{pz\big(1+(1-\delta)F_d(z)\big)^2}
-  {\big( 1-pz - \big(pz(1-\delta) + \delta\big)F_d(z) \big)^2}.
-\label{eq:dSdu_del}
-\end{align}
+A read can be thought of as a walk on the graph shown in
+figure~\ref{fig:deletions2}. Even though deletions appear as an explicit
+state, their size is $0$ and they occur only between nucleotides (which
+implies that a read can neither start nor end with a deletion). Also, a
+deletion must be followed by either a match or a substitution; it cannot
+be followed by a deletion. The reason is that a deletion has size $0$
+regardless the number of deleted nucleotides. In the symbolic
+representation of the read, either there is a deletion of any size between
+two nucleotides, or there is no deletion.
 
-Similarly, the weighted generating function of deletions is simply
-$\delta$, so in order to count them with parameter $v$ we have to replace
-$\delta$ by $\delta v$ in (\ref{eq:Sdel}). The counting function for
-substitutions and deletions is thus
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.9]{deletions2.pdf}
+\caption{\textbf{Error model with explicit deletions}. 
+Substitution and deletion rates $p$ and $\delta$ are assumed to be
+constant throughout the read. Deletions have a state of their own.
+They can occur before or after a substitution.}
+\label{fig:deletions2}
+\end{figure}
 
-\begin{align}
-\frac{\partial}{\partial v}
-\left( \frac{1+(1-\delta v)F_d(z)}
-  {1-pz - \big(pz(1-\delta v) + \delta v\big)F_d(z)} \right)
-\Biggr|_{\substack{\\v=1}} = \nonumber \\
-\frac{\delta F_d(z)^2}{\big(
-  1-pz - \big(pz(1-\delta) + \delta\big)F_d(z) \big)^2}.
-\label{eq:dSdv_del}
-\end{align}
+In this error model, reads are sequences of three items:
+error-free intervals withs symbol $\Delta_0$ and weighted generating
+function $F(z)$, substitutions with symbol $S$ and weighted generating
+function $pz$, and deletions with symbol $D$ and weighted generating
+function $\delta$.
+
+The only forbidden transitions in the sequence are that two error-free
+intervals cannot follow each other (together they form a single error-free
+interval) and two deletions cannot follow each other (together they form a
+single deletion).
+
+As in the previous section, in order to count deletions with parameter $v$
+we update their weigted generating function to $\delta v$. The transfer
+matrix then becomes a function of $z$, marking the size, and of $v$,
+marking the deletions. The transfer matrix of the sequences is thus
+
+
+\begin{equation*}
+M(z,v) = 
+\begin{blockarray}{cccc}
+       & \smDELz & \smS & \smD \\
+\begin{block}{c[ccc]}
+\smDELz & 0              & (1-\delta)pz & \delta v \\
+\smS    & (1-\delta)F(z) & (1-\delta)pz & \delta v \\
+\smD    & F(z)           & pz           & 0        \\
+\end{block}
+\end{blockarray}.
+\end{equation*}
+
+Remember that reads can neither start nor end by a deletion because they
+are undetectable at those positions. Thus the head vector is $H = (F(z),
+pz, 0)$ and the tail vector is $T = (1,1,0)$. The weighted generating
+function $1+H \cdot (I-M(z,v))^{-1} \cdot T$ has a cumbersome expression
+not written here because we will not need it.
+
+Following the general strategy to count average quantities, we
+differentiate the weighted generating function with respect to $v$ and
+set $v=1$ and obtain
+
+\begin{equation}
+\label{eq:full_deletions}
+\frac{\delta\big( pz(1+(1-\delta)F(z)+F(z)) \big)^2}
+{\big( 1-pz - \big(pz(1-\delta) + \delta\big)F_d(z) \big)^2}.
+\end{equation}
 
 As in the section~\ref{sec:avsub}, we derive the asymptotics by applying
-proposition~\ref{th:ass2} to (\ref{eq:dSdu_del}) and (\ref{eq:dSdv_del}),
-and by applying proposition~\ref{th:ass} to (\ref{eq:Sdel}). The terms
-$z_1^{k+1}$ cancel out when taking the ratio as per equation
-(\ref{eq:av}), so the number of substitutions or deletions in seedless
-reads is asymptotically linear, \textit{i.e.} of the form $C_1k+C_2$,
-where $C_1$ and $C_2$ are constants. In both cases, $C_1$ and $C_2$ have
-cumbersome expressions, but they are easy to compute from
+proposition~\ref{th:ass2} to (\ref{eq:full_deletions}) and by applying
+proposition~\ref{th:ass} to (\ref{eq:Sdel}). The terms $z_1^{k+1}$ cancel
+out when taking the ratio as per equation (\ref{eq:av}), so the number of
+deletions in seedless reads is asymptotically linear, \textit{i.e.} of the
+form $C_1k+C_2$, where $C_1$ and $C_2$ are constants. In both cases, $C_1$
+and $C_2$ have cumbersome expressions, but they are easy to compute from
 propositions~\ref{th:ass} and \ref{th:ass2}.
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.445]{simuldel-average.pdf}
+\includegraphics[scale=0.445]{simuldel-average2.pdf}
 \caption{\textbf{Example estimates of average number of deletions}. The
 average numbers of deletions are shown for seedless reads of given size,
 either estimated by 10,000,000 random simulations (dots), or by analytinc
