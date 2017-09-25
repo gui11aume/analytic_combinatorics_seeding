@@ -1649,9 +1649,8 @@ bottom).}
 \end{figure}
 
 Overall, the analytic combinatorics estimates are close to the exact
-values. Figure~\ref{fig:simulp} graphically illustrates the precision of
-the estimates for different values of the error rate $p$ and of the read
-size $k$.
+values. Figure~\ref{fig:simulp} illustrates the precision of the estimates
+for different values of the error rate $p$ and of the read size $k$.
 
 
 
@@ -1830,9 +1829,9 @@ $\delta=0.15$ or $\delta=0.16$ (from top to bottom).}
 \end{figure}
 
 Once again, the analytic combinatorics estimates are close to the exact
-values. Figure~\ref{fig:simulpdel} graphically illustrates the precision
-of the estimates for different values of the deletion rate $\delta$ and
-of the read size $k$.
+values. Figure~\ref{fig:simulpdel} illustrates the precision of the
+estimates for different values of the deletion rate $\delta$ and of the
+read size $k$.
 
 
 
@@ -2047,9 +2046,9 @@ $0.77373-0.77376$.
 \end{example}
 
 Once again, the analytic combinatorics estimates are close to the exact
-values. Figure~\ref{fig:simulpins} graphically illustrates the precision
-of the estimates for different values of the insertion rate $r$ and
-of the read size $k$.
+values. Figure~\ref{fig:simulpins} illustrates the precision of the
+estimates for different values of the insertion rate $r$ and of the read
+size $k$.
 
 \begin{figure}[h]
 \centering
@@ -2613,26 +2612,16 @@ The head vector $H(z)$ is equal to $(1, qz, (qz)^2, \ldots,
 (qz)^{\gamma-2})^\top$, the tail vector $T(z)$ is equal to $(1,1, \ldots,
 1)^\top$, and $\psi(z) = 0$. By proposition~\ref{th:HBT}, the weighted
 generating function of reads without an inexact seed can be computed as
-$S_\gamma(z) = H(z) \cdot (I-M(z))^{-1} \cdot T(z)$. Unfortunately, this
-expression is not easy to evaluate for large matrices. The expression is
-very cumbersome, and it may take hours to evaluate.
+$S_\gamma(z) = H(z) \cdot (I-M(z))^{-1} \cdot T(z)$.
 
-The best option here is to pre-compute $S_\gamma(z)$ for a useful range of
-values of $\gamma$ (up to $30$ is sufficient for most applications). From
-there, we can pre-compute the dominant singularies for a useful range of
-the parameter $p$ (up to $0.25$ is sufficient for most application). By
-also storing the multiplicative constant of proposition~\ref{th:ass}, we
-can then estimate the probability that the read does not contain an
-inexact seed as before.
 
 \begin{example}
 Let us revisit example~\ref{ex:num1}, where we approximated the
 probability that a read of size $k=100$ has no seed for $\gamma=17$ and
-for a substitution rate $p=0.1$; but this time we allow the seed to
-contain one substitution. The matrix $M(z)$ is $16\times16$ and the
-weighted generating function $S_{17}(z)$ can be written as $P(z)/Q(z)$,
-where $P$ is a polynomial of degree 152 and $Q$ is a polynomial of degree
-153.  Using numerical methods to find the root of $Q$ with smallest
+for $p=0.1$; but this time we allow the seed to contain one substitution.
+The matrix $M(z)$ has dimension $16$ and the weighted generating function
+$S_{17}(z)$ can be written as $P(z)/Q(z)$, where $P$ and $Q$ are
+polynomials. Using numerical methods to find the root of $Q$ with smallest
 \textit{modulus}, we obtain $z_1 \approx 1.079244$. Likewise, we obtain
 $-P(z_1)/Q'(z_1) \approx 2.326700$, so the probability that the read does
 not contain an inexact seed is approximately $2.326700/1.079244^{101}
@@ -2668,38 +2657,55 @@ panel and 100,000,000 on the right one.}
 \end{figure}
 
 
+Unfortunately, the expressions of the weighted generating functions given
+by proposition~\ref{th:HBT} are very cumbersome, and they may take hours
+to evaluate. For instance, the degrees of $P$ and $Q$ for $\gamma=17$ are
+$152$ and $153$, respectively.
+
+The best option here is to pre-compute the dominant singularities and
+associated multiplicative constants for a useful range of values of
+$\gamma$ (up to $30$ is sufficient for most applications) and of the
+parameter $p$ (up to $0.25$ is sufficient for most application). Once
+these values are stored, the estimates can be calculated rapidly.
+
+
 
 
 
 
 %%%%%%%%%%%%%%%%%% False positives %%%%%%%%%%%%%%%%%%%%%
-\subsection{False positives}
+\subsection{Type I errors}
+\label{sec:fp}
 
-So far we have been concerned with the probability of false negatives.
-Computing the probability of false positives is significantly more
-difficult to achieve. As we are about to see, the main reason is that the
-results largely depend on the genome, and more particularly on its
-repeated sequences.
 
-Two conditions must be met for a false positive to occur. The first is
-that the read contains no exact $\gamma$-seed (\textit{i.e.} in this
-problem every false positive is also a false negative). Indeed, if the
-read contains a seed, the true positive is in the list of candidate
-sequences and we assume that it will be properly identified as such during
-the alignment step (it can be that not all the candidates are checked at
-the alignment step, but this is a matter of implementation). The second
-condition for a false positive to occur is that a stretch of at least
-$\gamma$ nucleotides from the read exists in the genome. For a genome
-without repeat, this proability is $O(4^{-\gamma})$. So for seeding
-probabilities sufficiently high and for $\gamma$ sufficiently large, false
-positives are exceedingly rare when mapping reads in genomes without
-repeat.
+Our concern so far was whether reads contain a seed, \textit{i.e.} an
+error-free (or almost free) interval of sufficient size. If this is the
+case, the target sequence is among the candidates and we implicitly assume
+that it will be identified as the best hit during the alignment stage.
+But we did not discuss what happens if the read does not contain a seed.
 
-However, genomes are not a succession of random nucleotides. Large
-sequences are often duplicated, to the extent that the greater part of
-large eukaryotic genomes can be considered repetitive. This means that the
-$O(4^{-\gamma})$ term can severely underestimate the probability
-that a subsequence of the read exists in the genome.
+There are two possible cases. The first is that the mapping procedure
+returns no hit. The conclusion is then that the sequence does not belong
+to the genome, or that it cannot be mapped. In analogy with statistical
+testing, we will call this a ``type II error''. The second case is that
+the mapping procedure returns a hit. This cannot be a true hit because the
+target was discarded during the seeding stage. We will call this a ``type
+I error''. Type I errors are the most difficult to detect, because nothing
+distinguishes them from true hits, at least at the seeding stage.
+
+It is important to emphasize that in this version of the mapping problem,
+the split between type I and type II errors amounts to the probability
+that the read contains no seed (because we assume that all the candidates
+are aligned and that the alignment always identifies the true hit when it
+is present among the candidates). This split depends on the genome, and
+more particularly on the configuration of its repeated sequences. A
+stretch of  $\gamma$ nucleotides matches a random genome with probability
+$O(4^{-\gamma})$. However, genomes are not a succession of random
+nucleotides. Large sequences are often duplicated, to the extent that the
+greater part of eukaryotic genomes can be considered repetitive. In
+addition, repeats are usually not exactly identical, but only similar.
+This means that the $O(4^{-\gamma})$ term can be a spectacular
+underestimate.
 
 We cannot provide a complete theory to measure false positive rates in the
 seeding problem, as this requires more elaborate ways to index the repeat
@@ -2724,8 +2730,9 @@ top black wedges, and double mismatches as black squares. They delimit
 $R$-blocks consisting of mismatch-free intervals followed by a mismatch.
 There is always a mismatch on the right of an $R$-block so the
 mismatch-free interval at the tail of the read is not an $R$-block. $+$ or
-$-$ intervals are the longest stretches of the read that match either the
-$+$ sequence (top arrow) or the $-$ sequence (bottom arrow).}
+$-$ intervals are stretches of the read that match either the
+$+$ sequence (top arrow) or the $-$ sequence (bottom arrow) and that
+cannot be extended left or right.}
 \label{fig:sketchdual}
 \end{figure}
 
@@ -2744,18 +2751,19 @@ or right.
 \end{definition}
 
 This information is summarized in figure~\ref{fig:sketchdual}. We will use
-it find a construction for reads without exact $\gamma$-seeds for either
-the $+$ or the $-$ sequence. We will later show how this can be used to
-find the probabilities of false positives.
+it to find a construction for reads without exact $\gamma$-seeds for
+either the $+$ or the $-$ sequence. We will later show how this can be
+used to find the probabilities of false positives.
 
 Reads can be viewed as sequences of $R$-blocks followed by a mismatch-free
 interval. In reads without exact $\gamma$-seeds for either sequence, the
 constraints on the $R$-blocks are complex. For instance, an $R$-block of
-size $\gamma-1$ must be followed by a mismatch if the final nucleotide
-is a single mismatch, but it can be followed by up to $\gamma-2$ matches
-if the last nucleotide is a double mismatch.
+size $\gamma$ (\textit{i.e.} $\gamma-1$ matches followed by a mismatch)
+must be followed by a mismatch if the final nucleotide is a single
+mismatch, but it can be followed by up to $\gamma-1$ matches if the last
+nucleotide is a double mismatch.
 
-To give a concrete example, reads without exact $4$-seeds for either
+To give a concrete example, reads without exact $3$-seeds for either
 sequence can be seen as walks on the graph shown in
 figure~\ref{fig:graph_fp}. Even for such a small value of $\gamma$, the
 graph is so dense that the edges have been separated in two panels and
@@ -2764,38 +2772,80 @@ encoded with symbols to not overload the figure.
 \begin{figure}[h]
 \centering
 \includegraphics[scale=1]{false_positives_graph.pdf}
-\caption{\textbf{Transfer graph of reads without $4$-seed for either
-$+$ or $-$}. Text.}
+\caption{\textbf{Transfer graph of reads without $3$-seed for either
+$+$ or $-$}. Reads can match two sequences referred to as $+$ and $-$.
+They are viewed as sequences of $R$-blocks. To not overload the figure,
+the edges are split between the left and right panels. The labels on the
+vertices represent the respective sizes of the $-$ and $+$ intervals at
+the end of an $R$-block. Weighted generating functions $r_i^+(z)$
+represent $R$-blocks with $i$ matches and terminated by a mismatch for the
+$+$ sequence (symmetrically for $-$). Weighted generating function
+$R_i(z)$ represent $R$-blocks with \emph{up to} $i$ matches and terminated
+by a double mismatch. Weighted generating functions $F_i(z)$ represent
+mismatch-free intervals of \emph{up to} $i$ matches.}
 \label{fig:graph_fp}
 \end{figure}
 
-The numbers in the vertices represent the sizes of the $+$ or $-$
-intervals. Since $R$-block are terminated by a mismatch, at least one of
-these numbers is $0$. The body of the transfer graph is only partially
-represented on the left panel. The edges pointing to the vertex $(0,0)$
-are displayed on the right panel, together with the head and tail edges.
-The four kinds of edges on the left panel correspond to different
-$R$-blocks with weighted generating functions $r_0^+(z)$, $r_0^-(z)$,
-$r_1^+(z)$ and $r_1^-(z)$. The sign indicates which sequence is mismatched
-at the end of the $R$-block and the index is the number of matches in the
-$R$-block.
+The numbers in the vertices represent the sizes of the $-$ or
+$+$~intervals, respectively. Since $R$-block are terminated by a mismatch,
+at least one of these numbers is $0$. The body of the transfer graph is
+only partially represented on the left panel. The edges pointing to the
+vertex $(0,0)$ are displayed on the right panel, together with the head
+and tail edges. The four kinds of edges on the left panel correspond to
+different $R$-blocks with weighted generating functions $r_0^+(z)$,
+$r_0^-(z)$, $r_1^+(z)$ and $r_1^-(z)$. The sign indicates which sequence
+is \emph{mismatched} at the end of the $R$-block and the index is the
+number of matches in the $R$-block.
 
 The edges of the body of the transfer graph on the right panel point to
 the vertex $(0,0)$. All the vertices are connected to this vertex, as
 appending an $R$-block terminated by a double mismatch always brings the
 read to this state. The weighted generating functions $R_0(z)$, $R_1(z)$
-and $R_2(z)$ represent such $R$-blocks with $0$, $1$ or $2$ matches,
-respectively.
+and $R_2(z)$ represent such $R$-blocks with \emph{up to} $0$, $1$ or $2$
+matches, respectively.
 
-The sole head edge also points to the vertex $(0,0)$. The initial state of
-the read is that $+$ and $-$ intervals have size $0$, which is indicated
-by the label $1$ on the edge. Reads are terminated by a sequence of
-matches, so every vertex is connected to the tail vertex. The weighted
+The head vertex has only one edge pointing to the vertex $(0,0)$. In the
+initial state of the read, both $+$ and $-$~intervals have size $0$, which
+is indicated by the label $1$ on the edge, equivalent to prepending the
+read by the empty object $\varepsilon$. Reads are terminated by a sequence
+of matches, so every vertex is connected to the tail vertex. The weighted
 generating functions $F_0(z)$, $F_1(z)$ and $F_2(z)$ represent
-mismatch-free intervals of size $0$, $1$ or $2$, respectively.
+mismatch-free intervals of size \emph{up to} $0$, $1$ or $2$,
+respectively. In this case $\psi(z) = 0$. The empty sequence is 
+present in the graph (path from the head vertex to the tail vertex through
+vertex $(0,0)$ with no appended match) and no other sequence needs to be
+added.
 
-The general transfer matrix associated with the body of the transfer graph
-has dimension $2\gamma-1$ and is defined as
+\begin{inset}
+\includegraphics[scale=0.9]{example_dual.pdf}
+\end{inset}
+
+The example above helps summarize the different cases. The read starts
+with two matches, followed by a double mismatch, followed by a mismatch
+for the $-$ sequence only. The $+$~interval terminating at that point has
+size $1$, and the $-$~interval has size $0$. Only five distinct $R$-blocks
+can now be appended; every other combination would create a $+$~interval
+or a $-$~interval of size greater than $3$.
+
+Appending a double mismatch or a match followed by a double mismatch
+brings both $+$ and $-$~intervals to size $0$. This is an $R$-block
+terminated by a double mismatch and with up to $1$ match, the weighted
+generating function of which is $R_1(z)$. Appending a mismatch for the $-$
+sequence, with weighted generating function $r_0^-(z)$ brings the
+$+$~interval to size $2$ and keeps the $-$~interval at size $0$.
+Symmetrically, appending a mismatch for the $+$ sequence, with weighted
+generating function $r_0^+(z)$ brings the $+$~interval to size $0$ and the
+$-$~interval to size $1$. And finally, appending a match followed by a
+mismatch for the $+$ sequence, with weighted generating function
+$r_1^+(z)$ brings the $+$~interval to size $0$ and the $-$~interval to
+size $2$. This describes the edges from vertex $(0,1)$ in the graph of
+figure~\ref{fig:graph_fp}. Similar arguments apply for the other vertices.
+
+The same logic can be extended to higher values of $\gamma$. The transfer
+graph itself becomes cumbersome but it is possible to capture the
+regularity of the transfer matrix. The general transfer matrix associated
+with the body of the transfer graph has dimension $2\gamma-1$ and is
+defined as
 
 
 \begin{equation*}
@@ -2887,103 +2937,16 @@ D(z) =
 \scriptstyle{d-2,0} & 0 & 0 & \ldots & 0 & r_0^-(z) \\
 \scriptstyle{d-1,0} & 0 & 0 & \ldots & 0 & 0 \\
 \end{block}
-\end{blockarray},
+\end{blockarray}.
 \end{equation*}
 
-
-%\begin{equation*}
-%\begin{blockarray}{cccccccc}
-%   & \scriptstyle{0,0} & \scriptstyle{0,1} & 
-%    \ldots & \scriptstyle{0,d-1} &
-%    \scriptstyle{1,0} & \ldots &
-%    \scriptstyle{d-1,0}\\
-%\begin{block}{c[ccccccc]}
-%\scriptstyle{0,0} & dz\frac{1-(az)^d}{1-az}  & cz & \ldots &
-%    a^{d-2}cz^{d-1} & bz & \ldots & a^{d-2}bz^{d-1} \\
-%\scriptstyle{0,1} & dz\frac{1-(az)^{d-1}}{1-az} \\
-%\scriptstyle{0,2} & dz\frac{1-(az)^{d-2}}{1-az} \\
-%\vdots & \vdots & & A(z) & & & B(z) \\
-%\scriptstyle{0,d-1} & dz \\
-%\scriptstyle{1,0} & dz\frac{1-(az)^{d-1}}{1-az} \\
-%\scriptstyle{2,0} & dz\frac{1-(az)^{d-2}}{1-az} \\
-%\vdots & \vdots & & C(z) & & & D(z) \\
-%\scriptstyle{d-1,0} & dz \\
-%\end{block}
-%\end{blockarray},
-%\end{equation*}
-%where $A(z)$, $B(z)$, $C(z)$ and $D(z)$ are square matrices defined as
-%
-%\begin{equation*}
-%A(z) = 
-%\begin{blockarray}{cccccc}
-%   & \scriptstyle{0,1} & \scriptstyle{0,2} & \ldots &
-%    \scriptstyle{0,d-2} & \scriptstyle{0,d-1} \\
-%\begin{block}{c[ccccc]}
-%\scriptstyle{0,1} & 0 & cz & \ldots &
-%    a^{d-3}cz^{d-2} & a^{d-2}cz^{d-1} \\
-%\scriptstyle{0,2} & 0 & 0 & \ldots &
-%    a^{d-4}cz^{d-3} & a^{d-3}cz^{d-2} \\
-%\vdots & \vdots & \vdots & \ddots & \vdots & \vdots \\
-%\scriptstyle{0,d-2} & 0 & 0 & \ldots & 0 & cz \\
-%\scriptstyle{0,d-1} & 0 & 0 & \ldots & 0 & 0 \\
-%\end{block}
-%\end{blockarray},
-%\end{equation*}
-%
-%\begin{equation*}
-%B(z) = 
-%\begin{blockarray}{cccccc}
-%   & \scriptstyle{1,0} & \scriptstyle{2,0} & \ldots &
-%    \scriptstyle{d-2,0} & \scriptstyle{d-1,0} \\
-%\begin{block}{c[ccccc]}
-%\scriptstyle{0,1} & bz & abz^2 & \ldots &
-%    a^{d-3}bz^{d-2} & a^{d-2}bz^{d-1} \\
-%\scriptstyle{0,2} & bz & abz^2 & \ldots & a^{d-3}bz^{d-2} & 0 \\
-%\vdots & \vdots & \vdots & \ddots & \vdots & \vdots \\
-%\scriptstyle{0,d-2} & bz & abz^2 & \ldots & 0 & 0 \\
-%\scriptstyle{0,d-1} & bz & 0 & \ldots & 0 & 0 \\
-%\end{block}
-%\end{blockarray},
-%\end{equation*}
-%
-%\begin{equation*}
-%C(z) = 
-%\begin{blockarray}{cccccc}
-%   & \scriptstyle{0,1} & \scriptstyle{0,2} & \ldots &
-%    \scriptstyle{0,d-2} & \scriptstyle{0,d-1} \\
-%\begin{block}{c[ccccc]}
-%\scriptstyle{1,0} & cz & acz^2 & \ldots &
-%    a^{d-3}cz^{d-2} & a^{d-2}cz^{d-1} \\
-%\scriptstyle{2,0} & cz & acz^2 & \ldots & a^{d-3}cz^{d-2} & 0 \\
-%\vdots & \vdots & \vdots & \ddots & \vdots & \vdots \\
-%\scriptstyle{d-2,0} & cz & acz^2 & \ldots & 0 & 0 \\
-%\scriptstyle{d-1,0} & cz & 0 & \ldots & 0 & 0 \\
-%\end{block}
-%\end{blockarray},
-%\end{equation*}
-%
-%\begin{equation*}
-%D(z) = 
-%\begin{blockarray}{cccccc}
-%   & \scriptstyle{1,0} & \scriptstyle{2,0} & \ldots &
-%    \scriptstyle{d-2,0} & \scriptstyle{d-1,0} \\
-%\begin{block}{c[ccccc]}
-%\scriptstyle{1,0} & 0 & bz & \ldots &
-%    a^{d-3}bz^{d-2} & a^{d-2}bz^{d-1} \\
-%\scriptstyle{2,0} & 0 & 0 & \ldots &
-%    a^{d-4}bz^{d-3} & a^{d-3}bz^{d-2} \\
-%\vdots & \vdots & \vdots & \ddots & \vdots & \vdots \\
-%\scriptstyle{d-2,0} & 0 & 0 & \ldots & 0 & bz \\
-%\scriptstyle{d-1,0} & 0 & 0 & \ldots & 0 & 0 \\
-%\end{block}
-%\end{blockarray},
-%\end{equation*}
 
 As per proposition~\ref{th:HBT}, the weighted generating function of reads
 with no exact $\gamma$-seed for either the $+$ or the $-$ sequence is
 given by $H(z) \cdot (I-M(z))^{-1} \cdot T(z)$. In this case the head
 vector $H(z)$ is equal to $(1,0,0,\ldots,0)^\top$ and the tail vector
-$T(z)$ is equal to $(R_{\gamma-1}(z), \ldots, R_1(z), R_0(z))^\top$.
+$T(z)$ is equal to $(R_{\gamma-1}(z), R_{\gamma-2}(z), \ldots, R_0(z),
+R_{\gamma-2}(z), \ldots, R_0(z))^\top$.
 
 Under the assumption that mismatches occur uniformly in the read,
 nucleotides of each type occur with probabilities $a$, $b$, $c$ or $d$,
@@ -2993,72 +2956,199 @@ mismatch for $-$ and $d$ that it is a mismatch for both. With these
 notations we see that
 
 \begin{gather*}
-r_m^+(z) = (az)^mcz, \\
-r_m^-(z) = (az)^mbz, \\
-R_m(z) = (1 + az + \ldots + (az)^m)dz, \\
-F_m(z) = 1 + az + \ldots + (az)^m.
+r_i^+(z) = (az)^icz, \\
+r_i^-(z) = (az)^ibz, \\
+R_i(z) = (1 + az + \ldots + (az)^i)dz, \\
+F_i(z) = 1 + az + \ldots + (az)^i.
 \end{gather*}
 
-A nucleotide is a mismatch for both sequences if it is a read error
-(probability $q$) and if either the decoy is identical to the target
-(probability $1-\varepsilon$) or is different from both the target and the
-decoded nucleotide (probability $2\varepsilon/3$).
+With these expressions, we can find the weighted generating function of
+the reads without exact $\gamma$-seed for either sequence, but we will
+return to the original problem of computing the probability of false
+positives. In this context, the $+$ sequence is the target (\textit{i.e.}
+the actual sequence of the assayed molecule) and the $-$ sequence is a
+duplicate present in the genome.
+
+We will assume that each nucleotide is decoded incorrectly with
+probability $p$ and that for each nucleotide, the duplicate sequence
+differs from the target with probability $\kappa$. A nucleotide is a
+mismatch for both sequences sequences if it is a read error (probability
+$p$) and if either the duplicate is identical to the target (probability
+$1-\kappa$) or it is different from both the target and the decoded
+nucleotide (probability $2\kappa/3$). The other probabilities can be
+computed with similar arguments, yielding $a = (1-p)(1-\kappa)$, $b =
+(1-p)\kappa$, $c = p\kappa/3$ and $d = p(1-\kappa/3)$.
+
+The model is completely specified by $q$ and $\kappa$. With their actual
+values, we can thus use proposition~\ref{th:ass} to obtain an asymptotic
+estimtae of the probability that a read does not contain an exact
+$\gamma$-seed \emph{and} does not contain any stretch of size $\gamma$ or
+greater matching the duplicate sequence. Call this estimated probability
+$P_2$. Using the results of section~\ref{sec:substitutions}, we can also
+compute an asymptotic estimate of the probability that the read does not
+contain an exact $\gamma$-seed (irrespective of potential matches to the
+dupicate sequence). Call this estimated probability $P_1$. We can thus
+estimate the probability that the read contains a stretch of size $\gamma$
+or greater matching the duplicat sequence \emph{but} no exact
+$\gamma$-seed as $P_1 - P_2$.
+
+Figure~\ref{fig:simulp_fp} illustrates the precision of this estimate for
+different values of the substitution rate $p$ and of the read size $k$.
+Observe that the estimates are accurate even for such low probability of
+occcurrence.
+
 
 \begin{figure}[h]
 \centering
 \includegraphics[scale=0.445]{simulp_false_positives.pdf}
-\caption{\textbf{Example estimates of false positive rates}. The analytic
-combinatorics estimates are benchmarked against random simulations. Shown
-on both panels are the probablities that a read of given size contains a
-seed, either estimated by 10,000,000 (left) or 100,000,000 (right) random
-simulations (dots), or by the method described above (lines). The curves
-are drawn for $d=17$ and $\kappa=0.05$, $p=0.15$ or $p=0.25$ (from top to
-bottom).}
+\caption{\textbf{Example estimates of false positive rates (one
+duplicate)}. The analytic combinatorics estimates are benchmarked against
+random simulations. Shown on both panels are the probablities that a read
+of given size will give a false positive, either estimated by 10,000,000
+(left) or 100,000,000 (right) random simulations (dots), or by the method
+described above (lines). The curves are drawn for $\gamma=17$ and
+$\kappa=0.05$, $p=0.05$, $p=0.15$ or $p=0.25$ (from top to bottom).}
 \label{fig:simulp_fp}
 \end{figure}
 
-
-The result is a rational function
-$P(z)/Q(z)$ where $P$ and $Q$ are polynomials with too many terms to fit
-in this document. For instance, for seeds of size $d=17$, the degrees of
-$P$ and $Q$ are 576 and 578, respectively.
-
-All that is required in order to compute the asymptotic coefficients is
-the dominant singularity $z_1$, together with the multiplicative constant
-$C$ of proposition~\ref{th:ass}. Since the weighted generating function is
-fully determined by the minimum seed size $d$, the error rate $p$, the
-divergence rate  $\kappa$, we can pre-compute $z_1$ and $C$ for a useful
-range of $d$, $p$ and $\kappa$.
+Computing $P_2$ with proposition~\ref{th:ass} requires finding a weighted
+generating function $P(z)/Q(z)$ where $P$ and $Q$ are polynomials with too
+many terms to fit in this document. For instance, for seeds of size
+$\gamma=17$, the degrees of $P$ and $Q$ are $576$ and $578$, respectively.
+This is problematic to compute the approximations efficiently. The best
+option is once again to pre-compute the dominant singularities and
+associated multiplicative constants for a useful range of $gamma$ (up to
+$30$ is sufficient for most applications) and of the parameters $p$ and
+$\kappa$ (up to $0.25$ is sufficient for most applications). Once these
+values are stored, the estimates can be calculated rapidly.
 
 
 
 \subsection{MEM seeds}
 
+So far we have assumed that candidate seeds are the subsequences of the
+read that match $\gamma$ or more nucleotides of the genome. This procedure
+is useful, but another scheme called ``MEM seeding'' is more efficient in
+practice. A MEM or \textit{maximal exact match} is similar to an
+error-free interval where \emph{correct} nucleotides are replaced by
+\emph{matching} nucleotides.
+
+\begin{definition}
+A $\gamma$-MEM or $\gamma$ \textit{maximal exact match} is a sequence of
+at least $\gamma$ nucleotides matching the genome, that cannot be extended
+left or right.
+\end{definition}
+
+An error-free interval is a MEM, but the reverse is not true. As we have
+seen in section~\ref{sec:fp}, a subsequence of the read may match the
+genome even if it contains errors, because genomes typically contain
+repeated sequences that are similar to each other.
+
+The principle of MEM seeding is to use $\gamma$-MEMs instead of exact
+$\gamma$-seeds. This means that we discard the continous matches from a
+read that are strictly contained in a larger continous match. The fact
+that a subsequence of the read of size $\gamma$ matches the genome is not
+sufficient to consider it a candidate. Since there are less MEM seeds than
+exact $\gamma$-seeds, MEM seeding is more prone to false negatives than
+exact seeding. However, MEM seeding is more efficient at removing bad
+candidates and its empirical performance is overall better.
+
+To study the properties of MEM seeding, we will use the same formalism as
+in section~\ref{sec:fp} where we defined two reference sequences called
+$+$ and $-$. The basic concepts of MEM seeding are summarized in
+figure~\ref{fig:sketchmem}.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.88]{sketch_MEM.pdf}
+\caption{\textbf{MEM seeding (with two references)}. The symbols are the
+same as in figure~\ref{fig:sketchdual}. Matches are represented as white
+squares, mismatches for the $+$ sequence as bottom black wedges,
+mismatches for the $-$ sequence as top black wedges, and double mismatches
+as black squares. They delimit $R$-blocks consisting of mismatch-free
+intervals followed by a mismatch. There is always a mismatch on the right
+of an $R$-block so the mismatch-free interval at the tail of the read is
+not an $R$-block. MEMs (arrows) are stretches of the read that match any
+of the two sequences and that cannot be extended left or right. MEMs
+matching the $+$ sequence are represented at the top and MEMs matching the
+$-$ sequence at the bottom. In this example, the central stretch of $5$
+nucleotides matching the $+$ sequence is not used as seed because it is
+included in a stretch of $12$ nucleotides matching the $-$ sequence.}
+\label{fig:sketchmem}
+\end{figure}
+
+
+As in section~\ref{sec:fp}, reads are seen as sequences of $R$-blocks. To
+find the probability of false positives, we will first focus on the more
+general case of reads without $\gamma$-MEM seed \emph{for the $+$
+sequence}. This can occur because the read does not contain any stretch of
+at least $\gamma$ nucleotides matching the $+$ sequence, or because a
+longer stretch matching the $-$ sequence ``masks'' it.
+
+SAY THAT SOMETHING MATCHING BOTH SEQUENCES WORKS AS A SEED.
+
+This imposes relatively complex constraints on the $R$-blocks. For
+instance, an $R$-block of size $\gamma$ (\textit{i.e.} $\gamma-1$ matches
+followed by a mismatch) must be followed by a mismatch if the final
+nucleotide is a mismatch for the $-$ sequence, but it may be followed by
+up to $\gamma-1$ matches if it is a double mismatch, or by any number of
+matches if it is a mismatch for the $+$ sequence.
+
 This is the transfer matrix for the reads that contain no MEM seed of size
-$d$ or greater, given that the target sequence has exactly one duplicate.
+$\gamma$ or greater, given that the target sequence has exactly one
+duplicate.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.79]{MEM_graph.pdf}
+\caption{\textbf{Transfer graph of reads without $3$-MEM seed for $+$}.
+Text.}
+\label{fig:graph_mem}
+\end{figure}
 
 \begin{equation*}
 M(z) =
 \begin{blockarray}{ccccccc}
    & \scriptstyle{0,0} & \scriptstyle{0,1} & \scriptstyle{0,2}
-   & \ldots & \scriptstyle{0,d-1} & \scriptstyle{*,0} \\
+   & \ldots & \scriptstyle{0,\gamma-1} & \scriptstyle{*,0} \\
 \begin{block}{c[cccccc]}
-\scriptstyle{0,0} & dz\frac{1-(az)^d}{1-az} &
-    cz & acz^2 & \ldots & a^{d-2}cz^{d-1} & bz\frac{1}{1-az} \\
-\scriptstyle{0,1} & dz \frac{1-(az)^{d-1}}{1-az} & 0 & cz &
-    \ldots & a^{d-3}cz^{d-2} & bz\frac{1-(az)^{d-1}}{1-az} \\
-\scriptstyle{0,2} & dz\frac{1-(az)^{d-2}}{1-az} & 0 & 0 &
-    \ldots & a^{d-4}cz^{d-3} & bz\frac{1-(az)^{d-2}}{1-az}  \\
+\scriptstyle{0,0} & R_{\gamma-1}(z) &
+    r_0^+(z) & r_1^+(z) & \ldots & r_{\gamma-2}^+(z) & R_*^-(z) \\
+\scriptstyle{0,1} & R_{\gamma-2}(z) & 0 & r_0^+(z) &
+    \ldots & r_{\gamma-3}^+(z) & R_{\gamma-2}^-(z) \\
+\scriptstyle{0,2} & R_{\gamma-3}(z) & 0 & 0 &
+    \ldots & r_{\gamma-4}^+(z) & R_{\gamma-3}^-(z)  \\
 \vdots & \vdots & \vdots & \vdots & \ddots & \vdots & \vdots \\
-\scriptstyle{0,d-1} & dz & 0 & 0 & \ldots & 0 & bz \\
-\scriptstyle{*,0} & dz\frac{1}{1-az} & cz & acz^2 &
-    \ldots & a^{d-2}cz^{d-1} & bz\frac{1}{1-az} \\
+\scriptstyle{0,\gamma-1} & R_0(z) & 0 & 0 & \ldots & 0 & R_0^-(z) \\
+\scriptstyle{*,0} & R_*(z) &
+    r_0^+(z) & r_1^+(z) & \ldots & r_{\gamma-2}^+(z) & R_*^-(z) \\
 \end{block}
 \end{blockarray}.
 \end{equation*}
 
-$H=(1,0,\ldots,0)$ and $T=(1+az+\ldots+(az)^{d-1}, \ldots, 1+az, 1,
-1/(1-az))$.
+
+%\begin{equation*}
+%M(z) =
+%\begin{blockarray}{ccccccc}
+%   & \scriptstyle{0,0} & \scriptstyle{0,1} & \scriptstyle{0,2}
+%   & \ldots & \scriptstyle{0,d-1} & \scriptstyle{*,0} \\
+%\begin{block}{c[cccccc]}
+%\scriptstyle{0,0} & dz\frac{1-(az)^d}{1-az} &
+%    cz & acz^2 & \ldots & a^{d-2}cz^{d-1} & bz\frac{1}{1-az} \\
+%\scriptstyle{0,1} & dz \frac{1-(az)^{d-1}}{1-az} & 0 & cz &
+%    \ldots & a^{d-3}cz^{d-2} & bz\frac{1-(az)^{d-1}}{1-az} \\
+%\scriptstyle{0,2} & dz\frac{1-(az)^{d-2}}{1-az} & 0 & 0 &
+%    \ldots & a^{d-4}cz^{d-3} & bz\frac{1-(az)^{d-2}}{1-az}  \\
+%\vdots & \vdots & \vdots & \vdots & \ddots & \vdots & \vdots \\
+%\scriptstyle{0,d-1} & dz & 0 & 0 & \ldots & 0 & bz \\
+%\scriptstyle{*,0} & dz\frac{1}{1-az} & cz & acz^2 &
+%    \ldots & a^{d-2}cz^{d-1} & bz\frac{1}{1-az} \\
+%\end{block}
+%\end{blockarray}.
+%\end{equation*}
+
+$H(z)=(1,0,\ldots,0)^\top$ and $T(z)=(F_{\gamma-1}(z), \ldots, F_1(z),
+F_0(z), F_*(z))^\top$.
 
 
 
