@@ -46,6 +46,7 @@ k = 1:END
 
 L = list()
 
+
 for (p in c(.2265, .2350, .2435)) {
    z = Newton(p,d)
    C = cst_term(z,p,d)
@@ -63,7 +64,7 @@ par(mfrow=c(1,2))
 subs1 = seq(1,44,2)
 subs2 = seq(55,68,3)
 plot(S[[1]][subs1,1], 1-S[[1]][subs1,2]/1e7,
-     pch=19, cex=.5, ylim=c(0.35,1),
+     pch=19, cex=.5, ylim=c(0.35,.95),
      plot.first=grid(),
      xlab="Read size", ylab="Seeding probability")
 points(S[[1]][subs2,1], 1-S[[1]][subs2,2]/1e7, pch=19, cex=.5)
@@ -82,7 +83,7 @@ legend(x="bottomright", inset=0.05, legend=c("Simulation", "Estimate"),
 
 
 subs = seq(68,92)
-plot(S[[1]][subs,1], 1-S[[1]][subs,2]/1e7, pch=19, cex=.5, ylim=c(0.7,1),
+plot(S[[1]][subs,1], 1-S[[1]][subs,2]/1e7, pch=19, cex=.5, ylim=c(0.85,1),
      plot.first=grid(),
      xlab="Read size", ylab="Seeding probability")
 lines(k[792:1008], L[[1]][792:1008])

@@ -55,6 +55,9 @@ sim-fp: sim-fp.c mt.o
 sim-MEM: sim-MEM.c mt.o
 	$(CC) $(CFLAGS) sim-MEM.c mt.o -o sim-MEM
 
+sim-MEM_fp: sim-MEM_fp.c mt.o
+	$(CC) $(CFLAGS) sim-MEM_fp.c mt.o -o sim-MEM_fp
+
 
 
 # Substitutions.
@@ -263,23 +266,56 @@ out-.25-fp.txt: sim-fp
 		./sim-fp $$i 17 0.05 0.25 100000000 >> out-.25-fp.txt ; \
 	done
 
-other:
-	./sim-fp 25 17 0.02 0.05 10000000
-	./sim-fp 25 18 0.02 0.05 10000000
-	./sim-fp 25 19 0.02 0.05 10000000
-	./sim-fp 25 20 0.02 0.05 10000000
-	./sim-fp 25 21 0.02 0.05 10000000
-	./sim-fp 25 22 0.02 0.05 10000000
 
 # MEMs
-out-.05-MEM.txt: sim-MEM
-	./sim-MEM 25 9 0.05 0.10 10000000 > out-.05-MEM.txt
-	for ((i=29 ; i <= 80; i += 1)) ; do \
-		./sim-MEM $$i 9 0.05 0.1 10000000 >> out-.05-MEM.txt ; \
+out-.08-MEM.txt: sim-MEM
+	./sim-MEM 50 17 0.08 0.10 10000000 > out-.08-MEM.txt
+	for ((i=52 ; i <= 200; i += 2)) ; do \
+		./sim-MEM $$i 17 0.08 0.10 10000000 >> out-.08-MEM.txt ; \
 	done
-#	for ((i=103 ; i <= 151; i += 2)) ; do \
-#		./sim-MEM $$i 9 0.02 0.05 100000000 >> out-.05-MEM.txt ; \
-#	done
+out-.10-MEM.txt: sim-MEM
+	./sim-MEM 50 17 0.10 0.10 10000000 > out-.10-MEM.txt
+	for ((i=52 ; i <= 200; i += 2)) ; do \
+		./sim-MEM $$i 17 0.10 0.10 10000000 >> out-.10-MEM.txt ; \
+	done
+out-.12-MEM.txt: sim-MEM
+	./sim-MEM 50 17 0.12 0.10 10000000 > out-.12-MEM.txt
+	for ((i=52 ; i <= 200; i += 2)) ; do \
+		./sim-MEM $$i 17 0.12 0.10 10000000 >> out-.12-MEM.txt ; \
+	done
+
+# False positives MEM
+out-.05-MEM_fp.txt: sim-MEM_fp
+	./sim-MEM_fp 25 17 0.05 0.05 10000000 > out-.05-MEM_fp.txt
+	for ((i=29 ; i <= 101; i += 4)) ; do \
+		./sim-MEM_fp $$i 17 0.05 0.05 10000000 \
+			>> out-.05-MEM_fp.txt ; \
+	done
+	for ((i=103 ; i <= 151; i += 2)) ; do \
+		./sim-MEM_fp $$i 17 0.05 0.05 100000000 \
+			>> out-.05-MEM_fp.txt ; \
+	done
+out-.15-MEM_fp.txt: sim-MEM_fp
+	./sim-MEM_fp 25 17 0.05 0.15 10000000 > out-.15-MEM_fp.txt
+	for ((i=29 ; i <= 101; i += 4)) ; do \
+		./sim-MEM_fp $$i 17 0.05 0.15 10000000 \
+			>> out-.15-MEM_fp.txt ; \
+	done
+	for ((i=103 ; i <= 151; i += 2)) ; do \
+		./sim-MEM_fp $$i 17 0.05 0.15 100000000 \
+			>> out-.15-MEM_fp.txt ; \
+	done
+out-.25-MEM_fp.txt: sim-MEM_fp
+	./sim-MEM_fp 25 17 0.05 0.25 10000000 > out-.25-MEM_fp.txt
+	for ((i=29 ; i <= 101; i += 4)) ; do \
+		./sim-MEM_fp $$i 17 0.05 0.25 10000000 \
+			>> out-.25-MEM_fp.txt ; \
+	done
+	for ((i=103 ; i <= 151; i += 2)) ; do \
+		./sim-MEM_fp $$i 17 0.05 0.25 100000000 \
+			>> out-.25-MEM_fp.txt ; \
+	done
+
 
 simulp.pdf: out-.08.txt out-.10.txt out-.12.txt
 	R -f make_figure_simulation_sub.R
@@ -314,8 +350,14 @@ simulp_approx.pdf: out-.05-.15-.04-.45.txt out-.05-.15-.05-.45.txt \
 		out-.05-.15-.06-.45.txt
 	R -f make_figure_simulation_sub_approx.R
 
-simulp_false_positives.pdf: out-.02-fp.txt out-.05-fp.txt out-.08-fp.txt
+simulp_false_positives.pdf: out-.05-fp.txt out-.15-fp.txt out-.25-fp.txt
 	R -f make_figure_simulation_false_positives.R
+
+simulp_mem.pdf: out-.08-MEM.txt out-.10-MEM.txt out-.12-MEM.txt
+	R -f make_figure_simulation_mem.R
+
+simulp_mem_fp.pdf: out-.05-MEM_fp.txt out-.15-MEM_fp.txt out-.25-MEM_fp.txt
+	R -f make_figure_simulation_mem_fp.R
 
 
 clean:

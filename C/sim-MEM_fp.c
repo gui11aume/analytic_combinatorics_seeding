@@ -40,6 +40,10 @@ int main(int argc, char **argv) {
       int true_wins = 0;
       int both_win = 1;
 
+      // Initialize MEM status.
+      int has_MEM = 0;
+      int has_fp = 0;
+
       for (int i = 0 ; i < K ; i++) {
          if (randomMT() < p) {
             // Read error.
@@ -47,9 +51,12 @@ int main(int argc, char **argv) {
                // Error and the duplicate has a different nucleotide.
                // Reset the stack of the false positive.
                if ((true_wins || both_win) && stack_true >= D) {
-                  // We have a true positive.
-                  total--;
+                  // We have a MEM
+                  has_MEM = 1;
                   break;
+               }
+               if (!(true_wins || both_win) && stack_false >= D) {
+                  has_fp = 1;
                }
                stack_false = 0;
                both_win = 1;
@@ -59,8 +66,8 @@ int main(int argc, char **argv) {
                // Error and duplicate has the same nucleotide.
                // Increase the stack of the false positive.
                if (true_wins && stack_true >= D) {
-                  // We have a true positive.
-                  total--;
+                  // We have a MEM
+                  has_MEM = 1;
                   break;
                }
                stack_false++;
@@ -73,14 +80,12 @@ int main(int argc, char **argv) {
          else {
             // No error. Increase the stack
             stack_true++;
-            if (i == K-1 && (true_wins || both_win) && stack_true >= D) {
-               // We have a true positive.
-               total--;
-               break;
-            }
             if (randomMT() < kp) {
                // No error and duplicate has a different nucleotide.
                // Reset the stack of the false positive.
+               if (!(true_wins || both_win) && stack_false >= D) {
+                  has_fp = 1;
+               }
                stack_false = 0;
                true_wins = 1;
                both_win = 0;
@@ -91,7 +96,21 @@ int main(int argc, char **argv) {
                stack_false++;
             }
          }
+         // End of read condition.
+         if (i == K-1) {
+            if ((true_wins || both_win) && stack_true >= D) {
+               // We have a MEM
+               has_MEM = 1;
+               break; // Not needed, end of read.
+            }
+            if (!(true_wins || both_win) && stack_false >= D) {
+               has_fp = 1;
+            }
+         }
       }
+
+      // End of read.
+      if (!has_MEM && has_fp) total--;
 
    }
 
