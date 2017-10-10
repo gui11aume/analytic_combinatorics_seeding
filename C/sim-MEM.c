@@ -73,11 +73,6 @@ int main(int argc, char **argv) {
          else {
             // No error. Increase the stack
             stack_true++;
-            if (i == K-1 && (true_wins || both_win) && stack_true >= D) {
-               // We have a true positive.
-               total--;
-               break;
-            }
             if (randomMT() < kp) {
                // No error and duplicate has a different nucleotide.
                // Reset the stack of the false positive.
@@ -90,6 +85,12 @@ int main(int argc, char **argv) {
                // Increase the stack of the false positive.
                stack_false++;
             }
+         }
+         // End of read condition.
+         if (i == K-1 && (true_wins || both_win) && stack_true >= D) {
+            // We have a true positive.
+            total--;
+            break;
          }
       }
 

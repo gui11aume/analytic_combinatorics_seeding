@@ -49,6 +49,9 @@ sim-average-del: sim-average-del.c mt.o
 sim-average-del2: sim-average-del2.c mt.o
 	$(CC) $(CFLAGS) sim-average-del2.c mt.o -o sim-average-del2
 
+sim-average-ins: sim-average-ins.c mt.o
+	$(CC) $(CFLAGS) sim-average-ins.c mt.o -o sim-average-ins
+
 sim-fp: sim-fp.c mt.o
 	$(CC) $(CFLAGS) sim-fp.c mt.o -o sim-fp
 
@@ -222,6 +225,28 @@ out-.05-.16-average-del2.txt: sim-average-del2
 			>> out-.05-.16-average-del2.txt ; \
 	done
 
+# Average number of insertions
+out-.05-.15-.04-.45-average.txt: sim-average-ins
+	./sim-average-ins 50 17 0.05 0.15 0.04 0.45 > \
+		out-.05-.15-.04-.45-average.txt
+	for ((i=52 ; i <= 150; i += 2)) ; do \
+	   ./sim-average-ins $$i 17 0.05 0.15 0.04 0.45 >> \
+	   	out-.05-.15-.04-.45-average.txt ; \
+	done
+out-.05-.15-.05-.45-average.txt: sim-average-ins
+	./sim-average-ins 50 17 0.05 0.15 0.05 0.45 > \
+		out-.05-.15-.05-.45-average.txt
+	for ((i=52 ; i <= 150; i += 2)) ; do \
+	   ./sim-average-ins $$i 17 0.05 0.15 0.05 0.45 >> \
+	   	out-.05-.15-.05-.45-average.txt ; \
+	done
+out-.05-.15-.06-.45-average.txt: sim-average-ins
+	./sim-average-ins 50 17 0.05 0.15 0.06 0.45 > \
+		out-.05-.15-.06-.45-average.txt
+	for ((i=52 ; i <= 150; i += 2)) ; do \
+	   ./sim-average-ins $$i 17 0.05 0.15 0.06 0.45 >> \
+	   	out-.05-.15-.06-.45-average.txt ; \
+	done
 
 # Substitutions (short)
 out-.005.txt: sim-sub
