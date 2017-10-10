@@ -84,36 +84,45 @@ The abstract will come later.
 
 \section{Introduction}
 
-High throughput sequencing is changing the face of biology. More data is
-of course better, but recently, technical improvements have started to
-outpace the progress of algorithms. When the problems are too large,
-one has to replace exact algorithms by heuristics that are much faster,
-but do not guarantee to return the right result. Good heuristics are all
-about understanding the input data. With the right data model, we can
-calculate the risk of not returning the right answer and adjust the
-algorithm to achieve more precision or more speed. When the data is poorly
-understood, heuristics may be slow or inefficient for unknown reasons.
+High throughput sequencing is changing the face of
+biology~\cite{pmid26000844, pmid27184599}. More data is of course better,
+but recently, technical improvements have started to outpace the progress
+of algorithms~\cite{Quilez136358}. When the problems are too large, one
+has to replace exact algorithms by heuristics that are much faster, but do
+not guarantee to return the right result. Good heuristics are all about
+understanding the input data. With the right data model, we can calculate
+the risk of not returning the right answer and adjust the algorithm to
+achieve more precision or more speed. When the data is poorly understood,
+heuristics may be slow or inefficient for unknown reasons.
 
 A particular area of bioinformatics where heuristics have been in use for
-a long time is the field of sequence alignment. Computing the best
-alignment between two sequences is carried out by dynamic programming in
-time $O(mn)$, where $m$ and $n$ are the sequence lengths. When at least
-one of the sequences is long (\textit{e.g.} a genome), this is prohibitive
-and heuristics are required.
+a long time is the field of sequence alignment~\cite{pmid20460430}.
+Computing the best alignment between two sequences is carried out by
+dynamic programming in time $O(mn)$, where $m$ and $n$ are the sequence
+lengths~\cite{durbin1998biological}. When at least one of the sequences is
+long (\textit{e.g.} a genome), this is prohibitive and heuristics are
+required.
 
 The most studied heuristics for sequence alignment are called seeding
-methods. In a nutshell, the idea is to search short regions of the two
-sequences that are very similar and use them as candidates to anchor the
-dynamic programming alignment, which is performed only locally
-\textit{i.e.} between subsequences of the input. These short regions of
-high similarity are called ``seeds''. The benefit of the approach is that
-seeds can be found in short time. The risk is that they may not exist,
-even if the input sequences are similar.
+methods~\cite{pmid16533404}. In a nutshell, the idea is to search short
+regions of the two sequences that are very similar and use them as
+candidates to anchor the dynamic programming alignment, which is performed
+only locally \textit{i.e.} between subsequences of the input. These short
+regions of high similarity are called ``seeds''. The benefit of the
+approach is that seeds can be found in short time. The risk is that they
+may not exist, even if the input sequences are similar.
+
+This strategy was most famously implemented in BLAST for the purpose of
+finding local homology between proteins~\cite{pmid2231712}. By working out
+an approximate distribution of the identity score for the
+seeds~\cite{pmid8390686, pmid2315319}, the authors were able to calibrate
+the BLAST heuristic very accurately in order to gain speed. The algorithm
+always performs the minimum amount of work for a desired confidence level.
 
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=.9]{cloud_genome.pdf}
+\includegraphics[scale=.8]{cloud_genome.pdf}
 \caption{\textbf{Seeding heuristic in the mapping problem}. The sequencing
 read belongs to an unknown portion of the genome; the task is to find its
 original sequence (and usually its location). Because of possible read
@@ -127,47 +136,42 @@ list of candidates.}
 \end{figure}
 
 
-This strategy was most famously implemented in BLAST for the purpose of
-finding local homology between proteins. By working out an approximate
-distribution of the identity score for the seeds, the authors were able to
-calibrate the BLAST heuristic very accurately in order to gain speed. The
-algorithm always performs the minimum amount of work for a desired
-confidence level.
-
 Seeding methods are also heavily used in the mapping problem (see
 figure~\ref{fig:cloud_genome}), where the original sequence of a read must
 be found in a reference genome. The dicovery of indexing methods based on
-the Burrows-Wheeler transform was instrumental to develop short read
-mappers such as BWA and Bowtie. With such indexes, one can know the number
-of occurrences of a substring in a genome in time independent of the
-genome size. This yields a powerful seeding strategy whereby all the
-substrings of the read are queried in the genome. The main limitation is
-that the seeds must have exactly the same sequence in the read as in the
-genome.
+the Burrows-Wheeler transform~\cite{Ferragina:2000:ODS:795666.796543} was
+instrumental to develop short read mappers such as BWA and
+Bowtie~\cite{pmid19451168, pmid19261174}. With such indexes, one can know
+the number of occurrences of a substring in a genome in time independent
+of the genome size. This yields a powerful seeding strategy whereby all
+the substrings of the read are queried in the genome. The main limitation
+is that the seeds must have exactly the same sequence in the read as in
+the genome.
 
 The heuristic should be calibrated from the probability that a seed of
 given length can be found in the read, but this problem has not been fully
 solved. The answer depends on the types and frequencies of errors, which
 are often context-dependent. Overall, the lack of theoretical framework to
-model seeding probabilities is halting progress on this line of research.
+model seeding probabilities is slowing progress on this line of research.
 
 Here we solve this problem for arbitrary error models using the powerful
-theory of analytic combinatorics. This field of research was initiated by
-Donlad Knuth in the early days of algorithmics, and later developed by
-Robert Sedgewick and Philippe Flajolet. The theory is now mature and used
-to tackle many problems outside the analysis of algorithms. However, it
-has not yet been realized how useful it can be for bioinformatics.
+theory of analytic combinatorics. This field of research was most
+significantly developed by Andrew Odlyzko, Robert Sedgewick and Philippe
+Flajolet~\cite{flajolet1990singularity, flajolet1996introduction,
+Flajolet:2009:AC:1506267}. The theory is now mature and used to tackle
+many problems outside the analysis of algorithms. However, it has not yet
+been fully realized how useful it can be for bioinformatics.
 
 This document is predominantly written for bioinformaticians and people
-with a working knowledge of sequencing technologies and their applications.
-Accordingly, the focus will be on explaining the mathematical concepts,
-rather than the technological aspects. Also, our goal here is not to push
-the boundaries of analytic combinatorics, but to explain how its simplest
-concepts are useful to solve common problems in bioinformatics. We have
-opted for simplicity, to the detriment of generality and rigor. The
-results presented here are only a basic introduction to analytic
-combinatorics; the field is currently much more advanced and we refer the
-interested to the original literature.
+with a working knowledge of sequencing technologies and their
+applications. Accordingly, the focus will be on explaining the
+mathematical concepts, rather than the technological aspects. Also, our
+goal here is not to push the boundaries of analytic combinatorics, but to
+explain how its simplest concepts are useful to solve common problems in
+bioinformatics. We have opted for simplicity, to the detriment of
+generality and rigor. The results presented here are only a basic
+introduction to analytic combinatorics; the field is currently much more
+advanced and we refer the interested to the original literature.
 
 \section{Elements of analytic combinatorics}
 \label{sec:anal}
@@ -1056,7 +1060,8 @@ any \texttt{CG}.
 One of the main motivations for the analytic combinatorics approach is
 that we can efficiently approximate the coefficients of weighted
 generating functions. Proposition~\ref{th:ass} below is a simplified
-version of the founding theorem of the field.
+version of the founding theorem of the
+field~\cite{flajolet1990singularity}.
 
 
 \begin{proposition}
@@ -1863,6 +1868,8 @@ read size $k$.
 
 
 
+
+
 %%%%%%%%%%% Subsitutions, deletions and insertions %%%%%%%%%%%%
 
 \subsection{Substitutions, deletions and insertions}
@@ -1895,10 +1902,11 @@ from the head and tail vertices to avoid overloading the figure.
 The terms $F(z)$, $pz$ and $\delta F(z)$ are the same as in
 section~\ref{sec:deletions}. The terms $rz$ and $\tilde{r}z$ are the
 weighted generating functions of the first inserted nucleotide and of all
-subsequent nucleotides of the insertion burst, respectively. The burst can
-terminate with an error-free interval or with a substitution, with
-respective weighted generating functions $(1-\tilde{r})F(z)$ and
-$(1-\tilde{r})pz$.
+subsequent nucleotides of the insertion burst, respectively. The burst
+terminates with probability $1-\tilde{r}$ and is followed by an error-free
+interval or by a substitution. The total weight of these two cases is
+$p+q<1$, so we need to further scale the weighted generating functions by
+a factor $p+q=1-r$.
 
 
 \begin{figure}[h]
@@ -1913,10 +1921,10 @@ generating functions of error-free intervals and individual substitutions,
 respectively. $\delta F(z)$ is the weighted generating function of a
 deletion followed by an error-free interval. $rz$ and $\tilde{r}z$ are the
 weighted generating functions of the first and all subsequent insertions
-of a burst, respectively. $(1-\tilde{r})F(z)$ is the weighted generating
-function of an error-free interval following an insertion and
-$(1-\tilde{r})pz$ is the weighted generating function of a substitutition
-following an insertion.}
+of a burst, respectively. $(1-\tilde{r})F(z)/(1-r)$ is the weighted
+generating function of an error-free interval following an insertion and
+$(1-\tilde{r})pz/(1-r)$ is the weighted generating function of a
+substitutition following an insertion.}
 \label{fig:insertions}
 \end{figure}
 
@@ -1939,8 +1947,8 @@ M(z) =
 \begin{block}{c[ccc]}
 \smDELz & \; \delta F(z) & pz & rz \; \\
 \smS    & \;        F(z) & pz & rz \; \\
-\smI    & \; (1-\tilde{r})F(z)
-           & (1-\tilde{r})pz & \tilde{r}z \; \\
+\smI    & \; \frac{1-\tilde{r}}{1-r}F(z)
+           & \frac{1-\tilde{r}}{1-r}pz & \tilde{r}z \; \\
 \end{block}
 \end{blockarray}.
 \end{equation*}
@@ -1949,36 +1957,32 @@ Here the head vector $H(z)$ is equal to $(F(z), pz, rz)^\top$, the tail
 vector $T(z)$ is equal to $(1,1,1)^\top$, and $\psi(z) = 1$. The
 expression of $(I-M(z))^{-1}$ is omitted because it is cumbersome, but
 according to proposition~\ref{th:HBT} all we need is the value of
-$\psi(z)+H(z)^\top \cdot (I-M(z))^{-1} \cdot T(z)$. Finishing the
-calculations, we find
+$\psi(z)+H(z)^\top \cdot (I-M(z))^{-1} \cdot T(z)$, which is equal to
 
 \begin{equation}
 \label{eq:Rindel}
-R(z) = \frac{\big( 1-(\tilde{r}-r)z \big)
+R(z) = \frac{(1-r)\big( 1-(\tilde{r}-r)z \big)
 \left(1+(1-\delta)F(z) \right)}{1-a(z)-b(z)F(z)}
 = \frac{1}{1-z},
 \end{equation}
-where
+where $a(z)$ and $b(z)$ are second degree polynomials defined as
 
-\begin{equation}
-\begin{gathered}
+\begin{gather}
 \label{eq:a+b}
-%a(z) = r-\big((p+\tilde{r})r-\tilde{r}-p\big)z
-%- p(\tilde{r}-r)z^2\text{, and} \\
-%b(z) = \delta(1-r) - \big((\tilde{r}\delta-(1-\delta)p)(1-r)
-%-(1-\tilde{r})r\big)z -(1-\delta)p(\tilde{r}-r)z^2.
-a(z) = (p+\tilde{r})z + p\big(\tilde{r}-r(1-\tilde{r})\big)z^2 \\
-b(z) = \delta + \big(p(1-\delta) - \tilde{r}(\delta+r)+r\big)z
-+ p(1-\delta)\big(r-\tilde{r}(1+r)\big)z^2.
-\end{gathered}
-\end{equation}
+a(z) = r+(1-r)(p+\tilde{r})z
+- p(\tilde{r}-r)z^2\text{, and} \\
+b(z) = \delta(1-r) +
+\big((1-r)(p-\delta(p+\tilde{r})+(1-\tilde{r})r)\big)z
+-p(1-\delta)(\tilde{r}-r)z^2.
+\notag
+\end{gather}
 
 
 Again, the terms cancel out and we obtain the simple expression $1/(1-z) =
 1+z+z^2 + \ldots$ where all the coefficients are equal to $1$. This means
 that once again, ratio (\ref{eq:THEratio}) reduces to $[z^k]S_\gamma(z)$.
-To find the weighted generating function of reads without an exact
-$\gamma$-seeds, we replace $F(z)$ in expression (\ref{eq:Rindel}) by its
+To find the weighted generating function of reads without exact
+$\gamma$-seed, we replace $F(z)$ in expression (\ref{eq:Rindel}) by its
 truncated version
 
 \begin{equation*}
@@ -1986,16 +1990,15 @@ F_\gamma(z) = qz + (1-\delta)(qz)^2 + (1-\delta)^2(qz)^3 + \ldots +
 (1-\delta)^{\gamma-2}(qz)^{\gamma-1}.
 \end{equation*}
 
-We obtain the following expression, where $a(z)$ and $b(z)$ are defined in
-(\ref{eq:a+b})
+We obtain the following expression
 
 \begin{equation}
 \label{eq:Sindel}
 S_\gamma(z) =
-\frac{\big( 1-(\tilde{r}-r)z \big) \left(1+(1-\delta)F_\gamma(z)
-\right)}{1-a(z)-b(z)F_\gamma(z)}.
+\frac{(1-r)\big( 1-(\tilde{r}-r)z \big) \left(1+(1-\delta)F_\gamma(z)
+\right)}{1-a(z)-b(z)F_\gamma(z)},
 \end{equation}
-
+where $a(z)$ and $b(z)$ are defined as in (\ref{eq:a+b}).
 
 \begin{remark}
 \label{rem:russian_dolls}
@@ -2858,17 +2861,17 @@ encoded as symbols in order to not overload the figure.
 \centering
 \includegraphics[scale=1]{false_positives_graph.pdf}
 \caption{\textbf{Transfer graph of reads without seed of size $3$ for
-either $(+)$ or $(-)$}. Reads can match two sequences referred to as $(+)$
-and $(-)$. They are viewed as sequences of $R$-blocks. To not overload the
-figure, the edges are split between the left and right panels. The labels
-on the vertices represent the respective sizes of the $(-)$ and $(+)$
-intervals at the end of an $R$-block. NEEDS REWRITING. Weighted generating
-functions $r_i^+(z)$ represent $R$-blocks with $i$ matches and terminated
-by a mismatch against the $(+)$ sequence (symmetrically for the $(-)$
-sequence). Weighted generating function $R_i(z)$ represent $R$-blocks with
-\emph{up to} $i$ matches and terminated by a double mismatch. Weighted
-generating functions $F_i(z)$ represent mismatch-free intervals of
-\emph{up to} $i$ matches.}
+either $(+)$ or $(-)$}. Reads are viewed as sequences of $R$-blocks, and
+they can match two sequences referred to as $(+)$ and $(-)$. To not
+overload the figure, the edges are split between the left and right
+panels. The labels on the vertices represent the respective number of
+nucleotides matching the $(-)$ and $(+)$ sequences at the end of an
+$R$-block. Weighted generating functions $r_i^+(z)$ represent $R$-blocks
+with $i$ matches terminated by a mismatch against the $(+)$ sequence
+(symmetrically for the $(-)$ sequence). Weighted generating function
+$R_i(z)$ represent $R$-blocks with \emph{up to} $i$ matches terminated by
+a double mismatch. Weighted generating functions $F_i(z)$ represent
+mismatch-free intervals of \emph{up to} $i$ matches.}
 \label{fig:graph_fp}
 \end{figure}
 
@@ -3855,6 +3858,27 @@ affine relationshiop between the average number of errors and the size of
 the read without exact seed is apparent, and the approximations are very
 close to the target values.
 
+\begin{remark}
+What about the average number of substitutions in reads that contain a
+$\gamma$-exact seed? We can compute it indirectly from the quantities that
+we already have defined.
+
+The average number of substitutions for reads of size $k$ (regardless of
+whether they contain a seed) is $pk$. Call $P_1$ the probability that a
+read of size $k$ contains no seed and $E$ the average number of
+substitutions in such reads. The quantity of interest, $x$ follows the
+relationship
+
+\begin{equation*}
+P_1E + (1-P_1)x = pk.
+\end{equation*}
+
+From this we see that the average number of substitutions in reads that
+contain a $\gamma$-exact seed is $(pk - P_1E) / (1-P_1)$. This
+relationship is not affine because $P_1$ decreases exponentially as $k$
+increases, but for long reads $P_1$ vanishes so it is approximately
+linear and equal to $pk$.
+\end{remark}
 
 
 
@@ -3998,8 +4022,8 @@ M(z,w) =
 \begin{block}{c[ccc]}
 \smDELz & \; \delta F_\gamma(z) & pz & rzw \; \\
 \smS    & \;        F_\gamma(z) & pz & rzw \; \\
-\smI    & \; (1-\tilde{r})F_\gamma(z)
-           & (1-\tilde{r})pz & \tilde{r}zw \; \\
+\smI    & \; \frac{1-\tilde{r}}{1-r}F_\gamma(z)
+           & \frac{1-\tilde{r}}{1-r}pz & \tilde{r}zw \; \\
 \end{block}
 \end{blockarray}.
 \end{equation*}
@@ -4021,12 +4045,16 @@ $S_w(z,1)$ to be equal to
 
 \begin{equation}
 \label{eq:full_insertions}
-\frac{rz\big(1+(1-\delta)F_\gamma(z)\big)
-\big(1-\tilde{r}pz+(1-\delta-\tilde{r}-(1-\delta)\tilde{r}pz)
-  F_\gamma(z)\big)}
+\frac{rz(1-r)\big(1+(1-\delta)F(z)\big)\big(1-r-pz(\tilde{r}-r)
+  +c(z)F(z) \big)}
   {\big(1-a(z)-b(z)F_\gamma(z)\big)^2},
 \end{equation}
-where $a(z)$ and $b(z)$ are defined as in (\ref{eq:a+b}).
+where $a(z)$ and $b(z)$ are defined as in (\ref{eq:a+b}), and where $c(z)$
+is a first degree polynomial defined as
+
+\begin{equation*}
+c(z) = 1-\tilde{r}-\delta(1-r) - (1-\delta)(\tilde{r}-r)pz.
+\end{equation*}
 
 As in the section~\ref{sec:avsub}, we derive the asymptotics by applying
 proposition~\ref{th:ass2} to (\ref{eq:full_insertions}) and by applying
@@ -4039,13 +4067,13 @@ easy to compute from propositions~\ref{th:ass} and \ref{th:ass2}.
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.445]{simuldel-average2.pdf}
-\caption{\textbf{Example estimates of average number of deletions}. The
-average number of deletions in reads without $\gamma$-exact seed is
+\includegraphics[scale=0.445]{simulins-average.pdf}
+\caption{\textbf{Example estimates of average number of isnertions}. The
+average number of insertions in reads without $\gamma$-exact seed is
 shown for different read sizes, either estimated by 10,000,000 random
 simulations (dots), or by analytic combinatorics (lines). The curves are
-drawn for $\gamma=17$, $p=0.05$ and $\delta=0.14$, $\delta=0.15$ or
-$\delta=0.16$ (from bottom to top).}
+drawn for $\gamma=17$, $p=0.05$, $\delta=0.15$, $\tilde{r}=0.45$ and
+$r=0.04$, $r=0.05$ or $r=0.06$ (from bottom to top).}
 \label{fig:simulavins}
 \end{figure}
 
@@ -4053,9 +4081,65 @@ The accuracy of the estimates is illustrated in
 figure~\ref{fig:simulavins}. Once again the affine relationship is a good
 fit and the approximations are close the target values.
 
+It is also meaningful to compute the average number of substitutions or
+deletions in the full error model. For this, one can start from the
+transfer matrix, mark the quantity of interest and proceed with the
+general strategy exposed in section~\ref{sec:genapp}.
 
-COMMENT ABOUT THE AVERAGE NUMBER OF ERRORS IN READS WITH SEED.
+To compute the average number of substitutions, we use the transfer
+matrix
 
+\begin{equation*}
+M(z,u) = 
+\begin{blockarray}{cccc}
+       & \smDELz & \smS & \smI \\
+\begin{block}{c[ccc]}
+\smDELz & \; \delta F_\gamma(z) & pzu & rz \; \\
+\smS    & \;        F_\gamma(z) & pzu & rz \; \\
+\smI    & \; \frac{1-\tilde{r}}{1-r}F_\gamma(z)
+           & \frac{1-\tilde{r}}{1-r}pzu & \tilde{r}z \; \\
+\end{block}
+\end{blockarray}.
+\end{equation*}
+
+To compute the average number of deletions, we use the transfer
+matrix
+
+\begin{equation*}
+M(z,v) = 
+\begin{blockarray}{ccccc}
+       & \smDELz & \smS & \smD & \smI \\
+\begin{block}{c[cccc]}
+\smDELz & \; 0           & (1-\delta)pz & \delta v & rz \; \\
+\smS    & \; (1-\delta)F_\gamma(z) & (1-\delta)pz & \delta v & rz \; \\
+\smD    & \; F_\gamma(z) & pz & 0        & 0 \; \\
+\smI    & \; \frac{1-\tilde{r}}{1-r}F_\gamma(z)
+           & \frac{1-\tilde{r}}{1-r}pz & 0 & \tilde{r}z \; \\
+\end{block}
+\end{blockarray}.
+\end{equation*}
+
+Finally, we can also consider all errors together (deletions always
+counting as a single error). For this we mark all the types of errors with
+the same variable, say $w$. In this case, we use the tansfer matrix
+
+\begin{equation*}
+M(z,w) = 
+\begin{blockarray}{ccccc}
+       & \smDELz & \smS & \smD & \smI \\
+\begin{block}{c[cccc]}
+\smDELz & \; 0           & (1-\delta)pzw & \delta w & rzw \; \\
+\smS    & \; (1-\delta)F_\gamma(z) & (1-\delta)pzw & \delta vw & rzw \; \\
+\smD    & \; F_\gamma(z) & pzw & 0        & 0 \; \\
+\smI    & \; \frac{1-\tilde{r}}{1-r}F_\gamma(z)
+           & \frac{1-\tilde{r}}{1-r}pzw & 0 & \tilde{r}zw \; \\
+\end{block}
+\end{blockarray}.
+\end{equation*}
+
+
+In all the cases, we obtain an affine relationship between the size of the
+read and the average number of error of a given type.
 
 
 \section{Conclusion}
@@ -4102,7 +4186,7 @@ are developed in the future.
 %---------------------------------------------------------------
 %---------------------------------------------------------------
 
-\bibliography{pubmed,extra}
+\bibliography{references,pubmed}
 \bibliographystyle{plain}
 
 %----------------------------------------------------------------

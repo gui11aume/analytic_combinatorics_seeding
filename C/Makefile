@@ -368,6 +368,11 @@ simuldel-average2.pdf: out-.05-.14-average-del2.txt \
 		out-.05-.15-average-del2.txt out-.05-.16-average-del2.txt
 	R -f make_figure_simulation_average_del2.R
 
+simulins-average.pdf: out-.05-.15-.04-.45-average.txt \
+		out-.05-.15-.05-.45-average.txt \
+		out-.05-.15-.06-.45-average.txt
+	R -f make_figure_simulation_average_ins.R
+
 simulp_short.pdf: out-.005.txt out-.010.txt out-.015.txt
 	R -f make_figure_simulation_sub_short.R
 
@@ -383,7 +388,6 @@ simulp_mem.pdf: out-.08-MEM.txt out-.10-MEM.txt out-.12-MEM.txt
 
 simulp_mem_fp.pdf: out-.05-MEM_fp.txt out-.15-MEM_fp.txt out-.25-MEM_fp.txt
 	R -f make_figure_simulation_mem_fp.R
-
 
 clean:
 	rm -f $(SIMULATIONS) $(EXEC) $(FIGS)
