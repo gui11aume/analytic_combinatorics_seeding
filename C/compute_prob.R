@@ -39,10 +39,11 @@ cst_term = function(z,p,d) {
    (1-(1-p)*z)^2 / p^2 / (1+d*((1-p)*z)^(d+1)-(d+1)*((1-p)*z)^d)
 }
 
-d = 19
-k = 75
-p = 0.02
+d = 17
+p = 0.05
 
+options(digits=22)
 z = Newton(p,d)
-C = cst_term(z,p,d)
-print(C/z^(k+2))
+C = cst_term(z,p,d) / z
+print(z)
+print(C)

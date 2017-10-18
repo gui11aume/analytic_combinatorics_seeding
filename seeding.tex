@@ -1,13 +1,18 @@
 \documentclass{article}
 
-\usepackage[english]{babel}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{amsthm}
+\usepackage{authblk}
+\usepackage[english]{babel}
 \usepackage{blkarray}
 \usepackage[font=small]{caption}
 \usepackage{cite}
 \usepackage{graphicx}
+
+% ---- Author affiliations ---- %
+
+\renewcommand\Affilfont{\itshape\small}
 
 % ---- Propositions, lemmas, defintions... ---- %
 
@@ -60,10 +65,14 @@
 
 \title{Analytic combinatorics for bioinformatics I:
 seeding methods}
-\author{
-\textsc{Guillaume Filion and Eduard Valera Zorita} \\ [1ex]
-\normalsize CRG, Barcelona
-}
+
+\author[1,2]{Guillaume J. Filion}
+\affil[1]{Genome Architecture, Gene Regulation, Stem Cells and Cancer
+Programme, Center for Genomic Regulation (CRG), The Barcelona Institute of
+Science and Technology, Dr. Aiguader 88, Barcelona 08003, Spain.}
+\affil[2]{University Pompeu Fabra, Doctor Aiguader, 08003 Barcelona,
+Spain.}
+
 \date{\today}
 
 %---------------------------------------------------------------
@@ -75,7 +84,27 @@ seeding methods}
 \maketitle
 
 \begin{abstract}
-The abstract will come later.
+Seeding heuristics are the most widely used strategies to speed up
+sequence alignment in bioinformatics. Such strategies are most successful
+if they are calibrated, so that the speed-versus-accuracy trade-off can be
+properly tuned. In the widely used case of read mapping, it has been so
+far impossible to predict the success rate of competing seeding strategies
+for lack of a theoretical framework. Here I present an approach to
+estimate such quantities based on the theory of analytic combinatorics. In
+a nutshell, the strategy is to specify a combinatorial construction of
+reads where the seeding heuristic fails, translate this specification into
+a generating function using formal rules, and finally extract the
+probabilities of interest from the singularities of the generating
+function. I use this approach to construct simple estimators of the
+success rate of the seeding heuristic under different types of sequencing
+errors. I also show how the analytic combinatorics strategy can be used to
+compute the associated type I and type II error rates (mapping the read to
+the wrong location, or being unable to map the read). Finally, I show how
+analytic combinatorics can be used to estimate average quantities such as
+the expected number of errors in reads where the seeding heuristic fails.
+Overall, this work introduces a theoretical and practical framework to
+find the success rate of seeding heuristics and related problems in
+bioinformatics.
 \end{abstract}
 
 
@@ -110,7 +139,7 @@ candidates to anchor the dynamic programming alignment, which is performed
 only locally \textit{i.e.} between subsequences of the input. These short
 regions of high similarity are called ``seeds''. The benefit of the
 approach is that seeds can be found in short time. The risk is that they
-may not exist, even if the input sequences are similar.
+may not exist.
 
 This strategy was most famously implemented in BLAST for the purpose of
 finding local homology between proteins~\cite{pmid2231712}. By working out
@@ -127,34 +156,34 @@ always performs the minimum amount of work for a desired confidence level.
 read belongs to an unknown portion of the genome; the task is to find its
 original sequence (and usually its location). Because of possible read
 errors, the read may not be identical to the original sequence. Most
-algorithms feature a seeding stage and an alignment stage. The purpose of
-seeding is to output a short list of candidate sequences, that of
-alignment is to determine which is the best. Seeding is a heuristic
+algorithms feature a seeding stage and an alignment stage. The purposes of
+seeding  and alignment are to output a short list of candidate sequences, 
+and to determine which is the best, respectively. Seeding is a heuristic
 because it does not guanrantee that the overall best sequence is in the
 list of candidates.}
 \label{fig:cloud_genome}
 \end{figure}
 
 
-Seeding methods are also heavily used in the mapping problem (see
-figure~\ref{fig:cloud_genome}), where the original sequence of a read must
-be found in a reference genome. The dicovery of indexing methods based on
-the Burrows-Wheeler transform~\cite{Ferragina:2000:ODS:795666.796543} was
-instrumental to develop short read mappers such as BWA and
-Bowtie~\cite{pmid19451168, pmid19261174}. With such indexes, one can know
-the number of occurrences of a substring in a genome in time independent
-of the genome size. This yields a powerful seeding strategy whereby all
-the substrings of the read are queried in the genome. The main limitation
-is that the seeds must have exactly the same sequence in the read as in
-the genome.
+Seeding methods are also heavily used in the mapping problem
+(figure~\ref{fig:cloud_genome}), where the original sequence of a read
+must be found in a reference genome. The dicovery of indexing methods
+based on the Burrows-Wheeler
+transform~\cite{Ferragina:2000:ODS:795666.796543} was instrumental to
+develop short read mappers such as BWA and Bowtie~\cite{pmid19451168,
+pmid19261174}. With such indexes, one can know the number of occurrences
+of a substring in a genome in time independent of the genome size. This
+yields a powerful seeding strategy whereby all the substrings of the read
+are queried in the genome. The main limitation is that the seeds must have
+exactly the same sequence in the read as in the genome.
 
 The heuristic should be calibrated from the probability that a seed of
 given length can be found in the read, but this problem has not been fully
 solved. The answer depends on the types and frequencies of errors, which
-are often context-dependent. Overall, the lack of theoretical framework to
-model seeding probabilities is slowing progress on this line of research.
+are often context-dependent. Overall, the lack of theory to model seeding
+probabilities hinders progress on this line of research.
 
-Here we solve this problem for arbitrary error models using the powerful
+Here I address this problem for arbitrary error models using the powerful
 theory of analytic combinatorics. This field of research was most
 significantly developed by Andrew Odlyzko, Robert Sedgewick and Philippe
 Flajolet~\cite{flajolet1990singularity, flajolet1996introduction,
@@ -165,20 +194,30 @@ been fully realized how useful it can be for bioinformatics.
 This document is predominantly written for bioinformaticians and people
 with a working knowledge of sequencing technologies and their
 applications. Accordingly, the focus will be on explaining the
-mathematical concepts, rather than the technological aspects. Also, our
+mathematical concepts, rather than the technological aspects. Also, my
 goal here is not to push the boundaries of analytic combinatorics, but to
 explain how its simplest concepts are useful to solve common problems in
-bioinformatics. We have opted for simplicity, to the detriment of
+bioinformatics. I have opted for simplicity, to the detriment of
 generality and rigor. The results presented here are only a basic
 introduction to analytic combinatorics; the field is currently much more
-advanced and we refer the interested to the original literature.
+advanced and I refer the interested to the original
+literature~\cite{Flajolet:2009:AC:1506267}.
 
 \section{Elements of analytic combinatorics}
 \label{sec:anal}
 
+In order to develop a theoretical framework for the seeding problem, we
+first need to familiarize ourselves with the basic concepts of analytic
+combinatorics. This section is a general introduction to the concepts and
+tools, together with some more specialized material that will
+prove useful to tackle the problem at hand.
+
 \subsection{Weighted generating functions}
 \label{subsec:WGF}
 
+The central object of analytic combinatorics is the \emph{generating
+function}. Here we will develop a theory based on the slightly more
+general concept of \emph{weighted} generating function.
 
 % ---------------  Definition of WGFs  --------------- %
 \begin{definition}
@@ -201,14 +240,14 @@ A(z) = \sum_{k=0}^\infty a_k z^k.
 \end{equation}
 
 By definition $a_k = \sum_{a \in A_k}w(a)$, where $A_k$ is the class of
-objects of size $k$ in $\mathcal{A}$. The number $a_k$ is called the total
-weight of objects of size $k$.
+objects of size $k$ in $\mathcal{A}$. The number $a_k$ is called the
+\textbf{total weight of objects of size $k$}.
 \end{definition}
 % ---------------------------------------------------- %
 
 \begin{remark}
 Expression (\ref{eq:GF2}) shows that the terms $a_k$ are the coefficients
-of the Taylor series of $A(z)$.
+of the Taylor series expansion of the function $A(z)$.
 \end{remark}
 
 \begin{remark}
@@ -222,8 +261,8 @@ $k$ in $\mathcal{A}$.
 \begin{remark}
 Typical combinatorial objects include binary trees, permutations,
 derangements, multisets \textit{etc}., but here we will focus exclusively
-on sequences of letters from finite alphabets. In what follows, the reader
-can think of ``objects'' as ``finite sequences of letters''.
+on sequences of symbols from finite alphabets. In what follows, the reader
+can think of ``objects'' as ``finite sequences of symbols''.
 \end{remark}
 
 Expressions (\ref{eq:GF1}) and (\ref{eq:GF2}) are of course equivalent.
@@ -250,11 +289,11 @@ and \ref{th:ass} below will show how we can compute probabilities that
 are inacessible to more frontal approaches.
 
 Let us start with the most straightforward ways to obtain new weighted
-generating functions: additions and multiplications. If $A(z)$ and $B(z)$
-are the weighted generating functions of two mutually exclusive sets
-$\mathcal{A}$ and $\mathcal{B}$, the weighted generating function of
-$\mathcal{A} \cup \mathcal{B}$ is $A(z) + B(z)$, as appears immediately
-from expression (\ref{eq:GF1}).
+generating functions from those already available: additions and
+multiplications. If $A(z)$ and $B(z)$ are the weighted generating
+functions of two mutually exclusive sets $\mathcal{A}$ and $\mathcal{B}$,
+the weighted generating function of $\mathcal{A} \cup \mathcal{B}$ is
+$A(z) + B(z)$, as appears immediately from expression (\ref{eq:GF1}).
 
 \begin{example}
 \label{ex:AUB}
@@ -318,7 +357,9 @@ increases. So the weighted generating function of $\cup_{k\geq1}
 \mathcal{A}^k$ is defined for $|z| < 1/p$ and is equal to
 
 \begin{equation*}
-pz + (pz)^2 + (pz)^3 + \ldots = \frac{pz}{1-pz}.
+pz + (pz)^2 + (pz)^3 + \ldots =
+\lim_{k\to\infty}\frac{pz - (pz)^{k+1}}{1-pz} =
+\frac{pz}{1-pz}.
 \end{equation*}
 \end{example}
 
@@ -340,15 +381,15 @@ of $\mathcal{A}$ is defined for $|A(z)| < 1$ and is equal to
 \begin{proof}
 For $k \geq 1$, the weighted generating function of $\mathcal{A}^k$ is
 $A(z)^k$. Since the sets $\mathcal{A}^k$ are mutually exclusive, the
-weighted generating function of their union is $A(z) + A(z)^2 + \ldots =
-A(z) / (1-A(z))$, provided $|A(z)| < 1$.
+weighted generating function of their union is $A(z) + A(z)^2 + A(z)^3 +
+\ldots = A(z) / (1-A(z))$, provided $|A(z)| < 1$.
 \end{proof}
 
-We introduce the \textbf{empty object} $\varepsilon$, which has size $0$
-and weight 1. Its weighted generating function is thus $1$. By convention,
-we define the zeroth power of a combinatorial set $\mathcal{A}$ as
-$\mathcal{A}^0 = \{\varepsilon\}$. With this definition, we can state a
-variant of the previous proposition.
+We also introduce the \textbf{empty object} $\varepsilon$, which has size
+$0$ and weight 1. Its weighted generating function is thus $1$. By
+convention, we define the zeroth power of a combinatorial set
+$\mathcal{A}$ as $\mathcal{A}^0 = \{\varepsilon\}$. With this definition,
+we can state a variant of the previous proposition.
 
 \begin{proposition}
 \label{th:sequences2}
@@ -383,22 +424,25 @@ $\mathcal{A}^k$ and they are not mutually exclusive.
 If $|A(z)| > 1$, the function  $A(z)/(1-A(z))$ is well defined but the
 series $A(z) + A(z)^2 + \ldots$ does not converge. This is not a problem,
 as relation (\ref{eq:GF2}) does not need to hold for every $z$. However,
-in what follows we will always assume that it does. In other words, we
-will always assume that $|z|$ is smaller than the radius of convergence of
-the weighted generating function of interest.
+in what follows we will only consider the values of $z$ for which the
+relation holds. In other words, we will always assume that $|z|$ is
+smaller than the radius of convergence of the weighted generating function
+of interest.
 \end{remark}
 
 
+\begin{remark}
 It is important to insist that the expression ``sequences of'' refers to
-the set $\mathcal{A}^*$ and not to $\mathcal{A}^+$, \textit{i.e.} the
-empty object $\varepsilon$ is a sequence of anything. For clarity, we will
-systematically use the expression ``non-empty sequences of'' when
+the set $\mathcal{A}^*$ and not to the set $\mathcal{A}^+$, \textit{i.e.}
+the empty object $\varepsilon$ is a sequence of anything. For clarity, we
+will systematically use the expression ``non-empty sequences of'' when
 $\varepsilon$ is excluded.
+\end{remark}
 
 \begin{example}
 \label{ex:AUB+}
 Following the definitions of example~\ref{ex:BABA}, $(\mathcal{A} \cup
-\mathcal{B})^*$ is the set of sequences of $a$'s and $b$'s. By
+\mathcal{B})^*$ is the set of sequences of $a$'s and/or $b$'s. By
 proposition~\ref{th:sequences2} and example~\ref{ex:AUB}, the weighted
 generating function of this set is
 
@@ -416,7 +460,7 @@ $2^k$ sequences of size $k$. If $p$ and $q$ are the respective
 probabilities of ocurrence of $a$ and $b$, with $p + q \leq 1$, then the
 equality $1 / (1-(p+q)z) = 1+ (p+q)z + (p+q)^2z^2 + (p+q)^3z^3 + \ldots$
 means that the probability that a sequence of size $k$ contains only $a$'s
-and $b$'s is $(p+q)^k$.
+and/or $b$'s is $(p+q)^k$.
 \end{example}
 
 These simple examples are better solved by intuition. However, we will
@@ -489,11 +533,11 @@ combinatorial objects.
 
 \begin{definition}
 \label{def:transfermat}
-A \textbf{transfer graph} is a directed graph whose edges are weighted by
-generating functions. In addition, a transfer graph must contain a head
-vertex with only outgoing edges, and a tail vertex with only incoming
-edges. The graph can be represented as a matrix called a \textbf{transfer
-matrix}.
+A \textbf{transfer graph} is a directed graph whose edges are labelled by
+weighted generating functions(themselves representing classes of objects).
+In addition, a transfer graph must contain a head vertex with only
+outgoing edges, and a tail vertex with only incoming edges. The graph can
+be represented as a matrix called a \textbf{transfer matrix}.
 \end{definition}
 
 Following the edges of a transfer graph from the head vertex to the tail
@@ -504,8 +548,9 @@ edges (thus an absent edge is associated to the function $0$).
 Transfer graphs have the general structure below. The head vertex is
 represented as an open circle and the tail vertex as a closed circle. The
 edge labelled $\psi(z)$, from the head vertex to the tail vertex
-represents additional sequences. Typically, $\psi(z) = 1$, as the only
-sequence that needs to be added explicitly is the empty object
+represents additional sequences that we may add to fit a particular
+definition. Typically, $\psi(z) = 1$, as the only sequence that needs to
+be added explicitly is the empty object
 $\varepsilon$.
 
 \begin{inset}
@@ -517,9 +562,16 @@ $m$ vertices. $M(z)$ is the $m \times m$ matrix representation of the
 corresponding sub-graph. $H(z)$ is a vector of $m$ weighted generating
 functions associated with the $m$ edges from the head vertex to the body
 of the graph, and $T(z)$ is a vector of $m$ weighted generating functions
-associated with the edges from the body of graph to the tail vertex.
+associated with the edges from the body of the graph to the tail vertex.
 $H(z)$ and $T(z)$ are called the ``head'' and ``tail'' vectors,
 respectively.
+
+\begin{remark}
+\label{rem:order}
+By convention, rows correspond to outgoing edges and columns to incoming
+edges. The head vertex always corresponds to the first row/column of the
+tansfer matrix and the tail vertex to the last.
+\end{remark}
 
 \begin{remark}
 Transfer graphs are reminiscent of deterministic finite automata (DFA).
@@ -532,9 +584,10 @@ document.
 \end{remark}
 
 \begin{definition}
-The \textbf{sequences generated by a transfer matrix} correspond to the
-paths from the head vertex to the tail vertex of the associated tranfer
-graph.
+Concatenating the objects labelling the edges of a transfer graph in all
+possible ways for all possible paths from the head to the tail vertex
+describes the \textbf{sequences generated by the associated transfer
+matrix}.
 \end{definition}
 
 \begin{example}
@@ -647,9 +700,9 @@ $1$. $M(z)$, the matrix of the body of the graph is the $1 \times
 \end{example}
 
 Examples~\ref{ex:TMABz} and \ref{ex:TMAUBz} show that the same class of
-combinatorial sequences may be associated with multiple transfer matrices.
-There are several ways to construct (and interpret) a weighted generating
-function.
+combinatorial sequences may be associated with multiple transfer graphs
+and transfer matrices. There are several ways to construct (and interpret)
+a weighted generating function.
 
 \begin{example}
 \label{ex:TMAB0z}
@@ -730,8 +783,9 @@ z/2
 \end{bmatrix}.
 \end{align*}
 
-We still need to find the weighted generating function.
-Proposition~\ref{prop:transfermatrices} below shows how this is done.
+We still need to find the weighted generating function of sequences
+without \texttt{CG}. Proposition~\ref{prop:transfermatrices} below shows
+how this is done.
 
 \begin{lemma}
 \label{lemma:transfermatrices}
@@ -746,8 +800,9 @@ matrix. Assume that the property holds for some $n \geq 1$. A path of
 $n+1$ segments from vertex $i$ to vertex $j$ is a path of $n$ segments
 from vertex $i$ to some vertex $k$, followed by a single segment from
 vertex $k$ to vertex $j$. Using the induction hypothesis and taking the
-union on all vertices $1 \leq k \leq m+2$, the weighted generating
-function of such paths is
+union on all vertices $1 \leq k \leq m+2$ (recall that the transfer graph
+contains a head vertex, a tail vertex and $m$ additional vertices), the
+weighted generating function of such paths is
 
 \begin{equation*}
 \sum_{k = 1}^{m+2} \Big(M(z)^n\Big)_{[i,k]} \times M(z)_{[k,j]}
@@ -765,15 +820,16 @@ than $1$.
 \end{proposition}
 
 \begin{proof}
-From lemma~\ref{lemma:transfermatrices}, the weighted generating function
-is the top right entry of the matrix
+Top right entries correspond to paths from the head to the tail vertex
+(see remark~\ref{rem:order}). From lemma~\ref{lemma:transfermatrices}, the
+weighted generating function is the top right entry of the matrix
 
 \begin{equation*}
 I + M_*(z) + M_*(z)^2 + M_*(z)^3 + \ldots
 \end{equation*}
 
 Observe that $(I-M_*(z)) \cdot (I+M_*(z)+M_*(z)^2+ \ldots + M_*(z)^n) =
-I-M_*(z)^{n+1}$. If all the eigenvalues of $M(z)$ have \textit{modulus}
+I-M_*(z)^{n+1}$. If all the eigenvalues of $M_*(z)$ have \textit{modulus}
 less than $1$, the right hand side converges to the identity matrix $I$ as
 $n$ goes to infinity. This translates to
 
@@ -785,7 +841,8 @@ which concludes the proof.
 
 
 \begin{example}
-Let us continue example~\ref{ex:TMAz} where
+Let us continue example~\ref{ex:TMAz} where we found that the tranfer
+matrix of sequences of objects from $\mathcal{A}$ is
 
 \begin{equation*}
 M_*(z) =
@@ -799,8 +856,8 @@ M_*(z) =
 \end{blockarray}.
 \end{equation*}
 
-The weighted generating function of sequences of objects from
-$\mathcal{A}$ is the top right entry of the matrix
+The weighted generating function of such sequences is the top right entry
+of the matrix
 
 \begin{equation*}
 (I-M_*(z))^{-1} = \frac{1}{1-A(z)}
@@ -812,14 +869,15 @@ $\mathcal{A}$ is the top right entry of the matrix
 \end{equation*}
 
 In other words, the weighted generating function of sequences of objects
-from $\mathcal{A}$ is $1/(1-A(z)$, consistently with
+from $\mathcal{A}$ is $1/(1-A(z))$, consistently with
 proposition~\ref{th:sequences2}.
 \end{example}
 
 \begin{example}
 \label{ex:WGFAUB}
-Let us continue examples~\ref{ex:TMABz} and \ref{ex:TMAUBz}. The first
-transfer matrix is
+Let us continue examples~\ref{ex:TMABz} and \ref{ex:TMAUBz} where we found
+two transfer matrices for sequences of objects from $\mathcal{A}$ or
+from $\mathcal{B}$. The first transfer matrix is
 
 \begin{equation*}
 \begin{blockarray}{cccccc}
@@ -833,9 +891,8 @@ transfer matrix is
 \end{blockarray}.
 \end{equation*}
 
-Applying proposition~\ref{prop:transfermatrices}, the weighted generating
-function of sequences of objects from $\mathcal{A}$ of $\mathcal{B}$ is
-the top right entry of the matrix
+Applying proposition~\ref{prop:transfermatrices}, we see that the
+weighted generating function is the top right entry of the matrix
 
 \begin{equation*}
 \frac{1}{1-A(z)-B(z)}
@@ -860,9 +917,8 @@ The second transfer matrix is
 \end{blockarray}.
 \end{equation*}
 
-Applying proposition~\ref{prop:transfermatrices} again, the weighted
-generating function of sequences of objects from from $\mathcal{A}$ or
-$\mathcal{B}$ is the top right entry of the matrix
+Applying proposition~\ref{prop:transfermatrices} again, we see that the
+weighted generating function is also the top right entry of the matrix
 
 \begin{equation*}
 \frac{1}{1-A(z)-B(z)}
@@ -874,7 +930,9 @@ $\mathcal{B}$ is the top right entry of the matrix
 \end{equation*}
 
 Both terms are equal to $1/(1-A(z)-B(z))$. This illustrates that there are
-different ways to construct a sequence, some simpler than others.
+different ways to construct a sequence and its weighted generating
+function. This also illustrates that some constructions are simpler than
+others.
 \end{example}
 
 
@@ -904,7 +962,7 @@ than $1$.
 \end{proposition}
 
 \begin{proof}
-We need to compute the top-right term of the matrix $(I-M_*(z))^{-1}$.
+We need to compute the top-right entry of the matrix $(I-M_*(z))^{-1}$.
 Using the matrix inversion formula with the cofactor matrix, this term is
 equal to $(-1)^{m+2}C/\det(I-M_*(z))$, where $C$ is the determinant
 
@@ -934,7 +992,10 @@ once more the matrix inversion formula, we obtain
 
 
 \begin{example}
-Let us continue example~\ref{ex:TMAB0z} where
+Let us continue example~\ref{ex:TMAB0z} where we found that the transfer
+matrix of sequences of objects from $\mathcal{A}$ or from $\mathcal{B}$
+that end with an object from $\mathcal{B}$ but do not contain two objects
+from $\mathcal{B}$ in a row is
 
 \begin{equation*}
 M_*(z) =
@@ -980,9 +1041,9 @@ A(z) & 1-A(z) \\
 \end{example}
 
 We will sometimes represent transfer graphs as their bodies (associated
-with the matrix $M(z)$), and specify separately $\psi(z)$, $H(z)$ and
-$T(z)$. This will simplify the graphical representations, and using
-proposition~\ref{th:HBT} instead of
+with the matrix $M(z)$, not with $M_*(z)$), and specify separately
+$\psi(z)$, $H(z)$ and $T(z)$. This will simplify the graphical
+representations, and using proposition~\ref{th:HBT} instead of
 proposition~\ref{prop:transfermatrices} will simplify the computations.
 
 Now returning to sequences of nucleotides without \texttt{CG}, we have
@@ -999,7 +1060,7 @@ q & p & p & q \\
 \end{bmatrix}.
 \end{equation*}
 
-The inverse of $(I-M(z))^{-1}$ is
+The inverse of $I-M(z)$ is
 
 \begin{equation*}
 \frac{1}{\lambda(z)} \left[
@@ -1021,11 +1082,16 @@ sequences of nucleotides without \texttt{CG} comes out as
 \frac{4}{4-4z+(pz)^2}.
 \end{equation}
 
+Getting to this weighted generating function was not straightforward, but
+the expression is relatively simple. This is commonly the case when taking
+the analytic combinatorics route: approaches that first look contrived and
+counter-intuitive eventually lead to simple results.
+
 In this section we have seen that transfer matrices allow us to find the
 weighted generating functions of potentially intricate sequences of
 combinatorial objects. In the next section we will see how we can compute
-the probabilities of such sequences from their weighted generating
-function.
+the probabilities of occurrence of such sequences from their weighted
+generating function.
 
 
 
@@ -1047,9 +1113,9 @@ Let $W(z)$ be a weighted generating function. The expression
 \begin{equation*}
 [z^k]W(z)
 \end{equation*}
-stands for the \textbf{coefficient of $z^k$ in $W$} and is equal to $a_k$,
-assuming that $W(z) = \sum_{k=1}^\infty a_k z^k$ on some neighborhood of
-$0$.
+is called the \textbf{coefficient of $z^k$ in $W$} and is equal to $a_k$,
+assuming that $W(z) = \sum_{k=1}^\infty a_k z^k$ in some neighborhood of
+$z = 0$.
 \end{definition}
 
 The coefficient of $z^k$ in a weighted generating function is usually a
@@ -1067,7 +1133,7 @@ field~\cite{flajolet1990singularity}.
 \begin{proposition}
 \label{th:ass}
 If a function $W(z)$ is the ratio of two polynomials $P(z)/Q(z)$, and $Q$
-has only simple roots with distinct \textit{moduli}, then
+has only simple roots, then
 
 \begin{equation}
 \label{eq:ass}
@@ -1143,7 +1209,7 @@ Substituting the expression above in (\ref{eq:P/Q}), we obtain
 \end{equation}
 
 Since $z_1$ is the root with smallest \textit{modulus}, the sum above is
-dominated by the term $1/z_1^{k+1}$ as $k$ increases, so the coefficient
+dominated by the term $z_1^{-k-1}$ as $k$ increases, so the coefficient
 of $z^k$ in $W(z)$ is asymptotically equivalent to
 
 \begin{equation*}
@@ -1249,7 +1315,7 @@ follows: $(i)$ define simple objects associated with simple generating
 functions, $(ii)$ combine these objects into more complex structures,
 $(iii)$ translate those combinations into more complex generating
 functions, and $(iv)$ extract coefficients using approximation theorems
-such as use proposition~\ref{th:ass}.
+such as proposition~\ref{th:ass}.
 
 
 
@@ -1277,17 +1343,18 @@ the molecule but not in the read, and an insertion is a nucleotide that is
 absent in the molecule but present in the read.
 
 For our purpose, the focus is not the nucleotide sequence \textit{per se},
-but whether the nucleotides correct. Thus, we need only four symbols to
-describe a read: one for each type or error, plus one for correct
-nucleotides In thiw view, a read is a finite sequence of letters from an
+but whether the nucleotides are correct. Thus, we need only four symbols
+to describe a read: one for each type or error, plus one for correct
+nucleotides. In this view, a read is a finite sequence of letters from an
 alphabet of four symbols.
 
 Errors in the read are initially unknown. In practice, the only way to
 detect them is to align the read with the reference sequence in order to
 highlight the differences. This operation may be difficult to perform,
-especially if the read has many errors. But here, we are only concerned
-with computing the probabilities of occurrence of certain reads, so we
-will assume that the errors are known. 
+especially if the read has many errors. While exposing the theory, it will
+sometimes seem that the errors are known before aligning the read. Such
+cases will serve illustrative and didactic purposes, but they never occur
+in practice.
 
 A read can be seen as a sequence of symbols. Figure~\ref{fig:sketchseed}
 shows the typical structure of a read, together with the symbols that we
@@ -1297,7 +1364,7 @@ insertions.
 \begin{figure}[h]
 \centering
 \includegraphics[scale=0.88]{sketch_seeding.pdf}
-\caption{\textbf{Read as sequence of error symbols}. Reads consist of
+\caption{\textbf{Read as sequence of symbols}. Reads consist of
 correct nucleotides (white boxes), substitutions (black boxes), deletions
 (vertical bars) and insertions (grey boxes).}
 \label{fig:sketchseed}
@@ -1317,17 +1384,16 @@ cannot be extended left or right.
 Instead of sequences of symbols, reads can be seen as sequences of either
 error-free intervals or error symbols (see
 figure~\ref{fig:sketchseed_interval}). We will use this construction
-throughout section~\ref{sec:seeding}. It will allow us to control the size
-of the largest error-free interval (see below).
+throughout section~\ref{sec:seeding}. As developed below, this will allow
+us to control the size of the largest error-free interval.
 
 \begin{figure}[h]
 \centering
 \includegraphics[scale=0.88]{sketch_seeding_error_free_intervals.pdf}
 \caption{\textbf{Read as sequence of error-free intervals or error
-symbols}.
-Consecutive correct nucleotides can be lumped together in error-free
-intervals. There is a unique representation of a read as a sequence of
-either error-free inetervals or error symbols. The error-free intervals
+symbols}. Consecutive correct nucleotides can be lumped together in
+error-free intervals. The representation of a read as a sequence of either
+error-free inetervals or error symbols is unique. The error-free intervals
 are highlighted in this example, together with their size.}
 \label{fig:sketchseed_interval}
 \end{figure}
@@ -1339,12 +1405,11 @@ of occurrence using the results of section~\ref{sec:anal}.
 
 \subsection{Exact seeds}
 
-After sequencing, one of the most common operations is to map the
-reads in a reference genome, \textit{i.e.} find the identity of the
-fragment that was sequenced from a list of candidates. The exact search
-problem can be solved efficiently, provided the right indexing data
-structures are available, but sequencing errors make the task more
-difficult. 
+One of the most common operations is to map the sequenced reads in a
+reference genome, \textit{i.e.} find the identity of the fragment that was
+sequenced. The exact search problem can be solved efficiently, provided
+the right indexing data structures are available, but sequencing errors
+make the task more difficult. 
 
 In most mapping algorithms, the search starts by looking for perfect
 matches between a fragment of the read and a sequence from the genome.
@@ -1353,12 +1418,11 @@ of the search space in order to focus on a few promising candidate
 sequences.
 
 This strategy greatly accelerates the mapping process, but it is not
-failsafe. Seeds are useful only if they are error-free; otherwise they
-will either match nothing, or match the wrong sequence. This means that
-error-free intervals hold the key to the problem. If there exists a long
-enough error-free interval, it may be used as a seed to find the identity
-of the read. Here we will use a definition of ``seed'' that correspondso
-to this intuition.
+failsafe. Because of sequencing errors, it could be that no seed is found,
+or worse, that a match is found at the wrong location of the genome. Thus,
+error-free intervals hold the key to the problem. If the read contains a
+long enough error-free interval, it may be used as a seed. We will
+use a definition of ``seed'' that corresponds to this intuition.
 
 \begin{definition}
 \label{def:seed}
@@ -1367,23 +1431,24 @@ $\gamma$.
 \end{definition}
 
 \begin{remark}
-In what follows, we will often refer to an ``exact $\gamma$-seed'' as a
-``seed'' when the concrete value of $\gamma$ is either clear from the
-context or irrelevant.
+In what follows, we will often refer to an ``exact $\gamma$-seed'' as an
+``exact seed'' or as a ``seed'' when the concrete value of $\gamma$ is
+either clear from the context or irrelevant.
 \end{remark}
 
-The main goal of section~\ref{sec:seeding} is to develop models to
-estimate the probability that a read contains an exact  $\gamma$-seed. Our
-strategy is to construct the weighted generating functions of reads that
-\emph{do not} contain any exact $\gamma$-seed. For this, we will decompose
-such reads as sequences of either error symbols or error-free intervals
-of size less than $\gamma$. We will obtain their weighted generating
-functions from proposition~\ref{th:HBT} and use proposition~\ref{th:ass}
-to approximate their probability of occurrence.
+The main goal of section~\ref{sec:seeding} is to construct estimators of
+the probability that a read contains an exact  $\gamma$-seed, based on our
+knowledge of the typical sequencing errors. Our strategy is to construct
+the weighted generating functions of reads that \emph{do not} contain any
+exact $\gamma$-seed. For this, we will decompose such reads as sequences
+of either error symbols or error-free intervals of size less than
+$\gamma$. We will obtain their weighted generating functions from
+proposition~\ref{th:HBT} and use proposition~\ref{th:ass} to approximate
+their probability of occurrence.
 
 We will find the weighted generating function of all the reads $R(z)$, and
 then the weighted generating function of reads without exact
-$\gamma$-seeds $S_\gamma(z)$. The probability that a read of size $k$ has
+$\gamma$-seed $S_\gamma(z)$. The probability that a read of size $k$ has
 no exact $\gamma$-seed will then be equal to the total weight of reads of
 size $k$ without seed, divided by the total weight of reads of size $k$,
 \textit{i.e.}
@@ -1395,7 +1460,7 @@ size $k$ without seed, divided by the total weight of reads of size $k$,
 
 To introduce the concepts progressively, we will first describe simplified
 models where some types of errors are disallowed, and gradually
-increase the complexity towards the model with all error types.
+increase the complexity towards a model with all error types.
 
 
 
@@ -1410,17 +1475,18 @@ In the simplest model, we assume that errors can be only substitutions,
 and that they occur with the same probability $p$ for every nucleotide. We
 will refer to this model as the ``uniform substitutions error model''. Due
 to its simplicity, we will be able to go at greater depth and obtain more
-advanced results with this model (especially in the later sections).
-Importantly, the model is not overly simple and it has some real practical
-applications. For instance, it describes reasonably well the error model
-of the Illumina platforms (where $p$ is around $0.01$).
+advanced results with this model (especially in
+section~\ref{sec:advanced}). Importantly, the model is not overly simple
+and it has some real practical applications. For instance, it describes
+reasonably well the error model of the Illumina platforms, where $p$ is
+around $0.01$~\cite{pmid21576222}.
 
 We will first use proposition~\ref{th:HBT} to obtain the weighted
 generating function $R(z)$ of all reads under this error model, from which
-we are going to deduce the weighted generating function $S_\gamma(z)$ of
-reads without exact $\gamma$-seeds. We will then use
-proposition~\ref{th:ass} to derive an approximation formula for the
-probability that a read does not contain exact $\gamma$-seeds.
+we will deduce the weighted generating function $S_\gamma(z)$ of reads
+without exact $\gamma$-seed. We will then use proposition~\ref{th:ass} to
+derive an approximation formula for the probability that a read does not
+contain exact $\gamma$-seed.
 
 Under the uniform substitutions model, reads are sequences of either
 substitutions or error-free intervals. They can be thought of as a walk on
@@ -1481,14 +1547,14 @@ M(z) =
 A read can start with an error-free interval or with a substitution, so
 the head vector $H(z)$ is equal to $(F(z), pz)^\top$. Similarly, a read
 can end with an error free interval or with a substitution, so the tail
-vector $T(z)$ is equal to $(1,1)^\top$. Here $\psi(z) = 1$, as the only
-read excluded by our definition is the empty sequence $\varepsilon$.
-Applying proposition~\ref{th:HBT}, the weighted generating function of
-reads is $R(z) = \psi(z) + (F(z), pz)^\top \cdot (I-M(z))^{-1} \cdot
-T(z)$, or
+vector $T(z)$ is equal to $(1,1)^\top$. Here $\psi(z) = 1$, as we still
+need to include reads of size $0$, \textit{i.e.} the empty sequence
+$\varepsilon$. Applying proposition~\ref{th:HBT}, the weighted generating
+function of reads is $R(z) = \psi(z) + (F(z), pz)^\top \cdot (I-M(z))^{-1}
+\cdot T(z)$, or
 
 \begin{equation*}
-R(z) = 1 + [F(z) \; pz] \cdot
+R(z) = 1 + [F(z), pz] \cdot
 \frac{1}{\lambda(z)}
 \begin{bmatrix}
 1-pz & pz   \\
@@ -1506,10 +1572,10 @@ R(z) = \frac{1+F(z)}{1-pz(1+F(z))} = \frac{1}{1-z}.
 
 Since $1/(1-z) = 1+z+z^2 + \ldots$, this means that for any $k \geq 0$,
 the total weight of reads of size $k$ is equal to $1$. As a consequence,
-ratio (\ref{eq:THEratio}) reduces to $[z^k]S_\gamma(z)$.
+ratio (\ref{eq:THEratio}) reduces to the numerator $[z^k]S_\gamma(z)$.
 
-To find the weighted generating function of reads without any exact
-$\gamma$-seeds, we need to limit error-free intervals to a maximum size of
+To find the weighted generating function of reads without exact
+$\gamma$-seed, we need to limit error-free intervals to a maximum size of
 $\gamma-1$. To do this, we can replace $F(z)$ in (\ref{eq:Rsub}) by its
 truncation $F_\gamma(z) = qz + (qz)^2 + \ldots + (qz)^{\gamma-1}$. We
 obtain
@@ -1524,36 +1590,37 @@ S_\gamma(z) = \frac{1+F_\gamma(z)}{1-pz\big( 1+F_\gamma(z) \big)} =
 \begin{remark}
 Viewing reads as sequences of either error-free intervals or substitutions
 was important to obtain the weighted generating function of reads without
-seeds. It allowed us to just replace $F(z)$ by $F_\gamma(z)$ to find the
-expression immediately.
+seed: it allowed us to just replace $F(z)$ by $F_\gamma(z)$ in order to
+find the expression immediately.
 \end{remark}
 
-The task is now to extract the coefficient of $z^k$ in $S_\gamma(z)$. As
-explained in section~\ref{sec:asest}, we look for an asymptotic estimate
-using proposition~\ref{th:ass}. For this, we need to find the
-singularities of $S_\gamma(z)$.
+To compute ratio (\ref{eq:THEratio}) we now need to compute the
+coefficient of $z^k$ in $S_\gamma(z)$. As explained in
+section~\ref{sec:asest}, we extract an asymptotic estimate of it using
+proposition~\ref{th:ass}. For this, we need to find the singularities of
+$S_\gamma(z)$.
 
 It is interesting to look in detail into the problem of finding the
-singularities of $S_\gamma(z)$. To higlight some general features of the
-problem, we start with a concrete case. The left panel of
-Figure~\ref{fig:plotQ} shows the values of the denominator of
-$S_\gamma(z)$ with $p=0.1$ and $\gamma=17$. $S_{17}$ has one real root
-greater than $1$.  The remaining singularities of $S_{17}$ are complex and
-they seem to be evenly spaced on the same circle, as can be seen on the
-right panel of Figure~\ref{fig:plotQ}.  This is only a visual impression.
-In fact the singularities are not exactly on the same circle and their
-rotation angles are not exactly regular.
+singularities of $S_\gamma(z)$. For simplicity, we start with a concrete
+case. The left panel of figure~\ref{fig:plotQ} shows the values of the
+denominator of $S_\gamma(z)$ with $p=0.1$ and $\gamma=17$. $S_{17}$ has
+one real root greater than $1$.  The remaining singularities of $S_{17}$
+are complex and seem to be evenly spaced on a circle, as can be seen on
+the right panel of figure~\ref{fig:plotQ}. This is only a visual
+impression. In fact the singularities do not lie on a perfect circle and
+their rotation angles are not exactly regular.
 
 \begin{figure}[h]
 \centering
 \includegraphics[scale=0.4]{singularityS.pdf}
 \caption{\textbf{Singularities of $S_{17}$}. $Q(z)$ denotes the
 denominator of $S_{17}(z)$ from expression (\ref{eq:Sp}) with $p=0.1$ and
-$\gamma=17$. \textit{Left}: The value of $Q(z)$ is represented for $z$
-real by the bold line. \textit{Right}: The value of $|1/Q(z)|$ is
-represented for $z$ complex by the heat map on the complex plane. Darker
-pixels correspond to higher values. Sixteen singularities of $S_{17}$ lie
-close to a circle. The remaining seventeenth is the one shown on the left
+$\gamma=17$. \textit{Left}: The values of $Q(z)$ are represented as a bold
+line for $z$ real. \textit{Right}: The values of $|1/Q(z)|$ are
+represented for $z$ complex by the heat map on the complex plane (the
+numbers indicate the real and imaginary parts of $z$). Darker pixels
+correspond to higher values. Sixteen singularities of $S_{17}$ lie close
+to a circle. The remaining seventeenth is the one that appears on the left
 panel. It is the dominant singularity because it is the closest to the
 origin.}
 \label{fig:plotQ}
@@ -1561,14 +1628,15 @@ origin.}
 
 It is ``fortunate'' that the dominant root of $S_{17}$ is a real number
 because we can use efficient numerical methods to approximate it
-(\textit{e.g.} bisection or the Newton-Raphson method). The following
+(\textit{e.g.} bisection or Newton-Raphson method). The following
 proposition shows that this is no accident: the dominant singularity of
 $S_\gamma$ is always a real positive number greater than $1$.
 
 \begin{proposition}
 \label{th:roots}
-$S_\gamma$ as expressed in (\ref{eq:Sp}) has exactly one positive real
-singularity. This is the dominant singularity and it is greater than $1$.
+For $0 < p < 1$, $q = 1-p$ and $\gamma \geq 1$, $S_\gamma$ as expressed in
+(\ref{eq:Sp}) has exactly one positive real singularity. This is the
+dominant singularity and it is greater than $1$.
 \end{proposition}
 
 \begin{proof}
@@ -1577,12 +1645,12 @@ $Q(z) = 1-pz(1+qz+\ldots+(qz)^{\gamma-1})$.
 First, we show that $Q$ has exactly one positive real root greater than
 $1$. For real $z > 0$, $pz$ and $1+qz+\ldots+(qz)^{\gamma-1}$ are strictly
 increasing, so $Q(z)$ is strictly decreasing. Since $Q(1) = q^d > 0$ there
-is no root in the interval $(0,1)$ and since $\lim_{z\rightarrow \infty}
+is no root in the interval $(0,1)$. Since $\lim_{z\rightarrow \infty}
 Q(z) = -\infty$, $Q$ vanishes for a real number greater than $1$.
 
 Second, we show that this is the root with smallest \textit{modulus}.
-Express the complex roots of $Q$ as $Re^{i\theta}$. They satisfy the
-equation
+Express the complex roots of $Q$ as $Re^{i\theta}$, with $R > 0$ and $0
+\leq \theta < 2\pi$. They satisfy the equation
 
 \begin{equation*}
 1-pRe^{i\theta}\frac{1-q^\gamma R^\gamma
@@ -1673,10 +1741,10 @@ is much higher for $k=100$.
 \includegraphics[scale=0.445]{simulp.pdf}
 \caption{\textbf{Example estimates for substitutions only}. The analytic
 combinatorics estimates of proposition~\ref{th:p} are benchmarked against
-random simulations. Shown on both panels are the probablities that a read
+random simulations. Shown on both panels are the probabilities that a read
 of given size contains a seed, either estimated by 10,000,000 random
-simulations (dots), or by the method described above (lines). The curves
-are drawn for $\gamma=17$ and $p=0.08$, $p=0.10$ or $p=0.12$ (from top to
+simulations (dots), or by proposition~\ref{th:p} (lines). The curves are
+drawn for $\gamma=17$ and $p=0.08$, $p=0.10$ or $p=0.12$ (from top to
 bottom).}
 \label{fig:simulp}
 \end{figure}
@@ -1693,7 +1761,7 @@ for different values of the error rate $p$ and of the read size $k$.
 \label{sec:deletions}
 
 To not jump too fast into the difficulties, we will now describe a
-semi-realistic model where errors can be deletions or susbtitutions, but
+semi-realistic model where errors can be deletions or substitutions, but
 not insertions. As in the case of uniform substitutions, we assume that
 every nucletoide call is false with a probability $p$ and true with a
 probability $1-p=q$. Here, we also assume that the ``space''  between
@@ -1763,7 +1831,7 @@ Applying proposition~\ref{th:HBT} yields
 
 \begin{equation*}
 R(z) = (I-M(z))^{-1} =
-1 + [F(z) \; pz] \cdot \frac{1}{\lambda(z)}
+1 + [F(z), pz] \cdot \frac{1}{\lambda(z)}
 \begin{bmatrix}
 1-pz  & pz              \\
 F(z) & 1 -\delta F(z)
@@ -1781,15 +1849,16 @@ R(z) = \frac{1+(1-\delta)F(z)} {1-pz - \big(pz(1-\delta) + \delta\big)F(z)}
 
 As in section~\ref{sec:substitutions} the result is $1/(1-z) = 1+z +z^2 +
 \ldots$, which means that the total weight of reads of size $k$ is equal
-to $1$ for every $k \geq 0$. This means that ratio (\ref{eq:THEratio})
-reduces one again to $[z^k]S_\gamma(z)$.
+to $1$ for every $k \geq 0$. This also means that ratio
+(\ref{eq:THEratio}) reduces once again to its numerator
+$[z^k]S_\gamma(z)$.
 
-To find the weighted generating function of reads without any exact
-$\gamma$-seeds, we need to bound the size of error-free intervals to a
+To find the weighted generating function of reads without exact
+$\gamma$-seed, we need to bound the size of error-free intervals to a
 maximum of $\gamma-1$, \textit{i.e.} to replace $F(z)$ by its truncation
 $F_\gamma(z) = qz + (1-\delta)(qz)^2 + \ldots +
-(1-\delta)^{\gamma-2}(qz)^{\gamma-1}$. With this definition, the weighted
-generating function of seedless reads is
+(1-\delta)^{\gamma-2}(qz)^{\gamma-1}$. With this, the weighted generating
+function of reads without seed is
 
 \begin{equation}
 \label{eq:Sdel}
@@ -1833,7 +1902,7 @@ how the calculations are done in practice.
 
 \begin{example}
 \label{ex:num2}
-Let us approximate the probablity that a read of size $k = 100$ has
+Let us approximate the probability that a read of size $k = 100$ has
 no seed for $\gamma=17$, $p = 0.05$ and $\delta = 0.15$. To find
 the dominant singularity of $S_{17}$ we solve $1-0.05z -
 \big(0.0425z + 0.15\big) \big(0.95z+0.85(0.95z)^2 + \ldots +
@@ -1854,7 +1923,7 @@ $0.55813-0.55816$.
 \caption{\textbf{Example estimates for substitutions and deletions}. The
 analytic combinatorics estimates of proposition~\ref{th:pd} are
 benchmarked against random simulations. Shown on both panels are the
-probablities that a read of given size contains a seed, either estimated
+probabilities that a read of given size contains a seed, either estimated
 by 10,000,000 random simulations (dots), or by proposition~\ref{th:pd}
 (lines). The curves are drawn for $\gamma=17$, $p=0.05$ and $\delta=0.14$,
 $\delta=0.15$ or $\delta=0.16$ (from top to bottom).}
@@ -1889,14 +1958,14 @@ size $0$).
 To model insertion bursts, we need to assign a probability $r$ to the
 first insertion, and a probability $\tilde{r} > r$ to all subsequent
 insertions of the burst. We will still denote the probability of a
-substitution $p$ and that of a correct call $q$, but here $p+q+r=1$. We
-will also assume that an insertion burst stops with probability
+substitution $p$ and that of a correct nucleotide $q$, but here $p+q+r=1$.
+We will also assume that an insertion burst stops with probability
 $1-\tilde{r}$ at each position of the burst.
 
 Under this error model, reads can be thought of as a walk on the graph
 shown in figure~\ref{fig:insertions}. The symbols $\Delta_0$, $S$ and $I$
 stand for error-free intervals, single substitutions and single
-insertions, respectively. The body of the graph is represently separately
+insertions, respectively. The body of the graph is represented separately
 from the head and tail vertices to avoid overloading the figure.
 
 The terms $F(z)$, $pz$ and $\delta F(z)$ are the same as in
@@ -1962,8 +2031,7 @@ $\psi(z)+H(z)^\top \cdot (I-M(z))^{-1} \cdot T(z)$, which is equal to
 \begin{equation}
 \label{eq:Rindel}
 R(z) = \frac{(1-r)\big( 1-(\tilde{r}-r)z \big)
-\left(1+(1-\delta)F(z) \right)}{1-a(z)-b(z)F(z)}
-= \frac{1}{1-z},
+\left(1+(1-\delta)F(z) \right)}{1-a(z)-b(z)F(z)},
 \end{equation}
 where $a(z)$ and $b(z)$ are second degree polynomials defined as
 
@@ -1977,13 +2045,20 @@ b(z) = \delta(1-r) +
 \notag
 \end{gather}
 
+Substituting in (\ref{eq:Rindel}) the expressions of $F(z)$, $a(z)$ and
+$b(z)$, the terms cancel out and we find
 
-Again, the terms cancel out and we obtain the simple expression $1/(1-z) =
+\begin{equation}
+R(z) = \frac{1}{1-z}.
+\end{equation}
+
+
+Again, we obtain the simple expression $1/(1-z) =
 1+z+z^2 + \ldots$ where all the coefficients are equal to $1$. This means
-that once again, ratio (\ref{eq:THEratio}) reduces to $[z^k]S_\gamma(z)$.
-To find the weighted generating function of reads without exact
-$\gamma$-seed, we replace $F(z)$ in expression (\ref{eq:Rindel}) by its
-truncated version
+that once again, ratio (\ref{eq:THEratio}) reduces to the numerator
+$[z^k]S_\gamma(z)$. To find the weighted generating function of reads
+without exact $\gamma$-seed, we replace $F(z)$ in expression
+(\ref{eq:Rindel}) by its truncated version
 
 \begin{equation*}
 F_\gamma(z) = qz + (1-\delta)(qz)^2 + (1-\delta)^2(qz)^3 + \ldots +
@@ -2042,16 +2117,16 @@ $1-a(z)-b(z)F_\gamma(z) = 1-a(z)-b(z)\big(qz+(1-\delta)(qz)^2 + \ldots +
 
 \begin{equation*}
 c_1 = (1-(\tilde{r}-r)z_1)
-   \frac{1-\big((1-\delta)(qz)\big)^\gamma}{1-(1-\delta)qz}
+   \frac{1-\big((1-\delta)(qz_1)\big)^\gamma}{1-(1-\delta)qz_1}
 \end{equation*}
 and
 \begin{equation*}
 \begin{split}
 c_2 = a'(z_1) &- \left( b'(z_1) +
-\frac{(1-\delta)q}{1-(1-\delta)qz}\right)
-\frac{qz-(1-\delta)^{\gamma-1}(qz)^\gamma}{1-(1-\delta)qz} \\
+\frac{(1-\delta)q}{1-(1-\delta)qz_1}\right)
+\frac{qz_1-(1-\delta)^{\gamma-1}(qz_1)^\gamma}{1-(1-\delta)qz_1} \\
 &+b(z_1) \frac{q-\gamma(1-\delta)^{\gamma-1}q^\gamma
-z^{\gamma-1}}{1-(1-\delta)qz}.
+z_1^{\gamma-1}}{1-(1-\delta)qz_1}.
 \end{split}
 \end{equation*}
 \end{proposition}
@@ -2062,10 +2137,9 @@ explaining how the calculations are done in practice.
 \begin{example}
 \label{ex:num3}
 Let us approximate the probability that a read of size $k=100$ has no seed
-for $\gamma=17$, $p=0.05$, $\delta=0.15$, $r=0.05$ and
-$\tilde{r}=0.45$. With these values, $a(z) = 0.05 +0.475z -0.02z^2$ and
-$b(z) = 0.1425 + 0.00375z-0.017z^2$. We need to solve $0.95-0.475z+0.02z^2
-- (0.1425
+for $\gamma=17$, $p=0.05$, $\delta=0.15$, $r=0.05$ and $\tilde{r}=0.45$.
+With these values, $a(z) = 0.05 +0.475z -0.02z^2$ and $b(z) = 0.1425 +
+0.00375z-0.017z^2$. We need to solve $0.95-0.475z+0.02z^2 - (0.1425
 +0.00375z-0.017z^2)(0.9z+0.85(0.9z)^2+\ldots+0.85^{15}(0.9z)^{16}) = 0$.
 We rewrite the equation as $0.95-0.475z+0.02z^2 - (0.1425
 +0.00375z-0.017z^2)(0.9z-0.85^{15}(0.9z)^{16})/(1-0.765z) = 0$ and use
@@ -2091,7 +2165,7 @@ insertions}. The analytic combinatorics estimates of
 proposition~\ref{th:pins} are benchmarked against random simulations.
 Shown on both panels are the probablities that a read of given size
 contains a seed, either estimated by 10,000,000 random simulations (dots),
-or by the method described above (lines). The curves are drawn for
+or by proposition~\ref{th:pins} (lines). The curves are drawn for
 $\gamma=17$, $p=0.05$, $\delta=0.15$, $\tilde{r} = 0.45$ and $r=0.04$,
 $r=0.05$ or $r=0.06$ (from top to bottom).}
 \label{fig:simulpins}
@@ -2112,13 +2186,14 @@ perfect seed, only their distribution matters.
 
 An important consequence is that we can develop custom error models based
 on empirical estimates of the error distribution. This option is not only
-valid for modeling sequencing errors, but also for modeling mutations
-occurring through biological processes.
+valid for modeling sequencing errors, but also for modeling differences
+occurring through biological processes, such as mutations or
+macroevolution.
 
 We introduce error-only intervals, which will encapsulate the available
 information about the size of error patches. Treating deletions separately
 will allow us to simplify the exposition, so we will consider that
-error-only intervals are always be non-empty.
+error-only intervals are always non-empty.
 
 \begin{definition}
 \label{def:error-interval}
@@ -2128,10 +2203,10 @@ cannot be extended left or right.
 
 We assume that every nucleotide has a constant probability $q$ of being
 correct. With probability $p = 1-q$, the nucleotide is incorrect and thus
-starts an error-only interval. If  $p_k$ is the empirical probability that
-the error-only interval has size $k$ for $1 \leq k \leq n$, we can write
-the weighted generating function of error intervals as $pE(z)$, where
-$E(z) = p_1z + p_2z^2 + \ldots + p_nz^n$.
+initiates an error-only interval. If  $p_k$ is the empirical probability
+that the error-only interval has size $k$ for $1 \leq k \leq n$, we can
+write the weighted generating function of error-only intervals as $pE(z)$,
+where $E(z) = p_1z + p_2z^2 + \ldots + p_nz^n$.
 
 The weighted generating function of deletions is denoted $\delta$ for
 consistency with the previous sections. As before, we will ignore
@@ -2177,7 +2252,7 @@ Computing $\psi(z) + H(z)^\top \cdot (I-M(z))^{-1} \cdot T(z)$ as per
 proposition~\ref{th:HBT} yields
 
 \begin{equation*}
-1+[F(z) \; pE(z)] \cdot \frac{1}{1-F(z)(\delta+pE(z))} \cdot
+1+[F(z), pE(z)] \cdot \frac{1}{1-F(z)(\delta+pE(z))} \cdot
 \begin{bmatrix}
 1    & pE(z) \\
 F(z) & 1-\delta F(z)
@@ -2224,14 +2299,14 @@ As in the previous sections, to find the weighted generating function of
 reads without an exact $\gamma$-seeds, we need to replace $F(z)$ in
 expression (\ref{eq:Remp0}) by its truncation $F_\gamma(z) = qz +
 (1-\delta)(qz)^2 + \ldots + (1-\delta)^{\gamma-2}(qz)^{\gamma-1}$. The
-terms only partially cancel each other and we obtain
+terms only partially cancel out and we obtain
 
 \begin{equation}
 \label{eq:Semp}
 S_\gamma(z) = \frac{\big(1+pE(z)\big)
 \big( 1-(1-\delta)^\gamma(qz)^\gamma \big)}
-{1-(1-\delta)qz-qz\big(1-(1-\delta)^{\gamma-1}(qz)^{\gamma-1}\big)
-\big(\delta+pE(z)\big) }.
+{1-qz\big(1+pE(z)\big)
++(1-\delta)^{\gamma-1}(qz)^\gamma\big(\delta+pE(z)\big)}.
 \end{equation}
 
 \begin{remark}
@@ -2248,12 +2323,12 @@ From this expression, it is clear that replacing $F(z)$ by its truncation
 $F_\gamma(z)$ decreases the coefficient of $z^k$ (recall that all the
 weights are positive). This is equivalent to $[z^k]R(z) \geq
 [z^k]S_\gamma(z)$, confirming that the probability of occurrence of reads
-without seeds is always less than or equal to $1$.
+without seed is always less than or equal to $1$.
 \end{remark}
 
-To estimate the total weight of seedless reads, we need to find the root
-with smallest \textit{modulus} of $1-qz\big(1+E(z)\big) +
-(1-\delta)^{\gamma-1}(qz)^{\gamma-1}\big(\delta+E(z)\big)$. The solution
+To estimate the total weight of reads without seed, we need to find the
+root with smallest \textit{modulus} of $1-qz\big(1+pE(z)\big) +
+(1-\delta)^{\gamma-1}(qz)^\gamma\big(\delta+pE(z)\big)$. The solution
 depends on the particular expression of $E(z)$. Even though the process
 can be automated using proposition~\ref{th:ass}, every case is different
 and we cannot give an explicit formula here.
@@ -2279,8 +2354,11 @@ $1.008754$. The multiplicative constant of proposition~\ref{th:ass} is
 approximately equal to $0.962590$, so the total weight of reads of size
 $k$ is approximately equal to $0.962590 / 1.008754^{k+1}$.
 
-Similary, the weighted generating function of reads without seeds from
-expression (\ref{eq:Semp}) becomes
+The denominator of (\ref{eq:Semp}) can be expressed in the form that is
+simpler to compute
+$1-(1-\delta)qz-qz\big(1-(1-\delta)^{\gamma-1}(qz)^{\gamma-1}\big)
+\big(\delta+pE(z)\big)$. The weighted generating function of reads without
+seed becomes
 
 \begin{equation*}
 S_{17}(z) = \frac{\big(1+0.1(0.5z +0.33z^2+0.17z^3)\big)
@@ -2289,14 +2367,17 @@ S_{17}(z) = \frac{\big(1+0.1(0.5z +0.33z^2+0.17z^3)\big)
 \end{equation*}
 
 The smallest root of the denominator is approximately $0.0122100$. The
-ultiplicative constant of proposition~\ref{th:ass} is approximately
-equal to $0.949377$. So the total weight of seedless reads of size $k$ is
+multiplicative constant of proposition~\ref{th:ass} is approximately
+equal to $0.949377$. So the total weight of reads  without seed is
 approximately equal to $0.949377 / 1.012098^{k+1}$.
 
 Combining these two results, the probability that a read of size $k$ has
 no seed is the ratio of the total weights computed above. This is
 approximately equal to $0.9862735 / 1.003315^{k+1}$.
 \end{example}
+
+
+
 
 
 \subsection{Worst case for approximations}
@@ -2311,11 +2392,12 @@ true values?
 To find out, we need to describe the behavior of the estimates in the
 worst conditions. The approximations become more accurate as the size of
 the sequence increases, \textit{i.e.} as the reads become longer. This is
-somewhat awkward, as the read size is usually fixed by the technology or
-by the problem at hand. Still, the approximations described above tend to
-be less accurate for short reads.
+somewhat inconvenient: the read size is usually fixed by the technology or
+by the problem at hand, so the user does not have easy ways to improve the
+accuracy. Overall, the approximations described above just tend to be less
+accurate for short reads.
 
-The second aspect is convergence speed. In propositions~\ref{th:ass} it
+The second aspect is convergence speed. In proposition~\ref{th:ass} it
 was shown that the rate of convergence is dominated by the ratio between
 the two smallest singularities of the weighted generating function. This
 means that convergence is fastest when the dominant singularity is
@@ -2378,28 +2460,29 @@ suggested in the previous sections.
 \caption{\textbf{Example worst case for seeding with substitutions only}.
 The analytic combinatorics estimates of proposition~\ref{th:p} are
 benchmarked against 10,000,000 random simulations. Shown on both panels
-are the probablities that a read of given size contains a seed of size
-$d=17$, either estimated by random simulations (dots), or by the estimate
-derived in section~\ref{sec:substitutions}. The curves are drawn for
-$p=0.005$, $p=0.010$ or $p=0.015$ (from top to bottom). The largest
-difference between the estimates and the simulations is around $0.01$.}
+are the probabilities that a read of given size contains a seed of size
+$\gamma=17$, either estimated by random simulations (dots), or by
+proposition~\ref{th:p}. The curves are drawn for $p=0.005$, $p=0.010$ or
+$p=0.015$ (from top to bottom). The largest difference between the
+estimates and the simulations is around $0.015$.}
 \label{fig:illumina}
 \end{figure}
 
 Figure~\ref{fig:illumina} shows the accuracy of the estimates in one of
 the worst cases. The curve is clearly distinct from the simulation at the
 chosen scale, but the absolute difference is never higher than
-approximately $0.01$ (and lower for read sizes above $40$). Whether this
-error is acceptable depends on the problem. Very often, $p$ is known to
-within approximately $0.01$, which is a more serious limitation on the
-precision. In most practical applications, the approximation error of
+approximately $0.015$ (and lower for read sizes above $40$). Whether this
+error is acceptable depends on the problem. Very often, the error on the
+measure of $p$ is $\pm 0.01$ or greater, which is a more serious
+limitation on the precision than the convergence speed of the estimates.
+In most practical applications, the approximation error of
 proposition~\ref{th:ass} can be tolerated even in the worst case, but it
 is important to bear in mind that it may not be totally negligible for
 reads of size $50$ or lower.
 
 If precision is crucial, remember that the exact solution can be found by
 using all the singularities of the weighted generating function $S_\gamma$
-(see remark~\ref{rem:exact}). If computatonal speed is an issue, the
+(see remark~\ref{rem:exact}). If computational speed is an issue, the
 singularities and associated proportionality constants can be precomputed
 for a range of values of $p$ and $\gamma$.
 
@@ -2407,13 +2490,13 @@ for a range of values of $p$ and $\gamma$.
 
 \subsection{Oversimplified error models}
 
-It is tempting to replace the somewhat complex error models of
-sections~\ref{sec:deletions} and \ref{sec:insertions} by the uniform
-subsitutions model of section~\ref{sec:substitutions} with an equivalent
-error rate. An intuitive approach would be to set the only parameter
-$q = 1-p$ of this model to the value of $q(1-\delta)$ of the more complex
-ones, because those represent the probability of decoding a nucleotide
-without error.
+It may be tempting to replace the somewhat complex error models of
+sections~\ref{sec:deletions} and \ref{sec:insertions} by the simpler
+uniform subsitutions model of section~\ref{sec:substitutions} with an
+equivalent error rate. An intuitive approach would be to set the only
+parameter $q = 1-p$ of this model to the value of $q(1-\delta)$ of the
+more complex ones, because those represent the probability of decoding a
+nucleotide without error.
 
 However, this approach is inaccurate because insertions and deletions can
 have a strong influence. To show this, let us revisit
@@ -2449,7 +2532,7 @@ error. The error can be as high as $5$ percentage points.
 Shown on both panels are the probablities that a read of given size
 contains a seed. The dots are obtained by 10,000,000 random simulations of
 the full error model with $\gamma=17$, $p=0.05$, $\delta=0.15$, $\tilde{r}
-= 0.45$ and $r=0.04$, $r=0.05$ or $r=0.06$ (from top to bottom); they
+= 0.45$ and $r=0.04$, $r=0.05$ or $r=0.06$ (from top to bottom) -- they
 are the same as in figure~\ref{fig:simulp_approx}. The lines represent the
 analytic combinatorics estimates of the oversimplified uniform
 substitution model computed from proposition~\ref{th:p} with $p=0.2265$ or
@@ -2460,8 +2543,9 @@ $p=0.2350$ or $p=0.2435$ (top to bottom).}
 The conclusion is that the quality of the approximation collapses when
 using approximate error models. One may argue that an error of 5
 percentage points may be tolerable, but the actual amount of error when
-using an approximate error model is unknown in genereal. Unsing simplified
-error models is unsafe because convergence is slow (the probability that
+using an approximate error model is unknown in genereal. Using simplified
+error models is unsafe because convergence is slow (the term
+``convergence'' can still be used because the probability that
 the read contains a seed always tends to $1$ as the size increases) and
 the error cannot be controlled.
 
@@ -2486,6 +2570,7 @@ models of section~\ref{sec:deletions} or section~\ref{sec:substitutions}
 
 %%%%%%%%%%%%%%%%%% Inexact seeding %%%%%%%%%%%%%%%%%%%%%
 \section{Advanced seeding methods}
+\label{sec:advanced}
 
 Until now we have seen models of increasing complexity, but the transfer
 graphs had a fixed layout, and the weighted generating functions were
@@ -2514,10 +2599,10 @@ similar sequences. If this cost is mitigated, it may be worth searching
 inexact seeds because the chances are higher to identify the target.
 
 The theory below is implemented within the framework of the uniform
-substitution error model. Adaptations to more complex error models do not
+substitutions error model. Adaptations to more complex error models do not
 present new theoretical challengnes, but the many cases to consider make
 the models cumbersome, at the cost of concision and clarity. Let us begin
-with a definition that will simplify the the following discussion.
+with a definition that will simplify the following discussion.
 
 \begin{definition}
 A \textbf{single substitution interval} is a non-empty sequence of
@@ -2542,7 +2627,7 @@ this is something that we will have to account for explicitly.
 uniformly at random within the read. They delimit $L$-blocks and single
 substitution intervals. $L$-blocks consist of a substitution followed by
 an error-free interval. There is always a substitution on the left of an
-$L$-block, the error-free interval at the head of the read is
+$L$-block: the error-free interval at the head of the read is
 not an $L$-block. Single substitution intervals (arrows) are the longest
 stretches of the read that contain at most one sbustitution.}
 \label{fig:sketchinexact}
@@ -2575,7 +2660,7 @@ can be followed by an $L$-block with $0$ or $1$ correct nucleotide,
 \begin{figure}[h]
 \centering
 \includegraphics[scale=.79]{inexact_graph.pdf}
-\caption{\textbf{Transfer graph of reads without inexact $5$-seeds}. Reads
+\caption{\textbf{Transfer graph of reads without inexact $5$-seed}. Reads
 are viewed as sequences of $L$-blocks. To not overload the figure, the
 body of the transfer graph is shown on the left, and the head and tail
 edges are shown on the right. The labels on the vertices represent the
@@ -2586,7 +2671,7 @@ generating functions of error-free intervals of size $i = 0,1,2,3$.}
 \label{fig:inexact_graph}
 \end{figure}
 
-To give a concrete example, reads without inexact $5$-seeds can be seen as
+To give a concrete example, reads without inexact $5$-seed can be seen as
 walks on the graph shown in figure~\ref{fig:inexact_graph}. The numbers on
 the vertices indicates the amount of correct nucleotides in an $L$-block.
 There cannot be an $L$-block with $4$ or more correct nucleotides,
@@ -2595,14 +2680,14 @@ the relationships between consecutive $L$-blocks. The weighted generating
 function of $L$-blocks with $i$ correct nucleotides is designated by
 $\ell_i(z)$, for $i = 0, 1, 2, 3$.
 
-The head and tail vectors are shown on the the right part of
+The head and tail vectors are shown on the right panel of
 figure~\ref{fig:inexact_graph}. Reads can start with up to $3$ correct
 nucleotides. The weighted generating function of error-free intervals of
 size $i$ is designated $f_i(z)$, for $i = 0, 1, 2, 3$. Finally, any
 $L$-block can mark the end of the read, so all of them are connected to
-the tail vertex by $1$, the weighted generating function of the the empty
+the tail vertex by $1$, the weighted generating function of the empty
 oject $\varepsilon$. We do not need to connect the head and the tail node
-with an such an edge, because as we will see below, the empty sequence is
+with such an edge, because as we will see below, the empty sequence is
 already described by the transfer graph.
 
 The weighted generating function of an $L$-block with $i$ correct
@@ -2644,9 +2729,10 @@ M(z) =
 
 The head vector $H(z)$ is equal to $(1, qz, (qz)^2, \ldots,
 (qz)^{\gamma-2})^\top$, the tail vector $T(z)$ is equal to $(1,1, \ldots,
-1)^\top$, and $\psi(z) = 0$. By proposition~\ref{th:HBT}, the weighted
-generating function of reads without an inexact seed can be computed as
-$S_\gamma(z) = H(z) \cdot (I-M(z))^{-1} \cdot T(z)$.
+1)^\top$, and $\psi(z) = 0$. The expression of the weighted generating
+function of reads without inexact $\gamma$-seed is omitted here. By
+proposition~\ref{th:HBT}, it can be computed as $S_\gamma(z) = H(z) \cdot
+(I-M(z))^{-1} \cdot T(z)$.
 
 
 \begin{example}
@@ -2662,27 +2748,24 @@ not contain an inexact seed is approximately $2.326700/1.079244^{101}
 \approx 0.0010511$. For comparison, a 99\% confidence interval obtained by
 performing 10 billion random simulations is $0.001049-0.001054$.
 % The magic number is 1051660 out of 10 billion.
-In the same conditions, the chances that the read contains an exact seed
-was 90.4\%, compared to 99.9\% when one substitution is allowed.
+Recall that in the same conditions, the chances that the read does not
+contains an exact seed were approximately 9.6\%.
 \end{example}
 
 The approximations have the typical accuracy of analytic combinatorics
 estimates. Figure~\ref{fig:simulpinexact} shows the precision of the
-estimates for different values of the substitution rate $p$ and the read
-size $k$. Observe that the probability that the read contains an inexact
-seed is substantially higher than the probability that it contains an
-exact seed (compare with figure~\ref{fig:simulp}). This means that
-efficient algorithms to find inexact seeds can greatly reduce the number
-of false negatives in the mapping problem.
-
+estimates for different values of the substitution rate $p$ and of the
+read size $k$. Observe that the probability that the read contains an
+inexact seed is substantially higher than the probability that it contains
+an exact seed (compare with figure~\ref{fig:simulp}).
 
 \begin{figure}[h]
 \centering
 \includegraphics[scale=0.445]{simulp-inexact.pdf}
 \caption{\textbf{Example estimates for inexact seeding with substitutions
 only}. The analytic combinatorics estimates described in this section
-are benchmarked against random simulations.  Shown on both panels are the
-probablities that a read of given size contains an inexact seed, either
+are benchmarked against random simulations. Shown on both panels are the
+probabilities that a read of given size contains an inexact seed, either
 estimated by random simulations (dots), or by the method described above
 (lines). The curves are drawn for $\gamma=17$, $p=0.08$, $p=0.10$ or
 $p=0.12$ (from top to bottom). 10,000,000 simulations are run on the left
@@ -2692,15 +2775,15 @@ panel and 100,000,000 on the right one.}
 
 
 Unfortunately, the expressions of the weighted generating functions given
-by proposition~\ref{th:HBT} are very cumbersome, and they may take hours
-to evaluate. For instance, the degrees of $P$ and $Q$ for $\gamma=17$ are
-$152$ and $153$, respectively.
+by proposition~\ref{th:HBT} are very cumbersome, and they may take a long
+time to evaluate. For instance, the degrees of $P$ and $Q$ for $\gamma=17$
+are $135$ and $136$, respectively.
 
-The best option here is to pre-compute the dominant singularities and
-associated multiplicative constants for a useful range of values of
-$\gamma$ (up to $30$ is sufficient for most applications) and of the
-parameter $p$ (up to $0.25$ is sufficient for most application). Once
-these values are stored, the estimates can be calculated rapidly.
+An option is to precompute the dominant singularities and associated
+multiplicative constants for a useful range of values of $\gamma$ (up to
+$30$ is sufficient for most applications) and of the parameter $p$ (up to
+$0.25$ is sufficient for most applications). Once these values are stored,
+the estimates can be calculated rapidly.
 
 
 
@@ -2715,8 +2798,8 @@ these values are stored, the estimates can be calculated rapidly.
 Our concern so far was whether reads contain a seed, \textit{i.e.} an
 error-free (or almost free) interval of sufficient size. If this is the
 case, the target sequence is among the candidates and we implicitly assume
-that it will be identified as the best hit during the alignment stage.
-But we did not discuss what happens if the read does not contain a seed.
+that it will be identified during the alignment stage. But we did not
+discuss what happens if the read does not contain a seed.
 
 There are two possible cases. The first is that the mapping procedure
 returns no hit. The conclusion is then that the sequence does not belong
@@ -2728,54 +2811,53 @@ I error''. Type I errors are the most difficult to detect, because nothing
 distinguishes them from true hits, at least at the seeding stage.
 
 It is important to emphasize that in this version of the mapping problem,
-the split between type I and type II errors amounts to the probability
-that the read contains no seed (because we assume that all the candidates
-are aligned and that the alignment always identifies the true hit when it
-is present among the candidates). This split depends on the genome, and
-more particularly on the configuration of its repeated sequences. A
-stretch of  $\gamma$ nucleotides matches a random genome with probability
-$O(4^{-\gamma})$. However, genomes are not a succession of random
-nucleotides. Large sequences are often duplicated, to the extent that the
-greater part of eukaryotic genomes can be considered repetitive. In
-addition, repeats are usually not exactly identical, but only similar.
-This means that the $O(4^{-\gamma})$ term can be a spectacular
-underestimate.
+the sum of type I and type II error rates is the probability that the read
+does not contain a seed (because we assume that there is a mapping error
+if and only if the read does not contain a seed). The split between type I
+and type II errors depends on the genome, and more particularly on the
+configuration of its repeated sequences. A stretch of $\gamma$ nucleotides
+matches a random genome with probability $O(4^{-\gamma})$. However,
+genomes are not a succession of random nucleotides. Large sequences are
+often duplicated, to the extent that the greater part of eukaryotic
+genomes can be considered repetitive. In addition, repeats are usually not
+exactly identical, but only similar. This means that the $O(4^{-\gamma})$
+term can be spectacularly underestimated.
 
 A complete treatment of type I errors is presently not possible. We will
 focus on a single case that will be the basis for further development.
 More specifically, we will assume that the target sequence has exactly one
-duplicate in the genome, and that they differ from each other only by
-uniform substitutions (we will see below how to relax these assumptions).
-The problem then amounts to finding the probability that the seeding
-process identifies the duplicate as a candidate, but not the target
-sequence. Figure~\ref{fig:example_typeI} shows how this can occur.
+duplicate in the genome, differing only by uniform substitutions (we will
+see below how to relax these assumptions). The problem then amounts to
+finding the probability that the duplicate but not the target sequence is
+discovered during the seeding step. Figure~\ref{fig:example_typeI} shows
+how this can occur.
 
 \begin{figure}[h]
 \centering
 \includegraphics[scale=1]{example_typeI.pdf}
 \caption{\textbf{Example type I error}. A read of $30$ nucleotides
-contains a single error at the sixteenth position. The erroneous
-nucleotide is identical to the duplicate sequence at this position. This
-creates a match of $24$ nucleotides for the duplicate sequence, while the
-longest match for the target is $15$ nucleotides. Thus, using seeds of
-size greater than $15$ would result in a type I error (even though the
-duplicate has three differences with the read and the target has only
-one).}
+contains a single error at the sixteenth position. By chance, the
+erroneous nucleotide is identical to the duplicate sequence at this
+position. This creates a match of $24$ nucleotides for the duplicate
+sequence, while the longest match for the target is $15$ nucleotides.
+Thus, using seeds of size greater than $15$ would result in a type I error
+(even though the duplicate has three differences with the read and the
+target has only one).}
 \label{fig:example_typeI}
 \end{figure}
 
 \begin{remark}
 With only one reference sequence, ``error-free'' and ``matching''
 nucleotides are the same. With more than one reference, we must take care
-of distinguishing them. In this case, matching nucleotides can be
-incorrect (they can match the wrong sequence).
+of distinguishing the two, because matching nucleotides can be
+incorrect (they can match any of the duplicates).
 \end{remark}
 
 Instead of tackling this problem directly, we will set a more general
 framework where a read can match two similar sequences denoted $(+)$ and
-$(-)$. A read now consists of four types of nucleotides: those matching
+$(-)$. A read now consists of four kinds of nucleotides: those matching
 both sequences, those matching the $(+)$ sequence only, those matching the
-$(-)$ sequence only, and those matching none. The first type will be
+$(-)$ sequence only, and those matching none. The first kind will be
 referred to as a \emph{match} and the last three as \emph{mismatches}
 (single or double). The following definitions will be useful to sketch
 the transfer graph.
@@ -2790,9 +2872,9 @@ interval}) is a sequence of nucleotides matching the $(+)$ sequence
 \end{definition}
 
 This information is summarized in figure~\ref{fig:sketchdual}. We will use
-it to find a construction for reads without either $(+)$ or $(-)$ seeds.
-We will later show how this can be used to find the probabilities of type
-I errors.
+it to find a construction for reads with neither $(+)$ nor $(-)$ seed. We
+will later show how this can be used to find the probabilities of type I
+errors.
 
 \begin{figure}[h]
 \centering
@@ -2801,8 +2883,8 @@ I errors.
 Matches are represented as white squares, mismatches against the $(+)$
 sequence as bottom black wedges, mismatches against the $(-)$ sequence as
 top black wedges, and double mismatches as black squares. They delimit
-$R$-blocks consisting of mismatch-free intervals followed by a mismatch.
-The last nucleotide of an $R$-block is always a mismatch so the
+$R$-blocks, consisting of mismatch-free intervals followed by a mismatch.
+The last nucleotide of an $R$-block is always a mismatch: the
 mismatch-free interval at the tail of the read is not an $R$-block. $(+)$
 or $(-)$ intervals are stretches of the read that match either the $(+)$
 sequence (top arrow) or the $(-)$ sequence (bottom arrow) and that cannot
@@ -2811,27 +2893,27 @@ be extended left or right.}
 \end{figure}
 
 \begin{remark}
-When a subsequence is both a $(+)$ and a $(-)$ seed (the head and the tail
-of the read shown in figure~\ref{fig:sketchdual} for instance), then both
-sequences are candidates.
+We consider that when a subsequence is both a $(+)$ and a $(-)$ seed (as
+the head of the read shown in figure~\ref{fig:sketchdual} for instance),
+both sequences are in the list of candidates after seeding, \textit{i.e.}
+both are aligned.
 \end{remark}
 
 Reads can be viewed as sequences of $R$-blocks followed by a mismatch-free
-interval. Reads without $(+)$ or $(-)$ seeds have particuarly complex
+interval. Reads with neither $(+)$ nor $(-)$ seed have particuarly complex
 constraints on the arrangements of those $R$-blocks. For instance, an
 $R$-block of size $\gamma$ (\textit{i.e.} $\gamma-1$ matches followed by a
 mismatch) must be followed by a mismatch if the final nucleotide is a
-single mismatch, but it can be followed by up to $\gamma-1$ matches if the
-last nucleotide is a double mismatch.
+single mismatch, but it can be followed by up to $\gamma-1$ matches if
+this nucleotide is a double mismatch.
 
-To give a concrete example, we will consider reads without $(+)$ or $(-)$
-seeds of size $3$. The read below features two matches, followed by a
-double mismatch, followed by a mismatch against the $(-)$ sequence. The
-numbers between brackets $(0,1)$ indicate the respective amount of
-nucleotides matching the $(-)$ and the $(+)$ sequences at the end of the
-$R$-block. At that point, there are only five possiblities for the next
-$R$-block; every other combination would create a $(+)$ seed or a $(-)$
-seed.
+For the sake of clarity, we will consider a concrete example where
+$\gamma=3$. The read below starts with two matches, followed by a double
+mismatch, followed by a mismatch against the $(-)$ sequence. The numbers
+between brackets $(0,1)$ indicate the respective amount of nucleotides
+matching the $(-)$ and the $(+)$ sequences at the end of the $R$-block. At
+that point, there are only five possiblities for the next $R$-block; every
+other combination would create a $(+)$ seed or a $(-)$ seed.
 
 \begin{inset}
 \includegraphics[scale=0.9]{example_dual.pdf}
@@ -2852,10 +2934,11 @@ weighted generating function $r_1^+(z)$ brings the amount of matching
 nucleotides to $(2,0)$.
 
 
-By considering all the cases, we obtain the transfer graph shown in
-figure~\ref{fig:graph_fp}. Even for such a small value of $\gamma$, the
-graph is so dense that the edges have been separated in two panels and
-encoded as symbols in order to not overload the figure.
+By considering all the possible scenarios for other reads, we obtain the
+transfer graph shown in figure~\ref{fig:graph_fp}. Even for such a small
+value of $\gamma$, the graph is so dense that the edges have been
+separated in two panels and encoded as symbols in order to not overload
+the figure.
 
 \begin{figure}[h]
 \centering
@@ -2864,7 +2947,7 @@ encoded as symbols in order to not overload the figure.
 either $(+)$ or $(-)$}. Reads are viewed as sequences of $R$-blocks, and
 they can match two sequences referred to as $(+)$ and $(-)$. To not
 overload the figure, the edges are split between the left and right
-panels. The labels on the vertices represent the respective number of
+panels. The numbers in the vertices represent the respective number of
 nucleotides matching the $(-)$ and $(+)$ sequences at the end of an
 $R$-block. Weighted generating functions $r_i^+(z)$ represent $R$-blocks
 with $i$ matches terminated by a mismatch against the $(+)$ sequence
@@ -2887,25 +2970,26 @@ $r_1^+(z)$ and $r_1^-(z)$. The sign indicates which sequence is
 \emph{mismatched} at the end of the $R$-block and the index is the number
 of matches in the $R$-block.
 
-The edges of the body of the transfer graph on the right panel point to
-the vertex $(0,0)$. All the vertices are connected to this vertex because
-appending an $R$-block terminated by a double mismatch always brings the
-read to this state. The weighted generating functions $R_0(z)$, $R_1(z)$
-and $R_2(z)$ represent such $R$-blocks with \emph{up to} $0$, $1$ or $2$
-matches, respectively.
+The edges shown on the right panel for lack of space on the left panel all
+point to the vertex $(0,0)$. All the vertices are connected to this vertex
+because appending an $R$-block terminated by a double mismatch always
+brings the read to this state. The weighted generating functions $R_0(z)$,
+$R_1(z)$ and $R_2(z)$ represent such $R$-blocks with \emph{up to} $0$, $1$
+or $2$ matches, respectively.
 
+The remaining edges shown on the right panel are the head and tail edges.
 In the initial state of the read, the amount of matching nucleotides is
 $(0,0)$, which is indicated by the label $1$ on the edge between the head
 vertex and the vertex $(0,0)$. This is equivalent to prepending the read
 by the empty object $\varepsilon$. Reads are terminated by a sequence of
 matches. The weighted generating functions $F_0(z)$, $F_1(z)$ and $F_2(z)$
 represent mismatch-free intervals of size \emph{up to} $0$, $1$ or $2$,
-respectively. Here $\psi(z) = 0$. The empty sequence is present in the
-graph (take a path from the head vertex to the tail vertex through $(0,0)$
-with no match appended at the tail), and no extra sequence needs to be
-added.
+respectively. The empty sequence is already present in the graph (take a
+path from the head vertex to the tail vertex through $(0,0)$ with no match
+appended at the tail), and no extra sequence needs to be added, so here
+$\psi(z) = 0$.
 
-The same logic can be applied for higher values of $\gamma$. The transfer
+A similar logic can be applied for higher values of $\gamma$. The transfer
 graph becomes too cumbersome to represent but the transfer matrix has
 enough regularity to be specified in full. The general transfer matrix
 associated with the body of the transfer graph has dimension $2\gamma-1$
@@ -2933,8 +3017,8 @@ M(z) =
 \end{block}
 \end{blockarray},
 \end{equation*}
-where $A(z)$, $B(z)$, $C(z)$ and $D(z)$ are square matrices with dimension
-$\gamma-1$ and defined as
+where $A(z)$, $B(z)$, $C(z)$ and $D(z)$ are $\gamma-1 \times \gamma-1$
+matrices defined as
 
 \begin{equation*}
 A(z) = 
@@ -3005,19 +3089,21 @@ D(z) =
 \end{equation*}
 
 
-As per proposition~\ref{th:HBT}, the weighted generating function of reads
-with no $(+)$ nor $(-)$ seeds is given by $H(z)^\top \cdot (I-M(z))^{-1}
-\cdot T(z)$. In this case the head vector $H(z)$ is equal to
-$(1,0,0,\ldots,0)^\top$ and the tail vector $T(z)$ is equal to
-$(R_{\gamma-1}(z), R_{\gamma-2}(z), \ldots, R_0(z), R_{\gamma-2}(z),
-\ldots, R_0(z))^\top$.
+In this case the head vector $H(z)$ is equal to $(1,0,0,\ldots,0)^\top$
+and the tail vector $T(z)$ is equal to $(R_{\gamma-1}(z), R_{\gamma-2}(z),
+\ldots, R_0(z), R_{\gamma-2}(z), \ldots, R_0(z))^\top$. The expression of
+the weighted generating function of reads with neither $(+)$ nor $(-)$
+seed is omitted here (it is fairly complex even for small values of
+$\gamma$). As per proposition~\ref{th:HBT}, it can be computed as
+$H(z)^\top \cdot (I-M(z))^{-1} \cdot T(z)$. 
 
-Under the assumption that mismatches occur uniformly in the read,
-nucleotides of each type occur with probabilities $a$, $b$, $c$ or $d$,
-with $a+b+c+d=1$, where $a$ is the probability that the nucleotide is a
-double match, $b$ that it is a mismatch against $(+)$, $c$ that it is a
-mismatch against $(-)$ and $d$ that it is a mismatch against both. With
-these notations we obtain
+We still need to give the exact expression of the weighted generating
+functions appearing in the definition of $M(z)$. Under the assumption that
+mismatches occur uniformly in the read, nucleotides of each type occur
+with probabilities $a$, $b$, $c$ or $d$, with $a+b+c+d=1$, where $a$ is
+the probability that the nucleotide is a (double) match, $b$ that it is a
+mismatch against $(+)$, $c$ that it is a mismatch against $(-)$ and $d$
+that it is a mismatch against both. With these notations we obtain
 
 \begin{equation}
 \label{eq:abcd}
@@ -3029,33 +3115,49 @@ F_i(z) = 1 + az + \ldots + (az)^i.
 \end{gathered}
 \end{equation}
 
-We could now find the weighted generating function of the reads without
-$(+)$ or $(-)$ seeds, but we will return to the original problem of
-computing the probability of a type I error. In this context, the $(+)$
-sequence is the target and the $(-)$ sequence is the duplicate.
+With these definitions we could find the expression of the weighted
+generating function of the reads with neither $(+)$ nor $(-)$ seed, but we
+will return to the original problem of computing the probability of a type
+I error. In this context, the $(+)$ sequence is the target and the $(-)$
+sequence is the duplicate.
 
 
 We will assume that each nucleotide is decoded incorrectly with
-probability $p$ and that for each nucleotide, the duplicate sequence
-differs from the target with probability $\kappa$. A nucleotide is a
-mismatch for both sequences if it is a read error (probability $p$) and if
-either the duplicate is identical to the target (probability $1-\kappa$)
-or it is different from both the target and the decoded nucleotide
-(probability $2\kappa/3$). The other probabilities can be computed with
-similar arguments, yielding $a = (1-p)(1-\kappa)$, $b = p\kappa/3$, $c =
-(1-p)\kappa$ and $d = p(1-\kappa/3)$.
+probability $p$ (substitutions due to sequencing errors) and that for each
+nucleotide, the duplicate sequence differs from the target with
+probability $\kappa$ (divergence between the target and the duplicate). A
+nucleotide is a mismatch for both sequences if it is a read error
+(probability $p$) and if either the duplicate is identical to the target
+(probability $1-\kappa$) or if it is different from both the target and
+the decoded nucleotide (probability $2\kappa/3$). The other probabilities
+can be computed with similar arguments, yielding $a = (1-p)(1-\kappa)$, $b
+= p\kappa/3$, $c = (1-p)\kappa$ and $d = p(1-\kappa/3)$.
 
 The model is completely specified by $p$ and $\kappa$. With their actual
 values at hand, we can use proposition~\ref{th:ass} to obtain an
 asymptotic estimate of the probability that a read has no match for the
-target \emph{and} no match for the duplicate. Call this estimated
+target \emph{and} has no match for the duplicate. Call this estimated
 probability $P_2$. Using the results of section~\ref{sec:substitutions},
 we can also compute an asymptotic estimate of the probability that the
 read does not contain an exact $\gamma$-seed (irrespective of potential
 matches to the duplicate). Call this estimated probability $P_1$. We can
-thus estimate the probability that the read contains a match of size
-$\gamma$ or greater for the duplicate sequence \emph{but} no exact
-$\gamma$-seed as $P_1 - P_2$.
+thus estimate the probability that the read contains no exact
+$\gamma$-seed \emph{but} contains a match for the duplicate
+as $P_1 - P_2$.
+
+To clarify this equality, call $A$ the event that the read has no
+$\gamma$-seed and $B$ the event that it contains no match of size $\gamma$
+for either the target or the duplicate sequence. First observe that $B
+\subset A$ so $P(A \cap B^c) = P(A) - P(B)$. Then, $B^c$ is the event that
+the read contains an exact $\gamma$-seed, a stretch of size $\gamma$ or
+greater matching the duplicate sequence, or both. Another way to describe
+$B^c$ is that ``some hit is found in the read''. So $A \cap B^c$ is the
+event that ``some hit is found, but it is not the target'', which is the
+definition of a type I error. Since $P(A) \approx P_1$ and $P(B) \approx
+P_2$, the probability of type I errors is indeed approximately equal to
+$P_1 - P_2$.
+
+
 
 \begin{example}
 \label{ex:num5}
@@ -3066,15 +3168,16 @@ $p=0.10$ and $\kappa=0.10$. In example~\ref{ex:num1} we found $P_1 \approx
 b=0.09, c=0.00333, d=0.09667$ in the expression of the $33 \times 33$
 transfer matrix $M(z)$ and in the expression of $T(z)$. We then compute
 the expression $H(z)^\top \cdot (I-M(z))^{-1} \cdot T(z)$ and obtain a
-function $P(z)/Q(z)$ where $P$ and $Q$ are polynomials of degree $288$ and
-$289$, respectively. The root of $Q$ with smallest \textit{modulus} is the
-dominant singularity $z_1$ of the weighted generating function. Using
-numerical approaches, we find $z_1 \approx 1.0272930245$. We compute the
-proportionality constant of proposition~\ref{th:ass} as $P(z_1)/Q'(z_1)
-\approx 1.4032791$ from which we obtain $P_2 \approx
-1.4032791/1.0272930245^{101}$. The type I error rate is then approximately
-equal to $0.0032906$. For comparison, a 99\% confidence interval obtained
-by performing 10 billion random simulations is $0.003288-0.003292$.
+rational function $P(z)/Q(z)$ where $P$ and $Q$ are polynomials of degree
+$288$ and $289$, respectively. The root of $Q$ with smallest
+\textit{modulus} is the dominant singularity $z_1$ of the weighted
+generating function. Using numerical approaches, we find $z_1 \approx
+1.0272930245$. We compute the proportionality constant of
+proposition~\ref{th:ass} as $-P(z_1)/Q'(z_1) \approx 1.4032791$ from which
+we obtain $P_2 \approx 1.4032791/1.0272930245^{101}$. The type I error
+rate is then approximately equal to $0.0032906$. For comparison, a 99\%
+confidence interval obtained by performing 10 billion random simulations
+is $0.003288-0.003292$.
 % The magic number is 32900981 out of 10 billion.
 \end{example}
 
@@ -3087,10 +3190,10 @@ of occcurrence.
 \begin{figure}[h]
 \centering
 \includegraphics[scale=0.445]{simulp_false_positives.pdf}
-\caption{\textbf{Example estimates of type I errors (one
-duplicate)}. The analytic combinatorics estimates are benchmarked against
-random simulations. Shown on both panels are the probablities that a read
-of given size will give a type I error, either estimated by 10,000,000
+\caption{\textbf{Example estimates of type I errors (one duplicate)}. The
+analytic combinatorics estimates are benchmarked against random
+simulations. Shown on both panels are the probabilities that a read of
+given size will induce a type I error, either estimated by 10,000,000
 (left) or 100,000,000 (right) random simulations (dots), or by the method
 described above (lines). The curves are drawn for $\gamma=17$ and
 $p=0.05$, $\kappa=0.05$, $\kappa=0.15$ or $\kappa=0.25$ (from top to
@@ -3101,55 +3204,78 @@ bottom).}
 Computing $P_2$ with proposition~\ref{th:ass} requires finding a weighted
 generating function $P(z)/Q(z)$ where $P$ and $Q$ are polynomials with too
 many terms to fit in this document. It is thus problematic to compute the
-approximations efficiently. The best option is once again to pre-compute
-the dominant singularities and associated multiplicative constants for a
-useful range of $\gamma$ (up to $30$ is sufficient for most applications)
-and of the parameters $p$ and $\kappa$ (up to $0.25$ is sufficient for
-most applications). Once these values are stored, the estimates can be
-calculated rapidly without having to compute the weighted generating
-function and finding its dominant singularity.
+approximations efficiently. The best option is to precompute the dominant
+singularities and associated multiplicative constants for a useful range
+of $\gamma$ (up to $30$ is sufficient for most applications) and of the
+parameters $p$ and $\kappa$ (up to $0.25$ is sufficient for most
+applications). Once these values are stored, the estimates can be
+calculated rapidly from expression (\ref{eq:ass}) without having to
+compute any weighted generating function.
 
-We have started this section with the assumption that the target has
-exaclty one duplicate. Also, $\kappa$ is usually unknown so how are the
-estimates derived above useful?
+At the start of this section, we assumed that the target has exaclty one
+duplicate. Also, $\kappa$ is usually unknown, so are the estimates derived
+above useful at all? First, it is important to stress that the seeding
+strategy is efficient only when the target has few duplicates. Some
+sequences have more than 100,000 copies in the human genome. In such
+cases, the seeding process yields many candidates that will cost time at
+the alignment stage, with anyway small chances of identifying the correct
+target. As a consequence, most mapping algorithms bail out as soon as they
+gather enough evidence that the target has many duplicates. There is thus
+little incentive to develop accurate estimates of type I error rates for
+highly repeated sequences, and one should focus on the cases of
+intermediate amount of duplicates, say around 20.
 
-First, it is important to stress that the seeding strategy is efficient
-only when the target has few duplicates. Some sequences have more than
-100,000 copies in the human genome. In such cases, the seeding process
-yields many candidates that will cost time at the alignment stage, for in
-the end relatively small chances of identifying the correct target. As a
-consequence, most mapping algorithms bail out as soon as they gather
-enough evidence that the target has many duplicates. There is thus little
-incentive to develop accurate estimates of type I error for highly
-repeated sequences, and one should focus on the case of intermediate
-amount of repeats, say around 20.
-
-We can extend the theory developed above to more than one duplicate. The
-probability that a read contains no match for the duplicate given that it
-contains no match for the target is $P_2 / P_1$. If the target has $N$
-extra duplicates evolving independently with mutation rate $\kappa$, the
-probability that a read contains no match for any of the duplicates given
-that it contains no match for the target is $(P_2 / P_1)^N$. The
-probability of a type I error is thus $P_1\big(1-(P_2 / P_1)^N\big)$. For
-$N=1$, we recover $P_1-P_2$ and for large $N$, the value approaches $P_1$,
-the probability that the read has no seed.
+Fortunately, we can extend the theory developed above to the case of a few
+duplicates. The probability that a read contains no match for the
+duplicate given that it contains no match for the target is $P_2 / P_1$.
+If the target has $N$ extra duplicates evolving independently with
+mutation rate $\kappa$, the probability that a read contains no match for
+any of the duplicates given that it contains no match for the target is
+$(P_2 / P_1)^N$. The probability of a type I error is thus $P_1\big(1-(P_2
+/ P_1)^N\big)$. For $N=1$, we recover $P_1-P_2$ and for large $N$, the
+value approaches $P_1$, the probability that the read has no seed.
 
 This approach is somewhat naive because repeated sequences do not evolve
-independently of each other and $N$ is usually unknown. However, it gives
-a handle on the problem as $N$ and $\kappa$ can be estimated during the
-seeding or better, stored for every position of the genome.
+independently of each other and $N$, like $\kappa$ is usually unknown.
+However, it gives a handle on the problem as some ``proxy'' $N$ and
+$\kappa$ can be estimated during the seeding step or better, stored for
+every position of the genome.
 
-Also observe that the case of one duplicate gives a lower bound for the
-probability of type I error. When there is exactly one duplicate, type I
-errors are almost impossible to detect because the mapping process
-identifies a single hit that is similar to the read (as if a seed was
-present and the target had no duplicate). If the proportion of the genome
-that is repeated is $x$ and $P^*$ is the maximum of $P_1-P_2$ relative to
-unknown $\kappa$, then $xP^*$ is a reasonable lower bound on the
-probability of type I errors. If more information about the read, or about
-the seeding and alignment processes is available, then this lower bound
-can vary.
+An additional observation is that the case of one duplicate gives a lower
+bound for the probability of type I error. When there is exactly one
+duplicate, type I errors are almost impossible to detect because the
+mapping process identifies a single hit that is similar to the read (as if
+a seed were present and the target had no duplicate). If the proportion of
+the genome that is repeated is $x$ and $P^*$ is the maximum of $P_1-P_2$
+relative to unknown $\kappa$, then $xP^*$ is a reasonable lower bound on
+the probability of type I errors. This number is an \textit{a priori}
+estimate that depends only on the read size and on the sequencing error
+rate. If more information about the read, or about the seeding and
+alignment processes is available, then this lower bound can vary.
 
+
+\begin{example}
+Let us approximate the \textit{a priori} lower bound of the type I error
+rate for reads of size $k=100$ with $\gamma=17$ and for sequencing error
+rate $p=0.10$. In example~\ref{ex:num1} we found $P_1 \approx 1.396145 /
+1.0268856^{101}$, which does not depend on $\kappa$. We now need to
+compute the lower bound of $P_2$ as $\kappa$ varies. Using precomputed
+values, we find the minimum is reached for $\kappa \approx 0.07$ where
+$P_2 \approx 1.403628/1.02732^{101}$. This yields an extimate
+approximately equal to $0.0035$. Assuming that approximately half of the
+genome has at least one duplicate sequence, we cannot guarantee a type I
+error rate below $0.17\%$ with this seeding strategy.
+\end{example}
+
+The methods presented in this section are numerically accurate, but the
+models may not be faithful to the biological reality. It is still
+challenging to represent a genome together with the relationships between
+its duplicated sequences, and more generally to know the number of
+duplicates of a target sequence. In summary, estimates of the type
+I error rate are strongly dependent on our knowledge of the repeat
+structure of the genome. New data structures or algorithms to model
+genomic repeats will greatly benefit seeding heuristics in the mapping
+problem.
 
 
 
@@ -3158,12 +3284,12 @@ can vary.
 
 In the exact seeding scheme considered so far, every subsequence of the
 genome that matches $\gamma$ consecutive nucleotides of the read is
-considered a candidate. While assuring good chances of discovering the
-target, this approach often yields ``too many'' useless candidates, which
-costs computational time at the alignment stage. An alternative scheme
-called MEM seeding (Maximal Exact Match) gives better empirical results.
-The principle is to use as seeds only the longest local matches between
-the read and the genome.
+considered a candidate at the seeding step. While assuring good chances of
+discovering the target, this approach often yields ``too many'' useless
+candidates, which costs computational time at the alignment step. An
+alternative scheme called MEM seeding (Maximal Exact Match) gives better
+empirical results. The principle is to use as seeds only the longest local
+matches between the read and the genome.
 
 \begin{definition}
 A $\gamma$-MEM (Maximal Exact Match) is a sequence of at least $\gamma$
@@ -3197,16 +3323,16 @@ $(-)$ interval given in section~\ref{sec:fp} still apply.
 same as in figure~\ref{fig:sketchdual}. Matches are represented as white
 squares, mismatches for the $(+)$ sequence as bottom black wedges,
 mismatches for the $(-)$ sequence as top black wedges, and double
-mismatches as black squares. They delimit $R$-blocks consisting of
+mismatches as black squares. They delimit $R$-blocks, consisting of
 mismatch-free intervals followed by a mismatch. The last nucleotide of
-an $R$-block is always a mismatch so the mismatch-free interval at the
+an $R$-block is always a mismatch: the mismatch-free interval at the
 tail of the read is not an $R$-block. MEMs (arrows) are stretches of the
 read that match any of the two sequences and that cannot be extended left
 or right. MEMs matching the $(+)$ sequence are represented at the top and
 MEMs matching the $(-)$ sequence at the bottom. In this example, the
-central stretch of $5$ nucleotides matching the $(+)$ sequence is not used
-as seed because it is included in a stretch of $12$ nucleotides matching
-the $(-)$ sequence.}
+central stretch of $5$ nucleotides matching the $(+)$ sequence cannot be
+used as seed because it is included in a stretch of $12$ nucleotides
+matching the $(-)$ sequence.}
 \label{fig:sketchmem}
 \end{figure}
 
@@ -3215,13 +3341,14 @@ match for $(+)$ is masked by a longer match for $(-)$. Nucleotides from 12
 to 16 match the $(+)$ sequence, creating a potential seed. However, it is
 contained in a match for the $(-)$ sequence from nucleotides 9 to 20.
 Since the match for $(+)$ is not a MEM, it is not used as a seed. Cases
-such as this one can cause type I errors to occur even when the reads
+such as this can cause type I errors to occur even when the reads
 contains matches of size $\gamma$ or greater for the target.
 
 \begin{remark}
-When a MEM matches both sequences (the head and the tail of the read shown
-in figure~\ref{fig:sketchmem} for instance), then both sequences are
-candidates.
+We consider that when a MEM matches both sequences (as the head and the
+tail of the read shown in figure~\ref{fig:sketchmem} for instance), both
+sequences are in the list of candidates after seeding, \textit{i.e.} both
+are aligned.
 \end{remark}
 
 
@@ -3238,17 +3365,18 @@ number of matches if it is a mismatch for the $(+)$ sequence.
 
 
 To give a concrete example, we will consider $\gamma$-MEMs of size $3$.
-The read below features two matches, followed by a double mismatch,
+The read below starts with two matches, followed by a double mismatch,
 followed by a mismatch for the $(+)$ sequence. The symbols between
 brackets $(*,0)$ indicate the respective amount of nucleotides matching
 the $(-)$ and the $(+)$ sequences at the end of the $R$-block. All the
 $R$-blocks terminated by a mismatch against the $(+)$ sequence are
 equivalent because the subsequent $R$-block cannot be part of a
 MEM for the $(+)$ sequence. So the only information we need regarding the
-$(-)$ sequence is whether this amount is greater than $0$, which we
-represent by the $*$ symbol. At that point, there are infinitely many
-possiblities for the next $R$-blocks, but only four distinct classes do
-not create a MEM seed for the $(+)$ sequence.
+$(-)$ sequence is whether the number of matching nucleotides at the end or
+the $R$-block is greater than $0$, which we represent by the $*$ symbol.
+At that point, there are infinitely many possibilities for the next
+$R$-blocks, but they can be gathered in four distinct classes that
+do not create a MEM seed for the $(+)$ sequence.
 
 \begin{inset}
 \includegraphics[scale=0.9]{example_dual_mem.pdf}
@@ -3266,7 +3394,8 @@ Appending a mismatch for the $(-)$ sequence (third case from the top),
 brings the amount of matching nucleotides to $(0,1)$. Finally, appending a
 match followed by a mismatch for the $(-)$ sequence (bottom case),
 \textit{i.e.} an $R$-block with weighted generating function $r_1^-(z)$
-brings the amount of matching nucleotides to $(0,2)$.
+brings the amount of matching nucleotides to $(0,2)$. All other $R$-blocks
+create a MEM seed for the $(+)$ sequence.
 
 
 
@@ -3274,28 +3403,41 @@ brings the amount of matching nucleotides to $(0,2)$.
 \centering
 \includegraphics[scale=0.79]{MEM_graph.pdf}
 \caption{\textbf{Transfer graph of reads without $3$-MEM seed for $(+)$}.
-Text.}
+Reads are viewed as sequences of $R$-blocks, and they can match two
+sequences referred to as $(+)$ and $(-)$. To not overload the figure, the
+body of the graph is shown on the left panel, the head and tail edges are
+showed on the right panel. The numbers in the vertices represent the
+respective number of nucleotides matching the $(-)$ and $(+)$ sequences at
+the end of an $R$-block (the $*$ symbol stands for one or more
+nucleotides). Weighted generating functions $r_i^-(z)$ represent
+$R$-blocks with $i$ matches terminated by a mismatch against the $(+)$
+sequence. Weighted generating functions $R_i(z)$ and $R_i^+(z)$ represent
+$R$-blocks with \emph{up to} $i$ matches terminated by a double mismatch
+or by a mismatch against $(+)$, respectively. Weighted generating
+functions $F_i(z)$ represent mismatch-free intervals of size \emph{up to}
+$i$. In the variants $R_*(z)$, $R_*^+(z)$ and $F_*(z)$, there is no upper
+limit on the number of matching nucleotides.}
 \label{fig:graph_mem}
 \end{figure}
 
 
-By considering all the cases, we obtain the transfer graph shown in
-figure~\ref{fig:graph_mem}. The numbers in the vertices indicate the
-amount of nucleotides matching $(-)$ and $(+)$ at the end of the
-$R$-blocks. Since $R$-blocks are terminated by a mismatch, at least one of
-these numbers is $0$. As explained above, the $*$ symbol stands for one or
-more nucleotides, as all these cases are equivalent. The body of the
-transfer graph is represented on the left panel, the head and tail edges
-on the right panel.
+By considering all the possible scenarios for other reads, we obtain the
+transfer graph shown in figure~\ref{fig:graph_mem}. The numbers in the
+vertices indicate the amount of nucleotides matching $(-)$ and $(+)$ at
+the end of the $R$-blocks. Since $R$-blocks are terminated by a mismatch,
+at least one of these numbers is $0$. As explained above, the $*$ symbol
+stands for one or more nucleotides, as all these cases are equivalent. The
+body of the transfer graph is represented on the left panel, the head and
+tail edges on the right panel.
 
 Simple $R$-blocks have weighted generating functions $r_0^+(z)$,
 $r_0^-(z)$, $r_1^+(z)$ or $r_1^-(z)$. The sign indicates which sequence
 is \emph{mismatched} at the end of the $R$-block and the index indicates
-the number of matches in the $R$-block. Unions of $R$-blocks have weighted
-generating functions $R_*(z)$, $R_*^+(z)$ or $R_i^+(z)$. The first
-represents any number of matches followed by a double mismatch, the second
-represents any number of matches followed by a mismatch against the $(+)$
-sequence, the last represent \emph{up to} $i$ matches followed by a
+the number of matches at the start of the $R$-block. Unions of $R$-blocks
+have weighted generating functions $R_*(z)$, $R_*^+(z)$ or $R_i^+(z)$. The
+first represents any number of matches followed by a double mismatch, the
+second represents any number of matches followed by a mismatch against the
+$(+)$ sequence, the last represent \emph{up to} $i$ matches followed by a
 mismatch against the $(+)$ sequence.
 
 In the initial state of the read, the amount of matching nucleotides is
@@ -3304,10 +3446,10 @@ vertex and the vertex $(0,0)$. This is equivalent to prepending the read
 by the empty object $\varepsilon$. Reads are terminated by a sequence of
 matches. The weighted generating functions $F_*(z)$, $F_0(z)$, $F_1(z)$
 and $F_2(z)$ represent mismatch-free intervals of any size or size
-\emph{up to} $0$, $1$ or $2$, respectively. Here $\psi(z) = 0$. The empty
-sequence is present in the graph (take a path from the head vertex to the
-tail vertex through $(0,0)$ with no match appended at the tail), and no
-extra sequence needs to be added.
+\emph{up to} $0$, $1$ or $2$, respectively. Here, the empty sequence is
+present in the graph (take a path from the head vertex to the tail vertex
+through $(0,0)$ with no match appended at the tail), and no extra sequence
+needs to be added so $\psi(z) = 0$. 
 
 The same logic can be applied for higher values of $\gamma$. The general
 transfer matrix associated with the body of the transfer graph has
@@ -3335,11 +3477,13 @@ M(z) =
 \end{equation*}
 
 
-As per proposition~\ref{th:HBT}, the weighted generating function of reads
-with no $\gamma$-MEM for the $(+)$ sequence is given by $H(z)^\top \cdot
-(I-M(z))^{-1} \cdot T(z)$. In this case the head vector $H(z)$ is equal to
-$(1,0,\ldots,0)^\top$ and the tail vector $T(z)$ is equal to
-$(F_{\gamma-1}(z), \ldots, F_1(z), F_0(z), F_*(z))^\top$.
+The head vector $H(z)$ is equal to $(1,0,\ldots,0)^\top$ and the tail
+vector $T(z)$ is equal to $(F_{\gamma-1}(z), \ldots, F_1(z), F_0(z),
+F_*(z))^\top$. The weighted generating function of reads with no
+$\gamma$-MEM for the $(+)$ sequence is omitted here. As per
+proposition~\ref{th:HBT}, it can be computed as by $S^+_\gamma(z) =
+H(z)^\top \cdot (I-M(z))^{-1} \cdot T(z)$.
+
 
 As in section~\ref{sec:fp}, denote $a$ the probability that the nucleotide
 is a double match, $b$ that it is a mismatch against $(+)$, $c$ that it is
@@ -3357,17 +3501,14 @@ F_*(z) = 1 + az + (az)^2 + \ldots = \frac{1}{1-az}.
 \end{equation*}
 
 
-Knowing the values of $a$, $b$, $c$ and $d$, we can compute the weighted
-generating function $H(z)^\top \cdot (I-M(z))^{-1} \cdot T(z)$ and use
-proposition~\ref{th:ass} to obtain an asymptotic estimate of the
-probability that a read does not contain a $\gamma$-MEM for the $(+)$
-sequence.
-
-We now return to the problem of finding the probablity that a read
-contains a $\gamma$-MEM seed when the target sequence has exactly one
-duplicate. If we consider that the $(+)$ sequence is the target and that
-the $(-)$ sequence is the duplicate, the probability described above is
-the one we are searching. The model is completely specified by the
+Knowing the values of $a$, $b$, $c$ and $d$, we could compute the weighted
+generating function and use proposition~\ref{th:ass} to obtain an
+asymptotic estimate of the probability that a read does not contain a
+$\gamma$-MEM for the $(+)$ sequence. If we consider that the $(+)$
+sequence is the target and that the $(-)$ sequence is the duplicate, this
+is the probability that we set out to find, \textit{i.e} the probability
+that a read contains a $\gamma$-MEM seed when the target sequence has
+exactly one duplicate. The model is completely specified by the
 substitution rates $p$ and $\kappa$, and as in section~\ref{sec:fp} $a =
 (1-p)(1-\kappa)$, $b = p\kappa/3$, $c = (1-p)\kappa$ and $d =
 p(1-\kappa/3)$. The example below shows how the computations are carried
@@ -3382,16 +3523,16 @@ Let us approximate the probability that a read does not contain a MEM seed
 $\gamma=17$ and for $p=0.10$ and $\kappa=0.10$. First, we substitute in
 the $18 \times 18$ transfer matrix $M(z)$ and in $T(z)$ the values
 $a=0.81, b=0.09, c=0.00333, d=0.09667$. We then compute the expression
-$H(z)^\top \cdot (I-M(z))^{-1} \cdot T(z)$ and obtain a function
-$P(z)/Q(z)$ where $P$ and $Q$ are polynomials of degree $35$ and $36$,
-respectively. The root of $Q$ with smallest \textit{modulus} is the
-dominant singularity $z_1$ of the weighted generating function. Using
-numerical approaches, we find $z_1 \approx 1.0266331946$. We compute the
-proportionality constant of proposition~\ref{th:ass} as $P(z_1)/Q'(z_1)
-\approx 1.3893346$ from which we obtain the final estimate
-$1.3893346/1.0266331946^{101} \approx 0.09769252$. For comparison, a 99\%
-confidence interval obtained by performing 10 billion random simulations
-is $0.097682-0.097698$.
+$S^+_\gamma(z) = H(z)^\top \cdot (I-M(z))^{-1} \cdot T(z)$ and obtain a
+rational function $P(z)/Q(z)$ where $P$ and $Q$ are polynomials of degree
+$35$ and $36$, respectively. The root of $Q$ with smallest
+\textit{modulus} is the dominant singularity $z_1$ of the weighted
+generating function. Using numerical approaches, we find $z_1 \approx
+1.0266331946$. We compute the proportionality constant of
+proposition~\ref{th:ass} as $-P(z_1)/Q'(z_1) \approx 1.3893346$ from which
+we obtain the final estimate $1.3893346/1.0266331946^{101} \approx
+0.09769252$. For comparison, a 99\% confidence interval obtained by
+performing 10 billion random simulations is $0.097682-0.097698$.
 % The magic number is 9023102236 out of 10 billion.
 \end{example}
 
@@ -3401,10 +3542,10 @@ values of the parameters are chosen to match those of
 figure~\ref{fig:simulp} where we used exact seeds. In the conditions
 above, the seeding probabilities are alomst indistinguishable. This does
 not mean that the cost of using MEM seeds is always negligible. When using
-MEMs, the seeding probability goes down as the number of duplicates goes
-up (here we assume that there is only one duplicate). In addition we are
-not separating type I and type II errors, which typically have different
-costs.
+MEMs, the seeding probability decreases as the number of duplicates
+increases (here we assume that there is only one duplicate). In addition
+we are not separating type I and type II errors, which typically have
+different costs.
 
 \begin{figure}[h]
 \centering
@@ -3432,16 +3573,16 @@ does not contain any stretch of size $\gamma$ or greater matching the
 duplicate sequence. We previously called this estimated probability $P_2$.
 We can estimate the probability of type I errors as $P_3-P_2$.
 
-Let us clarify the last statement. Call $A$ the event that the read has no
+Let us clarify the last statement. Call $C$ the event that the read has no
 $\gamma$-MEM seed and $B$ the event that it does not contain an exact
 $\gamma$-seed \emph{and} does not contain any stretch of size $\gamma$ or
-greater matching the duplicate sequence. First observe that $B \subset A$
-so $P(A \cap B^c) = P(A) - P(B)$. Then, $B^c$ is the event that the read
+greater matching the duplicate sequence. First observe that $B \subset C$
+so $P(C \cap B^c) = P(C) - P(B)$. Then, $B^c$ is the event that the read
 contains an exact $\gamma$-seed, a stretch of size $\gamma$ or greater
 matching the duplicate sequence, or both. Another way to describe $B^c$ is
-that ``some hit is found in the read''. So $A \cap B^c$ is the event that
+that ``some hit is found in the read''. So $C \cap B^c$ is the event that
 ``some hit is found, but it is not the target'', which is the definition
-of a type I error. Since $P(A) \approx P_3$ and $P(B) \approx P_2$, the
+of a type I error. Since $P(C) \approx P_3$ and $P(B) \approx P_2$, the
 probability of type I errors is indeed approximately equal to $P_3 - P_2$.
 
 \begin{remark}
@@ -3451,8 +3592,8 @@ section~\ref{sec:fp}.
 \end{remark}
 
 
-The example below shows the probabilities of type I errors are computed in
-practice.
+The example below shows how the probabilities of type I errors when using
+MEM seeds are computed in practice.
 
 
 \begin{example}
@@ -3469,16 +3610,15 @@ performing 10 billion random simulations is $0.0052166-0.0052203$.
 \end{example}
 
 
-Figure~\ref{fig:simulp_mem_fp} illustrates the precision of this estimate
-for difference values of the substitution rate $\kappa$ and of the read
-size $k$. The approximation is grossly inaccurate for $\kappa = 0.05$.
+Figure~\ref{fig:simulp_mem_fp} illustrates the precision of the estimates
+for different values of the substitution rate $\kappa$ and of the read
+size $k$. The approximation is grossly inaccurate for $\kappa = 0.05$,
 where it is even negative for reads under 40 nucleotides. The issue here
-is slow convergence, as mentioned in section~\ref{sec:worst}. The dominant
-singularity is approximately equal to $1.066122$, while the modulus of the
-second and the third is approximately equal to $1.110296$. For $k \leq
-40$, the contribution of the higher order singularities is not negligible;
-using only the dominant singularity we obtain $P_3 \approx 0.158993$,
-compared to $P_3 \approx 0.163655$ when using three singularities.
+is that the approximate coefficients of $S^+_\gamma(z)$ \emph{converge
+too slow}. To illustrate the point, for $k = 40$ and $\kappa = 0.05$, the
+analytic combinatorics estimate $P_3$ is approximately $3\%$ too low,
+but this error is already 5 times the target type I error rate.
+
 
 \begin{figure}[h]
 \centering
@@ -3486,53 +3626,124 @@ compared to $P_3 \approx 0.163655$ when using three singularities.
 \caption{\textbf{Example estimates of MEM seeding probability (one
 duplicate)}. The analytic combinatorics estimates are benchmarked against
 random simulations. Shown on both panels are the probablities that a read
-of given size will give a type I error when using MEM seeds, either
+of given size will yield a type I error when using MEM seeds, either
 estimated by 10,000,000 (left) or 100,000,000 (right) random simulations
-(dots), or by the method described above (lines). The curves are drawn for
-$\gamma=17$ and $p=0.05$, $\kappa=0.05$, $\kappa=0.15$ or $\kappa=0.25$
-(from top to bottom).}
+(dots), or by approximating the coefficients of $S^+_\gamma$ (lines). The
+curves are drawn for $\gamma=17$ and $p=0.05$, $\kappa=0.05$,
+$\kappa=0.15$ or $\kappa=0.25$ (from top to bottom).}
 \label{fig:simulp_mem_fp}
 \end{figure}
 
-Surprisingly, the estimations of $P_3$ in the cases $\kappa=0.15$ and
-$\kappa=0.25$ are equally inacurate, but the errors almost perfectly
-compensate with those on the approximation of $P_2$. Even more
-surprisingly, using three singularities improves the approximations of
-type I error rates for $\kappa=0.05$, but makes them worse for
-$\kappa=0.15$ and $\kappa=0.25$ because the errors on $P_2$ and $P_3$ no
-longer compensate. An emprirical solution is to record the $(p,\kappa)$
-pairs for which to use one or three singularities. Even though this
-solution is not satisfactory from the theoretical point of view, it gives
-accurate approximations for the whole range of parameters, as shown in
-figure~\ref{fig:simulp_mem_fp2}.
+
+Recall that the proof of proposition~\ref{th:ass} shows how we can obtain
+the exact value of $[z^k]S^+_\gamma(z)$ by making use of all the
+singularities of the weighted generating function (see
+remark~\ref{rem:exact}). For a rational function $W(z)=P(z)/Q(z)$,
+
+\begin{equation}
+\label{eq:assfull}
+[z^k]W(z) = -\sum_{j=1}^n\frac{P(z_j)}{Q'(z_j)z_j^{k+1}},
+\end{equation}
+where $z_1, z_2, \ldots, z_n$ are the singularities of $W$ sorted by
+increasing order of \textit{modulus}.
+
+It seems that we could improve the estimate by using more than just the
+dominant singularity. But here we are on slippery ground because using
+more singularities can also make the estimate \emph{less accurate}. This
+may come as a surprise, since the proof of proposition~\ref{th:ass}
+suggests that each singularity improves the approximation. However, the
+fact that the asymptotic estimate converges faster does not mean that
+it is more accurate for small values of $k$.
+
+Figure~\ref{fig:simulp_mem_fp2} illustrates this very vividly. It
+represents the same data as the left panel of
+figure~\ref{fig:simulp_mem_fp}, except that the analytic combinatorics
+estimates are computed with the first three terms of (\ref{eq:assfull})
+instead of just the first. For $\kappa=0.15$ and $\kappa=0.25$ (bottom two
+curves), the approximations were reasonable with only one singularity, but
+they became disastrous with three. In contrast, for $\kappa=0.05$ (top
+curve) adding two singularities made the estimates much more accurate.
 
 
 \begin{figure}[h]
 \centering
 \includegraphics[scale=0.445]{simulp_mem_fp2.pdf}
-\caption{\textbf{Example \textit{ad hoc} estimates of MEM seeding
-probability (one duplicate)}. The analytic combinatorics estimates with
-\textit{ad hoc} adjustments are benchmarked against random simulations.
-Shown on both panels are the probablities that a read of given size will
-give a type I error when using MEM seeds, either estimated by 10,000,000
-(left) or 100,000,000 (right) random simulations (dots), or by the method
-described above (lines). The curves are drawn for $\gamma=17$ and
-$p=0.05$, $\kappa=0.05$, $\kappa=0.15$ or $\kappa=0.25$ (from top to
-bottom). The simulation data points are the same as those shown in
-figure~\ref{fig:simulp_mem_fp}. Three singularities are used to
-approximate $P_3$ for $\kappa=0.05$, and only one for $\kappa=0.15$ and
-$\kappa=0.25$.}
+\caption{\textbf{Higher order asymptotic approximations.}
+The data is the same as that represented in the left panel of
+figure~\ref{fig:simulp_mem_fp}, except that the analytic combinatorics
+estimtates (lines) are computed from three singularities instead of one,
+\textit{i.e.} using the first three terms of (\ref{eq:assfull}).}
 \label{fig:simulp_mem_fp2}
 \end{figure}
 
-We cannot use the method presented in section~\ref{sec:fp} to extend the
-model to more than one duplicate because conditional independence does not
+
+Looking in more detail, we observe that the estimates are improved when
+the singularities of $S^+_\gamma$ have a relatively small imaginary part,
+and they are degraded when the singularities have a large imaginary part.
+Fortunately, these cases are very easily distinguished because the second
+singularities orbit around only two clusters, as shown in
+figure~\ref{fig:bunch_of_singularities}. The trend persits for all the
+tested values of $\gamma$ up to $30$; $z_2$ is either in the real spectrum
+or it is a complex number with a large imaginary part.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.445]{bunch_of_singularities.pdf}
+\caption{\textbf{Non-dominant singularities of $S^+_\gamma$.} The dots
+represent the second singularity of $S^+_{17}$ plotted in the complex
+plane for 2,500 values of $p$ and $\kappa$ between $0.005$ and $0.25$.
+The imaginary part of $z_2$ is either close to $0$ or close to $0.5$.}
+\label{fig:bunch_of_singularities}
+\end{figure}
+
+
+For some values of $p$ and $\kappa$, the coefficients of $S^+_\gamma$ have
+a two-phase decay, whereas for others they have a simple exponential
+decay. Why this is the case is unclear, but two-phase decays are better
+approximated using more than one singularity. If the decay is a simple
+exponential, the second singularity captures some oscillations of the
+coefficients that are irrelevant for the problem at hand and that are
+detrimental to the approximation.
+
+In any event, this distinction between real (or near real) versus complex
+$z_2$ gives a practical method to approximate the coefficients of
+$S^+_\gamma$ with higher precision and from there estimate the type I
+error rate associated with MEM seeds. The overall performance of this
+approach is illustrated in figure~\ref{fig:simulp_mem_fp3}.
+
+
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.445]{simulp_mem_fp3.pdf}
+\caption{\textbf{Example multi-singularity estimates of type I error
+rates.} The analytic combinatorics estimates with either one or three
+singularities (see text) are benchmarked against random simulations. Shown
+on both panels are the probablities that a read of given size will give a
+type I error when using MEM seeds, either estimated by 10,000,000 (left)
+or 100,000,000 (right) random simulations (dots), or by the method
+described above (lines). The curves are drawn for $\gamma=17$ and
+$p=0.05$, $\kappa=0.05$, $\kappa=0.15$ or $\kappa=0.25$ (from top to
+bottom). The simulation data points are the same as those shown in
+figure~\ref{fig:simulp_mem_fp}. Three singularities are used for
+$\kappa=0.05$, and one for $\kappa=0.15$ and $\kappa=0.25$.}
+\label{fig:simulp_mem_fp3}
+\end{figure}
+
+
+
+Extending the estimates to more than one duplicate is more challenging
+that in section~\ref{sec:fp} because conditional independence does not
 hold for MEM seeds. But we can still use the estimates above as a lower
 bound for the probability of type I error. If the proportion of the genome
 that is repeated is $x$ and $P^*$ is the maximum of $P_3-P_2$ relative to
 unknown $\kappa$, then $xP^*$ is again a reasonable lower bound on the
 probability of type I errors.
 
+As in section~\ref{sec:fp}, the methods presented here suffer from the
+difficulty to know the real number of duplicates of the target. Progress
+on parallel research lines will be needed in order to develop a workable
+theory of the relationships between repeated sequences of a genome.
 
 
 
@@ -3550,9 +3761,9 @@ number of errors for reads of different kinds. So far, weighted generating
 functions only marked the size of the reads through the variable $z$. We
 now need to introduce another variable to mark the second quantity, which
 means that we will deal with bivariate weighted generating functions. For
-concreteness, if $a_{k,n}$ is the total weight of seedless reads of size
-$k$ and with $n$ errors, the average number of errors for reads of size
-$k$ is by definition
+concreteness, if $a_{k,n}$ is the total weight of reads of size $k$
+with $n$ errors and without exact seed, the average number of errors for
+such reads is
 
 
 \begin{equation}
@@ -3593,12 +3804,13 @@ to obtain asymptotic estimates for their coefficients. However,
 proposition~\ref{th:ass} will not apply to approximate the coefficients of
 $W_u(z,1)$. Since all the weighted generating functions considered here
 are ratios of polynomials of the form $W(z,u) = P(z,u)/Q(z,u)$, the
-derivative $W_u(z,1)$ can be expressed as $P_u(z,1)/Q(z,1) -
-P(z,1)Q_u(z,1)/Q(z,1)^2$. Because of the term $Q(z,1)^2$ at the
+derivative $W_u(z,1)$ can be expressed as $\big(P_u(z,1)Q(z,1) -
+P(z,1)Q_u(z,1)\big)/Q(z,1)^2$. Because of the term $Q(z,1)^2$ at the
 denominator, the singularities of $W_u(z,1)$ are not simple poles.
 
-Proposition~\ref{th:ass2} below shows how to extract the coefficients of
-weighted generating functions in this particular case.
+We need to work out new asymptotic estimates. Proposition~\ref{th:ass2}
+below shows how to extract the coefficients of weighted generating
+functions in this particular case.
 
 
 
@@ -3606,7 +3818,7 @@ weighted generating functions in this particular case.
 \begin{proposition}
 \label{th:ass2}
 If a function $W(z)$ is the ratio of two polynomials $P(z)/Q(z)^2$, and
-$Q$ has only simple roots with distinct \textit{moduli}, then
+$Q$ has only simple roots, then
 
 \begin{equation}
 \label{eq:ass2}
@@ -3637,8 +3849,8 @@ For $|z| < a$ we have
   \left( \frac{1}{1-z/a} \right)
 = a \sum_{k=0}^\infty \frac{kz^{k-1}}{a^k},
 \end{equation*}
-where the last equality is obtained by differentiating after applying
-lemma~\ref{lemma:poles}.
+where the last equality is obtained by applying lemma~\ref{lemma:poles}
+and differentiating with respect to $z$.
 \end{proof}
 
 We now prove proposition~\ref{th:ass2}.
@@ -3669,9 +3881,9 @@ coefficient of $z^k$ in $P(z)/Q(z)^2$ can be expressed as
 \end{equation}
 
 The sum above is dominated by the term with the highest exponential rate
-of increase, \textit{i.e.} $j=1$ because $z_1$ has smallest modulus by
-definition. Thus, the coefficient of $z^k$ in $P(z)/Q(z)^2$ is
-asymptotically equivalent to 
+of increase, \textit{i.e.} $j=1$ because $z_1$ has smallest
+\textit{modulus} by definition. Thus, the coefficient of $z^k$ in
+$P(z)/Q(z)^2$ is asymptotically equivalent to 
 
 \begin{equation*}
 (k+1)\frac{\alpha_1}{z_1^{k+2}}-\frac{\beta_1}{z_1^{k+1}}.
@@ -3736,32 +3948,31 @@ expression
 (k+1)\frac{P(z_1)}{Q'(z_1)^2}\frac{1}{z_1^{k+2}}.
 \end{equation}
 
-However, the convergence of expression (\ref{eq:ass3}) is slow. Indeed,
-dividing the exact expression (\ref{eq:fullass2}) by (\ref{eq:ass3}) gives
-an error term in $O(1/k)$. In comparison, dividing (\ref{eq:fullass2}) by
-(\ref{eq:ass2}) gives an error term in $O(|z_1/z_2|^k)$, which decreases
-exponentially, as in proposition~\ref{th:ass}.
+However, the convergence of expression (\ref{eq:ass3}) is \emph{slow}.
+Indeed, dividing the exact expression (\ref{eq:fullass2}) by
+(\ref{eq:ass3}) gives an error term in $O(1/k)$. In comparison, dividing
+(\ref{eq:fullass2}) by (\ref{eq:ass2}) gives an error term in
+$O(|z_1/z_2|^k)$, which decreases exponentially, as in
+proposition~\ref{th:ass}.
 \end{remark}
 
 
 We are now ready to approximate the mean number of errors in reads of
-different kinds. We treat the distinct types of errors separately, in the
-framework of the corresponding error model from
-section~\ref{sec:substitutions} to \ref{sec:insertions}.
+different kinds, treating the distinct types of errors separately.
 
 
 \subsection{Substitutions}
 \label{sec:avsub}
 
-Applying a now familiar strategy, we write the generating function of
-simple objects that we combine them into more complex objects. Recall from
-section~\ref{sec:substitutions} that in the uniform substitution model,
-the weighted generating function of substitutions is $pz$, where $p$ is
-the error rate. In order to mark them with the variable $u$, we replace
-$pz$ by $pzu$. For every subtitution, the power of $z$ increases by $1$,
-so the size of the read increases by $1$. The power of $u$ also increases
-by $1$ irrespective of the size, which allows us to mark the number of
-substitutions.
+We fist find the average number of substitutions in the simple error model
+of section~\ref{sec:substitutions}. Applying a now familiar strategy, we
+write the generating function of simple objects that we combine into more
+complex objects. Recall that in the uniform substitution model, the
+weighted generating function of substitutions is $pz$, where $p$ is the
+error rate. Marking substitutions with the variable $u$ is as simple as
+replacing their weighted generating function by $pzu$. For every
+substitution in the read, the power of $u$ increases by $1$, while the
+power of $z$ still increases by $1$ for every nucleotide.
 
 We could derive the weighted generating function by the transfer matrix
 method described in section~\ref{sec:substitutions}, but we can get an
@@ -3783,15 +3994,15 @@ S(z,u) = \frac{1+F_\gamma(z)}{1-pzu\big( 1+F_\gamma(z) \big)}.
 \end{equation}
 
 
-$S(z,1)$ is simply the weighted generating function of seedless reads
-derived in section~\ref{sec:substitutions}, and for which we already
-know the coefficient asymptotics. So we already have the denominator of
+$S(z,1)$ is simply the weighted generating function of reads without seed
+derived in section~\ref{sec:substitutions}, and for which we already know
+the coefficient asymptotics. So we already have the denominator of
 (\ref{eq:av}). Now differentiating (\ref{eq:Szu}) with respect to $u$, we
 obtain
 
 \begin{equation}
 \label{eq:dSdu}
-\frac{\partial }{\partial u}
+S_u(z,1) = \frac{\partial }{\partial u}
 \left(\frac{1+F_\gamma(z)}{1-pzu\big( 1+F_\gamma(z) \big)}
 \right) \Biggr|_{\substack{\\u=1}} = 
 \frac{pz(1+F_\gamma(z))^2}{\big( 1 - pz(1+F_\gamma(z)) \big)^2}.
@@ -3811,12 +4022,12 @@ make this result more accurate in the following proposition.
 \label{th:avsub}
 Under the assumptions of the error model of
 section~\ref{sec:substitutions}, the average number of substitutions in
-seedless reads of size $k$ is asymptotically equivalent to
+reads without seed is asymptotically equivalent to
 
 \begin{equation*}
 \frac{(1-qz)(C_1(k+1) - C_2)}{1-(\gamma+1-\gamma qz_1)(qz_1)^\gamma},
 \end{equation*}
-with
+where $k$ is the size of the read, where
 
 \begin{gather*}
 C_1 = 1-(qz_1)^\gamma, \text{ and} \\
@@ -3825,7 +4036,7 @@ C_2 = \frac{
 (1+(1-qz_1)\gamma^2-2\gamma)(qz_1)^{2\gamma} \big)}
 {1-(\gamma+1-\gamma qz_1)(qz_1)^\gamma},
 \end{gather*}
-and where $z_1$ is the only positive root of the polynomial
+and where $z_1$ is the only real positive root of the polynomial
 $1-pz(1+F_\gamma(z))$.
 \end{proposition}
 
@@ -3833,12 +4044,6 @@ $1-pz(1+F_\gamma(z))$.
 Apply proposition~\ref{th:ass2} to (\ref{eq:dSdu}), use
 proposition~\ref{th:p} and simplify.
 \end{proof}
-
-\begin{remark}
-The estimate obtained from (\ref{eq:ass3}) instead of (\ref{eq:ass2})
-increases linearly with $k$. In this case, only the relative error
-vanishes asymptotically. The absolute error remains constant.
-\end{remark}
 
 
 \begin{figure}[h]
@@ -3854,9 +4059,9 @@ top).}
 \end{figure}
 
 Figure~\ref{fig:simulavsub} illustrates the accuracy of the estimate. The
-affine relationshiop between the average number of errors and the size of
-the read without exact seed is apparent, and the approximations are very
-close to the target values.
+affine relationship between the average number of errors and the size of
+the read is apparent. Also, the approximations are very close to the
+target values.
 
 \begin{remark}
 What about the average number of substitutions in reads that contain a
@@ -3864,20 +4069,20 @@ $\gamma$-exact seed? We can compute it indirectly from the quantities that
 we already have defined.
 
 The average number of substitutions for reads of size $k$ (regardless of
-whether they contain a seed) is $pk$. Call $P_1$ the probability that a
-read of size $k$ contains no seed and $E$ the average number of
+whether they contain a seed) is $pk$. Call $P_{1,k}$ the probability that
+a read of size $k$ contains no seed and $E_k$ the average number of
 substitutions in such reads. The quantity of interest, $x$ follows the
 relationship
 
 \begin{equation*}
-P_1E + (1-P_1)x = pk.
+P_{1,k}E_k + (1-P_{1,k})x = pk.
 \end{equation*}
 
 From this we see that the average number of substitutions in reads that
-contain a $\gamma$-exact seed is $(pk - P_1E) / (1-P_1)$. This
-relationship is not affine because $P_1$ decreases exponentially as $k$
-increases, but for long reads $P_1$ vanishes so it is approximately
-linear and equal to $pk$.
+contain a $\gamma$-exact seed is $(pk - P_{1,k}E_k) / (1-P_{1,k})$. This
+relationship is not affine because $P_{1,k}$ decreases exponentially as
+$k$ increases. But for long reads $P_{1,k}$ vanishes so the average is
+approximately linear and equal to $pk$.
 \end{remark}
 
 
@@ -3885,8 +4090,8 @@ linear and equal to $pk$.
 \subsection{Deletions}
 \label{sec:avdel}
 
-To count the average number of deletions, we take the weighted generating
-function of the reads without seed in the error model of
+To count the average number of deletions, we could take the weighted
+generating function of the reads without seed in the error model of
 section~\ref{sec:deletions}, namely
 
 \begin{equation}
@@ -3895,22 +4100,22 @@ section~\ref{sec:deletions}, namely
   {1-pz - \big(pz(1-\delta) + \delta\big)F_\gamma(z)}.
 \end{equation}
 
-Here it is important to remember that for simplicity, equation
-(\ref{eq:Sdel}) ignores the deletions that occur immediately before and
-after substitutions, because they have no impact on the presence of a
-seed. For the purpose of counting deletions, we need to take them all into
-consideration, but this requires working with the proper weighted
-generating function.
+But here it is important to remember that, equation (\ref{eq:Sdel})
+ignores the deletions that occur immediately before and after
+substitutions, because they have no impact on the presence of a seed. For
+the purpose of counting deletions, we need to take them \emph{all} into
+consideration, even those that do not interrupt any error-free interval.
+This requires working out the proper weighted generating function.
 
 A read can be thought of as a walk on the graph shown in
-figure~\ref{fig:deletions2}. Even though deletions appear as an explicit
-state, their size is $0$ and they occur only between nucleotides (which
-implies that a read can neither start nor end with a deletion). Also, a
-deletion must be followed by either a match or a substitution; it cannot
-be followed by a deletion. The reason is that a deletion has size $0$
-regardless the number of deleted nucleotides. In the symbolic
-representation of the read, either there is a deletion of any size between
-two nucleotides, or there is no deletion.
+figure~\ref{fig:deletions2}. On this graph, deletions appear as a separate
+vertex (unlike in figure~\ref{fig:deletions}). Their size is $0$ and they
+occur only between nucleotides, which implies that a read can neither
+start nor end with a deletion. Also, a deletion must be followed by either
+a match or a substitution; it cannot be followed by a deletion. The reason
+is that a deletion has size $0$ regardless the number of deleted
+nucleotides. In the symbolic representation of the read, either there is a
+deletion of any size between two nucleotides, or there is no deletion.
 
 \begin{figure}[h]
 \centering
@@ -3925,22 +4130,19 @@ weighted generating functions $F(z)$, $pz$ and $\delta$.}
 Here, reads are sequences of error-free intervals withs symbol $\Delta_0$
 and weighted generating function $F(z)$ or substitutions with symbol $S$
 and weighted generating function $pz$, or deletions with symbol $D$ and
-weighted generating function $\delta$. The only forbidden transitions in
-the sequence are that two error-free intervals cannot follow each other
-(together they form a single error-free interval) and two deletions cannot
-follow each other (together they form a single deletion). In contrast with
-figure~\ref{fig:deletions} where deletions do not have their own vertex,
-we need to account for the absence of deletions in transitions between
-error-free intervals and substitutions. This is done by prepending a
-weight equal to $(1-\delta)$.
+weighted generating function $\delta$. Two error-free intervals cannot
+follow each other (together they form a single error-free interval) and
+two deletions cannot follow each other (together they form a single
+deletion). Here we also need to account for the absence of deletions in
+transitions between error-free intervals and substitutions. This is done
+by weighing the corresponding transitions by a factor $(1-\delta)$.
 
-As in the previous section, in order to count deletions with parameter $v$
-we their weigted generating function by $\delta v$. For every deletion the
-power of $v$ increases by $1$ (and the power of $z$ remains the same).
-This allows us to mark the number of deletions. The transfer matrix then
-becomes a function of $z$, marking the size of the reads, and of $v$,
-marking the number of deletions. The final expression of the transfer
-matrix is
+As in the previous section, in order to count deletions with parameter
+$v$, we replace their weigted generating function by $\delta v$. For every
+deletion the power of $v$ increases by $1$ (and the power of $z$ does not
+change). The transfer matrix then becomes a function of $z$, marking the
+size of the reads, and of $v$, marking the number of deletions. The final
+expression of the transfer matrix is
 
 
 
@@ -4010,10 +4212,10 @@ fit and the approximations are close the target values.
 
 Finally, we compute the average amount of insertions for reads without
 exact seed in the full error model of section~\ref{sec:insertions}. The
-simplest way to do this is to mark insertions directly in the transfer
-matrix where they appear explicitly. For this, we append the extra
-variable $w$ to their weighted generating functions and obtain the
-following transfer matrix
+simplest way to do this is to mark insertions in the transfer matrix where
+they appear explicitly. For this, we append the extra variable $w$ to
+their weighted generating functions and obtain the following transfer
+matrix
 
 \begin{equation*}
 M(z,w) = 
@@ -4031,17 +4233,16 @@ M(z,w) =
 In the expression above, we have used $F_\gamma(z)$ instead of $F(z)$
 because we are directly considering reads without seed. We also update the
 head and tail vectors $H(z,w) = (F_\gamma(z), pz, rzw)^\top$ and
-$T(z,w)=(1,1,1)^\top$, and we add the empty sequence, which does not
-contain any insertion, so $\psi(z,w) = 1$. Following
-proposition~\ref{th:HBT}, $S(z,w) = \psi(z,w) + H(z,w)^\top \cdot
-(I-M(z,w))^{-1} \cdot T(z,w)$.
+$T(z,w)=(1,1,1)^\top$, and we add the empty sequence so $\psi(z,w) = 1$.
+Following proposition~\ref{th:HBT}, $S(z,w) = \psi(z,w) + H(z,w)^\top
+\cdot (I-M(z,w))^{-1} \cdot T(z,w)$.
 
-As explained in section~\ref{sec:genapp}, we obtain the average number of
-insertions by computing ratio (\ref{eq:av}) from the coefficients of
-$S(z,1)$ and of $S_w(z,1)$. Computing $S(z,1)$ yields expression
-(\ref{eq:Sindel}), \textit{i.e.} the weighted generating function of reads
-without exact seed. By differentiating $S(z,w)$ and setting $w=1$ we find
-$S_w(z,1)$ to be equal to
+Once again, we obtain the average number of insertions by computing ratio
+(\ref{eq:av}) from the coefficients of $S(z,1)$ and of those of
+$S_w(z,1)$. Computing $S(z,1)$ yields expression (\ref{eq:Sindel}),
+\textit{i.e.} the weighted generating function of reads without exact
+seed. By differentiating $S(z,w)$ and setting $w=1$ we find $S_w(z,1)$ to
+be equal to
 
 \begin{equation}
 \label{eq:full_insertions}
@@ -4056,7 +4257,7 @@ is a first degree polynomial defined as
 c(z) = 1-\tilde{r}-\delta(1-r) - (1-\delta)(\tilde{r}-r)pz.
 \end{equation*}
 
-As in the section~\ref{sec:avsub}, we derive the asymptotics by applying
+As in section~\ref{sec:avsub}, we derive the asymptotics by applying
 proposition~\ref{th:ass2} to (\ref{eq:full_insertions}) and by applying
 proposition~\ref{th:ass} to (\ref{eq:Sindel}). The terms $z_1^{k+1}$ cancel
 out when computing the ratio as per equation (\ref{eq:av}), so the number
@@ -4150,37 +4351,53 @@ purpose here is to show how the general strategy of analytic combinatorics
 gives reasonable solutions to problems that were previously difficult to
 address.
 
+We have seen through multiple applications that the general strategy is to
+define combinatorial ``atoms'' with simple weighted generating functions
+(\textit{e.g.} nucleotide symbols), combine these atoms into objects of
+increasing complexity (\textit{e.g.} error-free intervals or reads
+without seed), construct their weighted generating functions from simple
+rules (mostly through proposition~\ref{th:HBT}), and finally analyze the
+singularities of the weighted generating functions to approximate the
+quantities of interest (through propositions~\ref{th:ass} and
+\ref{th:ass2}).
+
 When using exact seeds, inexact seeds or MEM seeds, the estimates of the
 seeding probabilities are robust and relatively straightforward. The data
 collected during the alignment can be used to estimates the parameters of
 the error model to auto-tune the seeding heuristic during the run. This
-gives tight control of the type II error rate. More challenging is to
-control the type I error rate. The estimates show some numeric instability
-when using MEM seeds, but the real difficulty is the lack of theoretical
-background on the seeding process when the target is duplicated.
-Significant progress on this line may not come from analytic
-combinatorics, but from more appropriate data structures or algorithms to
-seed such sequences more efficiently.
+gives tight control over the seeding probability. More challenging is to
+control the type I error rate. The main difficulty is the lack of
+theoretical background on the seeding process when the target is
+duplicated. Significant progress on this line may not come from analytic
+combinatorics, but from new data structures or algorithms to seed such
+sequences more efficiently.
 
 Seeding is not only used in mapping, but also in other alignment problems.
 In this regard, the work presented above can be applied to different
 contexts. That said, mapping high throughput sequencing reads is a ``sweet
-spot'' for analytic combinatorics because the sequences are long enough
-for the approximations to be accurate.
+spot'' for analytic combinatorics because the sequences are usually long
+enough for the approximations to be accurate.
 
-Finally, the concepts developed above can also be used to sample reads of
-different kinds. The analagoy between reads and walks on graphs with
-weighted edges allows us to generate reads by simulating a random walk.
-The trick is to convert the transfer matrix into a transition matrix by
-using the weights of the objects as their probabilities of occurrence.
+Finally, the concepts developed above can also be used to generate random
+reads of different kinds. The analogy between reads and walks on graphs
+with weighted edges allows us to generate reads by simulating a random
+walk. The trick is to convert the transfer matrix into a transition matrix
+by using the weights of the objects as their probabilities of occurrence.
 
 In summary, analytic combinatorics is a powerful strategy that comes with
-a rich toolbox with many applications in modern bioinformatics. We expect
+a rich toolbox with many applications in modern bioinformatics. I expect
 more applications to see the light as new algorithms and new heuristics
 are developed in the future.
 
 
+\section*{Acknowledgements}
 
+I would like to thank Eduard Valera Zorita and Patrick Berger for their
+critical comments and their useful suggestions about the manuscript. I
+acknowledge the financial support of the Spanish Ministry of Economy and
+Competitiveness (‘Centro de Excelencia Severo Ochoa 2013-2017’, Plan
+Nacional BFU2012-37168), of the CERCA Programme~/~Generalitat de
+Catalunya, and of the European Research Council (Synergy Grant 609989).
 
 
 %---------------------------------------------------------------

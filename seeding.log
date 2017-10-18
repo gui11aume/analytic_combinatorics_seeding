@@ -1,15 +1,15 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.9.6)  11 OCT 2017 01:13
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2014.4.27)  18 OCT 2017 16:17
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
 **seeding.tex
 (./seeding.tex
-LaTeX2e <2016/02/01>
-Babel <3.9q> and hyphenation patterns for 81 language(s) loaded.
+LaTeX2e <2011/06/27>
+Babel <3.9h> and hyphenation patterns for 78 languages loaded.
 (/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
-Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+Document Class: article 2007/10/19 v1.4h Standard LaTeX document class
 (/usr/share/texlive/texmf-dist/tex/latex/base/size10.clo
-File: size10.clo 2014/09/29 v1.4h Standard LaTeX file (size option)
+File: size10.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
 )
 \c@part=\count79
 \c@section=\count80
@@ -23,78 +23,63 @@ File: size10.clo 2014/09/29 v1.4h Standard LaTeX file (size option)
 \belowcaptionskip=\skip42
 \bibindent=\dimen102
 )
-(/usr/share/texlive/texmf-dist/tex/generic/babel/babel.sty
-Package: babel 2016/02/24 3.9q The Babel package
-
-(/usr/share/texlive/texmf-dist/tex/generic/babel-english/english.ldf
-Language: english 2012/08/20 v3.3p English support from the babel system
-
-(/usr/share/texlive/texmf-dist/tex/generic/babel/babel.def
-File: babel.def 2016/02/24 3.9q Babel common definitions
-\babel@savecnt=\count87
-\U@D=\dimen103
-)
-\l@canadian = a dialect from \language\l@american 
-\l@australian = a dialect from \language\l@british 
-\l@newzealand = a dialect from \language\l@british 
-))
 (/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsmath.sty
-Package: amsmath 2016/03/03 v2.15a AMS math features
+Package: amsmath 2013/01/14 v2.14 AMS math features
 \@mathmargin=\skip43
 
 For additional information on amsmath, use the `?' option.
 (/usr/share/texlive/texmf-dist/tex/latex/amsmath/amstext.sty
-Package: amstext 2000/06/29 v2.01 AMS text
+Package: amstext 2000/06/29 v2.01
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsgen.sty
-File: amsgen.sty 1999/11/30 v2.0 generic functions
+File: amsgen.sty 1999/11/30 v2.0
 \@emptytoks=\toks14
-\ex@=\dimen104
+\ex@=\dimen103
 ))
 (/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsbsy.sty
-Package: amsbsy 1999/11/29 v1.2d Bold Symbols
-\pmbraise@=\dimen105
+Package: amsbsy 1999/11/29 v1.2d
+\pmbraise@=\dimen104
 )
 (/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsopn.sty
 Package: amsopn 1999/12/14 v2.01 operator names
 )
-\inf@bad=\count88
-LaTeX Info: Redefining \frac on input line 199.
-\uproot@=\count89
-\leftroot@=\count90
-LaTeX Info: Redefining \overline on input line 297.
-\classnum@=\count91
-\DOTSCASE@=\count92
-LaTeX Info: Redefining \ldots on input line 394.
-LaTeX Info: Redefining \dots on input line 397.
-LaTeX Info: Redefining \cdots on input line 518.
+\inf@bad=\count87
+LaTeX Info: Redefining \frac on input line 210.
+\uproot@=\count88
+\leftroot@=\count89
+LaTeX Info: Redefining \overline on input line 306.
+\classnum@=\count90
+\DOTSCASE@=\count91
+LaTeX Info: Redefining \ldots on input line 378.
+LaTeX Info: Redefining \dots on input line 381.
+LaTeX Info: Redefining \cdots on input line 466.
 \Mathstrutbox@=\box26
 \strutbox@=\box27
-\big@size=\dimen106
-LaTeX Font Info:    Redeclaring font encoding OML on input line 630.
-LaTeX Font Info:    Redeclaring font encoding OMS on input line 631.
-\macc@depth=\count93
-\c@MaxMatrixCols=\count94
+\big@size=\dimen105
+LaTeX Font Info:    Redeclaring font encoding OML on input line 566.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 567.
+\macc@depth=\count92
+\c@MaxMatrixCols=\count93
 \dotsspace@=\muskip10
-\c@parentequation=\count95
-\dspbrk@lvl=\count96
+\c@parentequation=\count94
+\dspbrk@lvl=\count95
 \tag@help=\toks15
-\row@=\count97
-\column@=\count98
-\maxfields@=\count99
+\row@=\count96
+\column@=\count97
+\maxfields@=\count98
 \andhelp@=\toks16
-\eqnshift@=\dimen107
-\alignsep@=\dimen108
-\tagshift@=\dimen109
-\tagwidth@=\dimen110
-\totwidth@=\dimen111
-\lineht@=\dimen112
+\eqnshift@=\dimen106
+\alignsep@=\dimen107
+\tagshift@=\dimen108
+\tagwidth@=\dimen109
+\totwidth@=\dimen110
+\lineht@=\dimen111
 \@envbody=\toks17
 \multlinegap=\skip44
 \multlinetaggap=\skip45
 \mathdisplay@stack=\toks18
-LaTeX Info: Redefining \[ on input line 2735.
-LaTeX Info: Redefining \] on input line 2736.
+LaTeX Info: Redefining \[ on input line 2665.
+LaTeX Info: Redefining \] on input line 2666.
 )
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/amssymb.sty
 Package: amssymb 2013/01/14 v3.01 AMS font symbols
@@ -107,7 +92,7 @@ LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
 (Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
 ))
 (/usr/share/texlive/texmf-dist/tex/latex/amscls/amsthm.sty
-Package: amsthm 2015/03/04 v2.20.2
+Package: amsthm 2004/08/06 v2.20
 \thm@style=\toks19
 \thm@bodyfont=\toks20
 \thm@headfont=\toks21
@@ -118,13 +103,34 @@ Package: amsthm 2015/03/04 v2.20.2
 \thm@headsep=\skip48
 \dth@everypar=\toks24
 )
+(/usr/share/texlive/texmf-dist/tex/latex/preprint/authblk.sty
+Package: authblk 2001/02/27 1.3 (PWD)
+\affilsep=\skip49
+\@affilsep=\skip50
+\c@Maxaffil=\count99
+\c@authors=\count100
+\c@affil=\count101
+)
+(/usr/share/texlive/texmf-dist/tex/generic/babel/babel.sty
+Package: babel 2013/12/03 3.9h The Babel package
+
+(/usr/share/texlive/texmf-dist/tex/generic/babel-english/english.ldf
+Language: english 2012/08/20 v3.3p English support from the babel system
+
+(/usr/share/texlive/texmf-dist/tex/generic/babel/babel.def
+File: babel.def 2013/12/03 3.9h Babel common definitions
+\babel@savecnt=\count102
+\U@D=\dimen112
+)
+\l@canadian = a dialect from \language\l@american 
+\l@australian = a dialect from \language\l@british 
+\l@newzealand = a dialect from \language\l@british 
+))
 (/usr/share/texlive/texmf-dist/tex/latex/blkarray/blkarray.sty
-Package: blkarray 2015/02/27 v0.07 Block array (dpc)
-\c@BAenumi=\count100
-\BA@col=\count101
-\BA@block@cnt=\count102
+\c@BAenumi=\count103
+\BA@col=\count104
+\BA@block@cnt=\count105
 \BA@final@box=\box28
-\BA@first@box=\box29
 \BA@colsep=\dimen113
 \BA@ftn=\toks25
 \BAextrarowheight=\dimen114
@@ -132,18 +138,18 @@ Package: blkarray 2015/02/27 v0.07 Block array (dpc)
 \BAarrayrulewidth=\dimen116
 \BAdoublerulesep=\dimen117
 \BAfootskip=\dimen118
-\BA@dashbox=\box30
-\BA@ddashbox=\box31
+\BA@dashbox=\box29
+\BA@ddashbox=\box30
 )
 (/usr/share/texlive/texmf-dist/tex/latex/caption/caption.sty
-Package: caption 2016/02/21 v3.3-144 Customizing captions (AR)
+Package: caption 2013/05/02 v3.3-89 Customizing captions (AR)
 
 (/usr/share/texlive/texmf-dist/tex/latex/caption/caption3.sty
-Package: caption3 2016/02/04 v1.7-139 caption3 kernel (AR)
-Package caption3 Info: TeX engine: e-TeX on input line 67.
+Package: caption3 2013/05/02 v1.6-88 caption3 kernel (AR)
+Package caption3 Info: TeX engine: e-TeX on input line 57.
 
 (/usr/share/texlive/texmf-dist/tex/latex/graphics/keyval.sty
-Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
+Package: keyval 1999/03/16 v1.13 key=value parser (DPC)
 \KV@toks@=\toks26
 )
 \captionmargin=\dimen119
@@ -154,26 +160,26 @@ Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
 \caption@parindent=\dimen124
 \caption@hangindent=\dimen125
 )
-\c@ContinuedFloat=\count103
+\c@ContinuedFloat=\count106
 )
 (/usr/share/texlive/texmf-dist/tex/latex/cite/cite.sty
 LaTeX Info: Redefining \cite on input line 302.
-LaTeX Info: Redefining \nocite on input line 332.
-Package: cite 2015/02/27  v 5.5
+LaTeX Info: Redefining \nocite on input line 373.
+Package: cite 2010/09/10  v 5.3
 )
 (/usr/share/texlive/texmf-dist/tex/latex/graphics/graphicx.sty
-Package: graphicx 2014/10/28 v1.0g Enhanced LaTeX Graphics (DPC,SPQR)
+Package: graphicx 1999/02/16 v1.0f Enhanced LaTeX Graphics (DPC,SPQR)
 
 (/usr/share/texlive/texmf-dist/tex/latex/graphics/graphics.sty
-Package: graphics 2016/01/03 v1.0q Standard LaTeX Graphics (DPC,SPQR)
+Package: graphics 2009/02/05 v1.0o Standard LaTeX Graphics (DPC,SPQR)
 
 (/usr/share/texlive/texmf-dist/tex/latex/graphics/trig.sty
-Package: trig 2016/01/03 v1.10 sin cos tan (DPC)
+Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
 )
 (/usr/share/texlive/texmf-dist/tex/latex/latexconfig/graphics.cfg
 File: graphics.cfg 2010/04/23 v1.9 graphics configuration of TeX Live
 )
-Package graphics Info: Driver file: pdftex.def on input line 95.
+Package graphics Info: Driver file: pdftex.def on input line 91.
 
 (/usr/share/texlive/texmf-dist/tex/latex/pdftex-def/pdftex.def
 File: pdftex.def 2011/05/27 v0.06d Graphics/color for pdfTeX
@@ -184,48 +190,48 @@ Package: infwarerr 2010/04/08 v1.3 Providing info/warning/error messages (HO)
 (/usr/share/texlive/texmf-dist/tex/generic/oberdiek/ltxcmds.sty
 Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
 )
-\Gread@gobject=\count104
+\Gread@gobject=\count107
 ))
 \Gin@req@height=\dimen126
 \Gin@req@width=\dimen127
 )
-\c@algorithm=\count105
-\c@corollary=\count106
-\c@definition=\count107
-\c@lemma=\count108
-\c@proposition=\count109
-\c@examplecounter=\count110
-\c@remarkcounter=\count111
+\c@algorithm=\count108
+\c@corollary=\count109
+\c@definition=\count110
+\c@lemma=\count111
+\c@proposition=\count112
+\c@examplecounter=\count113
+\c@remarkcounter=\count114
 
 (./seeding.aux)
 \openout1 = `seeding.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 73.
-LaTeX Font Info:    ... okay on input line 73.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 73.
-LaTeX Font Info:    ... okay on input line 73.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 73.
-LaTeX Font Info:    ... okay on input line 73.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 73.
-LaTeX Font Info:    ... okay on input line 73.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 73.
-LaTeX Font Info:    ... okay on input line 73.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 73.
-LaTeX Font Info:    ... okay on input line 73.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 82.
+LaTeX Font Info:    ... okay on input line 82.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 82.
+LaTeX Font Info:    ... okay on input line 82.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 82.
+LaTeX Font Info:    ... okay on input line 82.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 82.
+LaTeX Font Info:    ... okay on input line 82.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 82.
+LaTeX Font Info:    ... okay on input line 82.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 82.
+LaTeX Font Info:    ... okay on input line 82.
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: End \AtBeginDocument code.
  (/usr/share/texlive/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count112
+\scratchcounter=\count115
 \scratchdimen=\dimen128
-\scratchbox=\box32
-\nofMPsegments=\count113
-\nofMParguments=\count114
+\scratchbox=\box31
+\nofMPsegments=\count116
+\nofMParguments=\count117
 \everyMPshowfont=\toks27
-\MPscratchCnt=\count115
+\MPscratchCnt=\count118
 \MPscratchDim=\dimen129
-\MPnumerator=\count116
-\makeMPintoPDFobject=\count117
+\MPnumerator=\count119
+\makeMPintoPDFobject=\count120
 \everyMPtoPDFconversion=\toks28
 ) (/usr/share/texlive/texmf-dist/tex/generic/oberdiek/pdftexcmds.sty
 Package: pdftexcmds 2011/11/29 v0.20 Utility functions of pdfTeX for LuaTeX (HO
@@ -275,67 +281,71 @@ G,.JBIG2,.JB2,.eps]
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-LaTeX Font Info:    Try loading font information for U+msa on input line 75.
+LaTeX Font Info:    Try loading font information for U+msa on input line 84.
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 75.
+LaTeX Font Info:    Try loading font information for U+msb on input line 84.
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-)
-<cloud_genome.pdf, id=1, 295.1025pt x 289.7495pt>
+) [1
+
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
+<cloud_genome.pdf, id=15, 295.1025pt x 289.7495pt>
 File: cloud_genome.pdf Graphic file (type pdf)
  <use cloud_genome.pdf>
-Package pdftex.def Info: cloud_genome.pdf used on input line 125.
+Package pdftex.def Info: cloud_genome.pdf used on input line 154.
 (pdftex.def)             Requested size: 236.0823pt x 231.7999pt.
 
-[1
 
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] [2 <./cloud_genome.pdf>] [
-3] [4] [5] [6] <CG_transitions.pdf, id=88, 126.80675pt x 126.80675pt>
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[2] [3 <./cloud_genome.pdf>] [4] [5] [6]
+<CG_transitions.pdf, id=87, 126.80675pt x 126.80675pt>
 File: CG_transitions.pdf Graphic file (type pdf)
 
 <use CG_transitions.pdf>
-Package pdftex.def Info: CG_transitions.pdf used on input line 452.
+Package pdftex.def Info: CG_transitions.pdf used on input line 496.
 (pdftex.def)             Requested size: 114.125pt x 114.125pt.
 LaTeX Font Info:    Font shape `OT1/cmtt/bx/n' in size <9> not available
-(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 456.
- [7 <./CG_transitions.pdf>]
-<cloud.pdf, id=117, 135.50626pt x 127.47626pt>
+(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 500.
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[7] <cloud.pdf, id=93, 135.50626pt x 127.47626pt>
 File: cloud.pdf Graphic file (type pdf)
  <use cloud.pdf>
-Package pdftex.def Info: cloud.pdf used on input line 512.
+Package pdftex.def Info: cloud.pdf used on input line 557.
 (pdftex.def)             Requested size: 135.5059pt x 127.47594pt.
-
-<A.pdf, id=118, 131.74219pt x 103.63719pt>
+ [8 <./CG_transitions.pdf>] <A.pdf, id=121, 131.74219pt x 103.63719pt>
 File: A.pdf Graphic file (type pdf)
  <use A.pdf>
-Package pdftex.def Info: A.pdf used on input line 547.
+Package pdftex.def Info: A.pdf used on input line 600.
 (pdftex.def)             Requested size: 131.74185pt x 103.63692pt.
- [8 <./cloud.pdf>]
-<AB_complete.pdf, id=142, 164.615pt x 129.73468pt>
+ [9 <./cloud.pdf>] <AB_complete.pdf, id=145, 164.615pt x 129.73468pt>
 File: AB_complete.pdf Graphic file (type pdf)
- <use AB_complete.pdf>
-Package pdftex.def Info: AB_complete.pdf used on input line 580.
+
+<use AB_complete.pdf>
+Package pdftex.def Info: AB_complete.pdf used on input line 633.
 (pdftex.def)             Requested size: 164.6146pt x 129.73436pt.
-
-[9 <./A.pdf> <./AB_complete.pdf>] <AUB.pdf, id=186, 147.13268pt x 122.4575pt>
+ [10 <./A.pdf> <./AB_complete.pdf>]
+<AUB.pdf, id=189, 147.13268pt x 122.4575pt>
 File: AUB.pdf Graphic file (type pdf)
-
-<use AUB.pdf>
-Package pdftex.def Info: AUB.pdf used on input line 623.
+ <use AUB.pdf>
+Package pdftex.def Info: AUB.pdf used on input line 676.
 (pdftex.def)             Requested size: 147.13231pt x 122.45718pt.
- <AB_incomplete.pdf, id=187, 121.45375pt x 125.97063pt>
-File: AB_incomplete.pdf Graphic file (type pdf)
 
-<use AB_incomplete.pdf>
-Package pdftex.def Info: AB_incomplete.pdf used on input line 663.
+<AB_incomplete.pdf, id=190, 121.45375pt x 125.97063pt>
+File: AB_incomplete.pdf Graphic file (type pdf)
+ <use AB_incomplete.pdf>
+Package pdftex.def Info: AB_incomplete.pdf used on input line 716.
 (pdftex.def)             Requested size: 121.45343pt x 125.9703pt.
- [10 <./AUB.pdf>] [11 <./AB_incomplete.pdf>] [12]
-[13] [14]
-Overfull \hbox (3.9264pt too wide) in paragraph at lines 988--991
+
+[11 <./AUB.pdf>] [12 <./AB_incomplete.pdf>] [13] [14] [15]
+Overfull \hbox (3.9264pt too wide) in paragraph at lines 1049--1052
 \OML/cmm/m/it/10 H\OT1/cmr/m/n/10 (\OML/cmm/m/it/10 z\OT1/cmr/m/n/10 ) = (\OML/
 cmm/m/it/10 A\OT1/cmr/m/n/10 (\OML/cmm/m/it/10 z\OT1/cmr/m/n/10 )\OML/cmm/m/it/
 10 ; C\OT1/cmr/m/n/10 (\OML/cmm/m/it/10 z\OT1/cmr/m/n/10 )\OML/cmm/m/it/10 ; G\
@@ -348,304 +358,334 @@ m/n/10 (\OML/cmm/m/it/10 z\OT1/cmr/m/n/10 ) = (1\OML/cmm/m/it/10 ; \OT1/cmr/m/n
 ]$,
  []
 
-[15] [16] [17] [18] <sketch_seeding.pdf, id=256, 388.45125pt x 29.10875pt>
+[16] [17] [18] [19] [20]
+<sketch_seeding.pdf, id=263, 388.45125pt x 29.10875pt>
 File: sketch_seeding.pdf Graphic file (type pdf)
 
 <use sketch_seeding.pdf>
-Package pdftex.def Info: sketch_seeding.pdf used on input line 1299.
+Package pdftex.def Info: sketch_seeding.pdf used on input line 1366.
 (pdftex.def)             Requested size: 341.83813pt x 25.61577pt.
- [19 <./sketch_seeding.pdf>]
-<sketch_seeding_error_free_intervals.pdf, id=288, 397.81926pt x 44.1655pt>
+
+<sketch_seeding_error_free_intervals.pdf, id=264, 397.81926pt x 44.1655pt>
 File: sketch_seeding_error_free_intervals.pdf Graphic file (type pdf)
 
 <use sketch_seeding_error_free_intervals.pdf>
 Package pdftex.def Info: sketch_seeding_error_free_intervals.pdf used on input 
-line 1325.
+line 1392.
 (pdftex.def)             Requested size: 350.08203pt x 38.86574pt.
 
-Overfull \hbox (5.08203pt too wide) in paragraph at lines 1325--1331
+Overfull \hbox (5.08203pt too wide) in paragraph at lines 1392--1397
  [][] 
  []
 
-[20 <./sketch_seeding_error_free_intervals.pdf>]
-<substitutions_only.pdf, id=318, 135.50626pt x 118.10825pt>
+[21 <./sketch_seeding.pdf> <./sketch_seeding_error_free_intervals.pdf>]
+[22] <substitutions_only.pdf, id=324, 135.50626pt x 118.10825pt>
 File: substitutions_only.pdf Graphic file (type pdf)
 
 <use substitutions_only.pdf>
-Package pdftex.def Info: substitutions_only.pdf used on input line 1445.
+Package pdftex.def Info: substitutions_only.pdf used on input line 1511.
 (pdftex.def)             Requested size: 121.95448pt x 106.29642pt.
+ [23 <./substitutions_only.pdf>]
+<singularityS.pdf, id=349, 870.81133pt x 434.62375pt>
+File: singularityS.pdf Graphic file (type pdf)
+ <use singularityS.pdf>
+Package pdftex.def Info: singularityS.pdf used on input line 1615.
+(pdftex.def)             Requested size: 348.31836pt x 173.8464pt.
+
+Overfull \hbox (3.31836pt too wide) in paragraph at lines 1615--1625
+ [][] 
+ []
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-[21] [22 <./substitutions_only.pdf>]
-<singularityS.pdf, id=346, 870.81133pt x 434.62375pt>
-File: singularityS.pdf Graphic file (type pdf)
- <use singularityS.pdf>
-Package pdftex.def Info: singularityS.pdf used on input line 1549.
-(pdftex.def)             Requested size: 348.31836pt x 173.8464pt.
-
-Overfull \hbox (3.31836pt too wide) in paragraph at lines 1549--1558
- [][] 
- []
-
-[23 <./singularityS.pdf>]
-Overfull \hbox (6.42752pt too wide) in paragraph at lines 1614--1619
+[24]
+Overfull \hbox (6.42752pt too wide) in paragraph at lines 1682--1687
 []\OT1/cmr/m/n/10 Considering this an equa-tion of $\OML/cmm/m/it/10 R > \OT1/c
 mr/m/n/10 0$, the so-lu-tion is min-i-mal when $2\OML/cmm/m/it/10 pR []\OT1/cmr
 /m/n/10 (\OML/cmm/m/it/10 ^^R\OT1/cmr/m/n/10 )$
  []
 
-[24] <simulp.pdf, id=386, 794.97pt x 397.485pt>
+[25 <./singularityS.pdf>] <simulp.pdf, id=390, 794.97pt x 397.485pt>
 File: simulp.pdf Graphic file (type pdf)
- <use simulp.pdf>
-Package pdftex.def Info: simulp.pdf used on input line 1673.
+
+<use simulp.pdf>
+Package pdftex.def Info: simulp.pdf used on input line 1741.
 (pdftex.def)             Requested size: 353.7666pt x 176.8833pt.
 
-Overfull \hbox (8.7666pt too wide) in paragraph at lines 1673--1680
+Overfull \hbox (8.7666pt too wide) in paragraph at lines 1741--1748
  [][] 
  []
 
-[25 <./simulp.pdf>] <deletions.pdf, id=396, 167.62625pt x 118.10825pt>
-File: deletions.pdf Graphic file (type pdf)
 
-<use deletions.pdf>
-Package pdftex.def Info: deletions.pdf used on input line 1720.
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[26] <deletions.pdf, id=394, 167.62625pt x 118.10825pt>
+File: deletions.pdf Graphic file (type pdf)
+ <use deletions.pdf>
+Package pdftex.def Info: deletions.pdf used on input line 1788.
 (pdftex.def)             Requested size: 150.86221pt x 106.29642pt.
- [26 <./deletions.pdf>]
-Overfull \hbox (9.31483pt too wide) in paragraph at lines 1759--1763
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+
+Overfull \hbox (9.31483pt too wide) in paragraph at lines 1827--1831
 []\OT1/cmr/m/n/10 The head and tail vec-tors are the same as in sec-tion 3.3[],
  \OT1/cmr/m/it/10 i.e $\OML/cmm/m/it/10 H\OT1/cmr/m/n/10 (\OML/cmm/m/it/10 z\OT
 1/cmr/m/n/10 ) = (\OML/cmm/m/it/10 F\OT1/cmr/m/n/10 (\OML/cmm/m/it/10 z\OT1/cmr
 /m/n/10 )\OML/cmm/m/it/10 ; pz\OT1/cmr/m/n/10 )[]$,
  []
 
-[27] <simulpdel.pdf, id=423, 794.97pt x 397.485pt>
+[27 <./simulp.pdf>] [28 <./deletions.pdf>]
+<simulpdel.pdf, id=426, 794.97pt x 397.485pt>
 File: simulpdel.pdf Graphic file (type pdf)
  <use simulpdel.pdf>
-Package pdftex.def Info: simulpdel.pdf used on input line 1853.
+Package pdftex.def Info: simulpdel.pdf used on input line 1922.
 (pdftex.def)             Requested size: 353.7666pt x 176.8833pt.
 
-Overfull \hbox (8.7666pt too wide) in paragraph at lines 1853--1860
+Overfull \hbox (8.7666pt too wide) in paragraph at lines 1922--1929
  [][] 
  []
 
-[28 <./simulpdel.pdf>] <insertions.pdf, id=432, 385.44101pt x 194.058pt>
+[29 <./simulpdel.pdf>] <insertions.pdf, id=435, 385.44101pt x 194.058pt>
 File: insertions.pdf Graphic file (type pdf)
 
 <use insertions.pdf>
-Package pdftex.def Info: insertions.pdf used on input line 1914.
+Package pdftex.def Info: insertions.pdf used on input line 1983.
 (pdftex.def)             Requested size: 346.89368pt x 174.65057pt.
 
-Overfull \hbox (1.89368pt too wide) in paragraph at lines 1914--1927
- [][] 
- []
-
-[29 <./insertions.pdf>] [30] <simulpins.pdf, id=460, 794.97pt x 397.485pt>
-File: simulpins.pdf Graphic file (type pdf)
-
-<use simulpins.pdf>
-Package pdftex.def Info: simulpins.pdf used on input line 2088.
-(pdftex.def)             Requested size: 353.7666pt x 176.8833pt.
-
-Overfull \hbox (8.7666pt too wide) in paragraph at lines 2088--2096
+Overfull \hbox (1.89368pt too wide) in paragraph at lines 1983--1996
  [][] 
  []
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-[31] [32 <./simulpins.pdf>] <empirical.pdf, id=473, 168.29576pt x 118.10825pt>
+[30] [31 <./insertions.pdf>] [32]
+<simulpins.pdf, id=467, 794.97pt x 397.485pt>
+File: simulpins.pdf Graphic file (type pdf)
+ <use simulpins.pdf>
+Package pdftex.def Info: simulpins.pdf used on input line 2162.
+(pdftex.def)             Requested size: 353.7666pt x 176.8833pt.
+
+Overfull \hbox (8.7666pt too wide) in paragraph at lines 2162--2170
+ [][] 
+ []
+
+[33 <./simulpins.pdf>] <empirical.pdf, id=476, 168.29576pt x 118.10825pt>
 File: empirical.pdf Graphic file (type pdf)
 
 <use empirical.pdf>
-Package pdftex.def Info: empirical.pdf used on input line 2149.
+Package pdftex.def Info: empirical.pdf used on input line 2224.
 (pdftex.def)             Requested size: 151.46477pt x 106.29642pt.
- [33 <./empirical.pdf>] [34]
-Overfull \hbox (6.42752pt too wide) in paragraph at lines 2339--2343
+ [34 <./empirical.pdf>] [35] [36]
+Overfull \hbox (6.42752pt too wide) in paragraph at lines 2421--2425
 []\OT1/cmr/m/n/10 Considering this an equa-tion of $\OML/cmm/m/it/10 R > \OT1/c
 mr/m/n/10 0$, the so-lu-tion is min-i-mal when $2\OML/cmm/m/it/10 pR []\OT1/cmr
 /m/n/10 (\OML/cmm/m/it/10 ^^R\OT1/cmr/m/n/10 )$
  []
 
-[35] <simulp_short.pdf, id=505, 794.97pt x 397.485pt>
+<simulp_short.pdf, id=508, 794.97pt x 397.485pt>
 File: simulp_short.pdf Graphic file (type pdf)
  <use simulp_short.pdf>
-Package pdftex.def Info: simulp_short.pdf used on input line 2377.
+Package pdftex.def Info: simulp_short.pdf used on input line 2459.
 (pdftex.def)             Requested size: 353.7666pt x 176.8833pt.
 
-Overfull \hbox (8.7666pt too wide) in paragraph at lines 2377--2385
+Overfull \hbox (8.7666pt too wide) in paragraph at lines 2459--2467
  [][] 
  []
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-[36] <simulp_approx.pdf, id=509, 794.97pt x 397.485pt>
+[37] [38 <./simulp_short.pdf>]
+<simulp_approx.pdf, id=521, 794.97pt x 397.485pt>
 File: simulp_approx.pdf Graphic file (type pdf)
  <use simulp_approx.pdf>
-Package pdftex.def Info: simulp_approx.pdf used on input line 2447.
+Package pdftex.def Info: simulp_approx.pdf used on input line 2530.
 (pdftex.def)             Requested size: 353.7666pt x 176.8833pt.
 
-Overfull \hbox (8.7666pt too wide) in paragraph at lines 2447--2456
+Overfull \hbox (8.7666pt too wide) in paragraph at lines 2530--2539
  [][] 
  []
 
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-[37 <./simulp_short.pdf>] [38 <./simulp_approx.pdf>]
-<sketch_inexact_seeding.pdf, id=527, 394.47375pt x 63.73813pt>
+[39 <./simulp_approx.pdf>]
+<sketch_inexact_seeding.pdf, id=530, 394.47375pt x 63.73813pt>
 File: sketch_inexact_seeding.pdf Graphic file (type pdf)
 
 <use sketch_inexact_seeding.pdf>
-Package pdftex.def Info: sketch_inexact_seeding.pdf used on input line 2540.
+Package pdftex.def Info: sketch_inexact_seeding.pdf used on input line 2625.
 (pdftex.def)             Requested size: 347.13797pt x 56.0897pt.
 
-Overfull \hbox (2.13797pt too wide) in paragraph at lines 2540--2547
+Overfull \hbox (2.13797pt too wide) in paragraph at lines 2625--2632
  [][] 
  []
 
-[39 <./sketch_inexact_seeding.pdf>]
-<inexact_graph.pdf, id=558, 434.95801pt x 202.088pt>
-File: inexact_graph.pdf Graphic file (type pdf)
- <use inexact_graph.pdf>
-Package pdftex.def Info: inexact_graph.pdf used on input line 2577.
-(pdftex.def)             Requested size: 343.61305pt x 159.64775pt.
 
-[40 <./inexact_graph.pdf>] [41]
-<simulp-inexact.pdf, id=589, 794.97pt x 397.485pt>
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[40] <inexact_graph.pdf, id=534, 434.95801pt x 202.088pt>
+File: inexact_graph.pdf Graphic file (type pdf)
+
+<use inexact_graph.pdf>
+Package pdftex.def Info: inexact_graph.pdf used on input line 2662.
+(pdftex.def)             Requested size: 343.61305pt x 159.64775pt.
+ [41 <./sketch_inexact_seeding.pdf> <./inexact_graph.pdf>] [42] <simulp-inexact
+.pdf, id=592, 794.97pt x 397.485pt>
 File: simulp-inexact.pdf Graphic file (type pdf)
- <use simulp-inexact.pdf>
-Package pdftex.def Info: simulp-inexact.pdf used on input line 2681.
+
+<use simulp-inexact.pdf>
+Package pdftex.def Info: simulp-inexact.pdf used on input line 2764.
 (pdftex.def)             Requested size: 353.7666pt x 176.8833pt.
 
-Overfull \hbox (8.7666pt too wide) in paragraph at lines 2681--2689
+Overfull \hbox (8.7666pt too wide) in paragraph at lines 2764--2772
  [][] 
  []
 
-[42 <./simulp-inexact.pdf>]
-<example_typeI.pdf, id=598, 233.87375pt x 57.548pt>
+[43 <./simulp-inexact.pdf>]
+<example_typeI.pdf, id=602, 233.87375pt x 57.548pt>
 File: example_typeI.pdf Graphic file (type pdf)
  <use example_typeI.pdf>
-Package pdftex.def Info: example_typeI.pdf used on input line 2755.
+Package pdftex.def Info: example_typeI.pdf used on input line 2837.
 (pdftex.def)             Requested size: 233.87315pt x 57.54785pt.
 
-[43 <./example_typeI.pdf>]
-<sketch_dual_mutations.pdf, id=637, 394.47375pt x 59.72313pt>
+[44 <./example_typeI.pdf>]
+<sketch_dual_mutations.pdf, id=640, 394.47375pt x 59.72313pt>
 File: sketch_dual_mutations.pdf Graphic file (type pdf)
 
 <use sketch_dual_mutations.pdf>
-Package pdftex.def Info: sketch_dual_mutations.pdf used on input line 2799.
+Package pdftex.def Info: sketch_dual_mutations.pdf used on input line 2881.
 (pdftex.def)             Requested size: 347.13797pt x 52.55649pt.
 
-Overfull \hbox (2.13797pt too wide) in paragraph at lines 2799--2809
+Overfull \hbox (2.13797pt too wide) in paragraph at lines 2881--2891
  [][] 
  []
 
-<example_dual.pdf, id=638, 216.89331pt x 79.12962pt>
+[45 <./sketch_dual_mutations.pdf>]
+<example_dual.pdf, id=671, 216.89331pt x 79.12962pt>
 File: example_dual.pdf Graphic file (type pdf)
  <use example_dual.pdf>
-Package pdftex.def Info: example_dual.pdf used on input line 2837.
+Package pdftex.def Info: example_dual.pdf used on input line 2919.
 (pdftex.def)             Requested size: 195.20216pt x 71.21599pt.
 
-[44 <./sketch_dual_mutations.pdf>]
-<false_positives_graph.pdf, id=669, 315.1775pt x 219.82124pt>
+<false_positives_graph.pdf, id=672, 315.1775pt x 219.82124pt>
 File: false_positives_graph.pdf Graphic file (type pdf)
 
 <use false_positives_graph.pdf>
-Package pdftex.def Info: false_positives_graph.pdf used on input line 2862.
+Package pdftex.def Info: false_positives_graph.pdf used on input line 2945.
 (pdftex.def)             Requested size: 315.17673pt x 219.8207pt.
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-[45 <./example_dual.pdf>]
-Overfull \hbox (4.18065pt too wide) detected at line 2935
+[46 <./example_dual.pdf>]
+Overfull \hbox (4.18065pt too wide) detected at line 3019
 \OML/cmm/m/it/10 M\OT1/cmr/m/n/10 (\OML/cmm/m/it/10 z\OT1/cmr/m/n/10 ) = []\OML
 /cmm/m/it/10 ;
  []
 
-[46 <./false_positives_graph.pdf>] [47] [48]
-<simulp_false_positives.pdf, id=731, 794.97pt x 397.485pt>
+[47 <./false_positives_graph.pdf>] [48] [49]
+<simulp_false_positives.pdf, id=735, 794.97pt x 397.485pt>
 File: simulp_false_positives.pdf Graphic file (type pdf)
 
 <use simulp_false_positives.pdf>
-Package pdftex.def Info: simulp_false_positives.pdf used on input line 3089.
+Package pdftex.def Info: simulp_false_positives.pdf used on input line 3192.
 (pdftex.def)             Requested size: 353.7666pt x 176.8833pt.
 
-Overfull \hbox (8.7666pt too wide) in paragraph at lines 3089--3097
+Overfull \hbox (8.7666pt too wide) in paragraph at lines 3192--3200
  [][] 
  []
 
-[49 <./simulp_false_positives.pdf>] [50]
-<sketch_MEM.pdf, id=744, 399.4925pt x 59.72313pt>
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[50] [51 <./simulp_false_positives.pdf>] [52]
+<sketch_MEM.pdf, id=750, 399.4925pt x 59.72313pt>
 File: sketch_MEM.pdf Graphic file (type pdf)
  <use sketch_MEM.pdf>
-Package pdftex.def Info: sketch_MEM.pdf used on input line 3195.
+Package pdftex.def Info: sketch_MEM.pdf used on input line 3321.
 (pdftex.def)             Requested size: 351.55447pt x 52.55649pt.
 
-Overfull \hbox (6.55447pt too wide) in paragraph at lines 3195--3209
+Overfull \hbox (6.55447pt too wide) in paragraph at lines 3321--3335
  [][] 
  []
 
-[51 <./sketch_MEM.pdf>]
-<example_dual_mem.pdf, id=775, 295.43675pt x 78.46013pt>
+[53 <./sketch_MEM.pdf>]
+<example_dual_mem.pdf, id=781, 295.43675pt x 78.46013pt>
 File: example_dual_mem.pdf Graphic file (type pdf)
 
 <use example_dual_mem.pdf>
-Package pdftex.def Info: example_dual_mem.pdf used on input line 3254.
+Package pdftex.def Info: example_dual_mem.pdf used on input line 3382.
 (pdftex.def)             Requested size: 265.89061pt x 70.61345pt.
- <MEM_graph.pdf, id=776, 434.95801pt x 187.36801pt>
+ <MEM_graph.pdf, id=782, 434.95801pt x 187.36801pt>
 File: MEM_graph.pdf Graphic file (type pdf)
 
 <use MEM_graph.pdf>
-Package pdftex.def Info: MEM_graph.pdf used on input line 3275.
+Package pdftex.def Info: MEM_graph.pdf used on input line 3404.
 (pdftex.def)             Requested size: 343.61305pt x 148.01909pt.
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-[52 <./example_dual_mem.pdf>] [53 <./MEM_graph.pdf>] [54]
-<simulp_mem.pdf, id=834, 794.97pt x 397.485pt>
+[54 <./example_dual_mem.pdf>] [55 <./MEM_graph.pdf>]
+<simulp_mem.pdf, id=838, 794.97pt x 397.485pt>
 File: simulp_mem.pdf Graphic file (type pdf)
  <use simulp_mem.pdf>
-Package pdftex.def Info: simulp_mem.pdf used on input line 3411.
+Package pdftex.def Info: simulp_mem.pdf used on input line 3552.
 (pdftex.def)             Requested size: 353.7666pt x 176.8833pt.
 
-Overfull \hbox (8.7666pt too wide) in paragraph at lines 3411--3420
+Overfull \hbox (8.7666pt too wide) in paragraph at lines 3552--3561
  [][] 
  []
 
-[55 <./simulp_mem.pdf>] <simulp_mem_fp.pdf, id=844, 794.97pt x 397.485pt>
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[56] [57 <./simulp_mem.pdf>] <simulp_mem_fp.pdf, id=850, 794.97pt x 397.485pt>
 File: simulp_mem_fp.pdf Graphic file (type pdf)
 
 <use simulp_mem_fp.pdf>
-Package pdftex.def Info: simulp_mem_fp.pdf used on input line 3485.
+Package pdftex.def Info: simulp_mem_fp.pdf used on input line 3625.
 (pdftex.def)             Requested size: 353.7666pt x 176.8833pt.
 
-Overfull \hbox (8.7666pt too wide) in paragraph at lines 3485--3493
+Overfull \hbox (8.7666pt too wide) in paragraph at lines 3625--3633
  [][] 
  []
 
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-<simulp_mem_fp2.pdf, id=845, 794.97pt x 397.485pt>
+[58 <./simulp_mem_fp.pdf>] <simulp_mem_fp2.pdf, id=859, 397.485pt x 397.485pt>
 File: simulp_mem_fp2.pdf Graphic file (type pdf)
- <use simulp_mem_fp2.pdf>
-Package pdftex.def Info: simulp_mem_fp2.pdf used on input line 3512.
+
+<use simulp_mem_fp2.pdf>
+Package pdftex.def Info: simulp_mem_fp2.pdf used on input line 3670.
+(pdftex.def)             Requested size: 176.8833pt x 176.8833pt.
+
+<bunch_of_singularities.pdf, id=860, 397.485pt x 397.485pt>
+File: bunch_of_singularities.pdf Graphic file (type pdf)
+
+<use bunch_of_singularities.pdf>
+Package pdftex.def Info: bunch_of_singularities.pdf used on input line 3691.
+(pdftex.def)             Requested size: 176.8833pt x 176.8833pt.
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[59 <./simulp_mem_fp2.pdf>] <simulp_mem_fp3.pdf, id=869, 794.97pt x 397.485pt>
+File: simulp_mem_fp3.pdf Graphic file (type pdf)
+
+<use simulp_mem_fp3.pdf>
+Package pdftex.def Info: simulp_mem_fp3.pdf used on input line 3718.
 (pdftex.def)             Requested size: 353.7666pt x 176.8833pt.
 
-Overfull \hbox (8.7666pt too wide) in paragraph at lines 3512--3524
+Overfull \hbox (8.7666pt too wide) in paragraph at lines 3718--3729
  [][] 
  []
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-[56] [57 <./simulp_mem_fp.pdf>]
-Overfull \hbox (0.27847pt too wide) in paragraph at lines 3608--3610
+[60 <./bunch_of_singularities.pdf>] [61 <./simulp_mem_fp3.pdf>]
+Overfull \hbox (0.27847pt too wide) in paragraph at lines 3820--3822
 \OT1/cmr/bx/n/10 Proposition 10. \OT1/cmr/m/it/10 If a func-tion $\OML/cmm/m/it
 /10 W\OT1/cmr/m/n/10 (\OML/cmm/m/it/10 z\OT1/cmr/m/n/10 )$ \OT1/cmr/m/it/10 is 
 the ra-tio of two poly-no-mi-als $\OML/cmm/m/it/10 P\OT1/cmr/m/n/10 (\OML/cmm/m
@@ -653,9 +693,9 @@ the ra-tio of two poly-no-mi-als $\OML/cmm/m/it/10 P\OT1/cmr/m/n/10 (\OML/cmm/m
 \OT1/cmr/m/n/10 )[]$\OT1/cmr/m/it/10 ,
  []
 
-[58 <./simulp_mem_fp2.pdf>] [59]
-Overfull \hbox (1.13922pt too wide) in paragraph at lines 3721--3727
-[]\OT1/cmr/m/n/10 Multiplying (33[]) by $\OML/cmm/m/it/10 z \OMS/cmsy/m/n/10 ^^
+[62]
+Overfull \hbox (1.13922pt too wide) in paragraph at lines 3933--3939
+[]\OT1/cmr/m/n/10 Multiplying (35[]) by $\OML/cmm/m/it/10 z \OMS/cmsy/m/n/10 ^^
 @ \OML/cmm/m/it/10 z[]$ \OT1/cmr/m/n/10 and set-ting $\OML/cmm/m/it/10 z \OT1/c
 mr/m/n/10 = \OML/cmm/m/it/10 z[]$\OT1/cmr/m/n/10 , we ob-tain $\OML/cmm/m/it/10
  ^^L[] \OT1/cmr/m/n/10 = \OML/cmm/m/it/10 Q[]\OT1/cmr/m/n/10 (\OML/cmm/m/it/10 
@@ -663,82 +703,90 @@ z[]\OT1/cmr/m/n/10 )\OML/cmm/m/it/10 =Q[]\OT1/cmr/m/n/10 (\OML/cmm/m/it/10 z[]\
 OT1/cmr/m/n/10 )[]$.
  []
 
-[60] [61] <simulp-average.pdf, id=875, 361.35pt x 397.485pt>
+[63] [64] <simulp-average.pdf, id=896, 361.35pt x 397.485pt>
 File: simulp-average.pdf Graphic file (type pdf)
 
 <use simulp-average.pdf>
-Package pdftex.def Info: simulp-average.pdf used on input line 3846.
+Package pdftex.def Info: simulp-average.pdf used on input line 4051.
 (pdftex.def)             Requested size: 160.803pt x 176.8833pt.
- [62 <./simulp-average.pdf>]
-<deletions2.pdf, id=891, 207.10674pt x 183.18437pt>
+ [65 <./simulp-average.pdf>]
+<deletions2.pdf, id=913, 207.10674pt x 183.18437pt>
 File: deletions2.pdf Graphic file (type pdf)
  <use deletions2.pdf>
-Package pdftex.def Info: deletions2.pdf used on input line 3917.
+Package pdftex.def Info: deletions2.pdf used on input line 4122.
 (pdftex.def)             Requested size: 186.39432pt x 164.8644pt.
-
-Overfull \hbox (2.76434pt too wide) in paragraph at lines 3925--3936
-[]\OT1/cmr/m/n/10 Here, reads are se-quences of error-free in-ter-vals withs sy
-m-bol $^^A[]$ and weighted
- []
-
-[63 <./deletions2.pdf>] <simuldel-average2.pdf, id=915, 361.35pt x 397.485pt>
-File: simuldel-average2.pdf Graphic file (type pdf)
-
-<use simuldel-average2.pdf>
-Package pdftex.def Info: simuldel-average2.pdf used on input line 3990.
-(pdftex.def)             Requested size: 160.803pt x 176.8833pt.
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-[64] [65 <./simuldel-average2.pdf>]
-<simulins-average.pdf, id=928, 361.35pt x 397.485pt>
+
+Overfull \hbox (2.76434pt too wide) in paragraph at lines 4130--4139
+[]\OT1/cmr/m/n/10 Here, reads are se-quences of error-free in-ter-vals withs sy
+m-bol $^^A[]$ and weighted
+ []
+
+[66] [67 <./deletions2.pdf>]
+<simuldel-average2.pdf, id=941, 361.35pt x 397.485pt>
+File: simuldel-average2.pdf Graphic file (type pdf)
+
+<use simuldel-average2.pdf>
+Package pdftex.def Info: simuldel-average2.pdf used on input line 4192.
+(pdftex.def)             Requested size: 160.803pt x 176.8833pt.
+ [68 <./simuldel-average2.pdf>]
+<simulins-average.pdf, id=950, 361.35pt x 397.485pt>
 File: simulins-average.pdf Graphic file (type pdf)
 
 <use simulins-average.pdf>
-Package pdftex.def Info: simulins-average.pdf used on input line 4070.
+Package pdftex.def Info: simulins-average.pdf used on input line 4271.
 (pdftex.def)             Requested size: 160.803pt x 176.8833pt.
- [66 <./simulins-average.pdf>] [67] (./seeding.bbl
-[68]) [69] (./seeding.aux) ) 
+ [69 <./simulins-average.pdf>] [70]
+Missing character: There is no â in font cmr10!
+Missing character: There is no € in font cmr10!
+Missing character: There is no ˜ in font cmr10!
+Missing character: There is no â in font cmr10!
+Missing character: There is no € in font cmr10!
+Missing character: There is no ™ in font cmr10!
+ (./seeding.bbl
+[71]) [72] (./seeding.aux) ) 
 Here is how much of TeX's memory you used:
- 4711 strings out of 493029
- 67759 string characters out of 6136235
- 139977 words of memory out of 5000000
- 8141 multiletter control sequences out of 15000+600000
- 16099 words of font info for 61 fonts, out of 8000000 for 9000
- 1141 hyphenation exceptions out of 8191
- 37i,20n,39p,1063b,374s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 4756 strings out of 493304
+ 68279 string characters out of 6139871
+ 139107 words of memory out of 5000000
+ 8103 multiletter control sequences out of 15000+600000
+ 16494 words of font info for 62 fonts, out of 8000000 for 9000
+ 957 hyphenation exceptions out of 8191
+ 37i,20n,38p,1156b,374s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/a
 msfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfont
 s/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/c
 mbx9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbxti10
-.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.pfb>
-</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/
-share/texlive/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmex9.pfb></usr/sh
-are/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/te
-xlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texlive/t
-exmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texlive/texmf-di
-st/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/font
-s/type1/public/amsfonts/cm/cmmi9.pfb></usr/share/texlive/texmf-dist/fonts/type1
-/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public
-/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfon
-ts/cm/cmr17.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/c
-mr5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb>
-</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/sh
-are/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/share/texl
-ive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/te
-xmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></usr/share/texlive/texmf-dis
-t/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/texlive/texmf-dist/fonts
-/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/
-public/amsfonts/cm/cmsy9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/
-amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfon
-ts/cm/cmti9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/c
-mtt10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt9.p
-fb>
-Output written on seeding.pdf (69 pages, 5680389 bytes).
+.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><
+/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmex9.pfb></u
+sr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/sha
+re/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texl
+ive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texlive/tex
+mf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist
+/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/share/texlive/texmf-dist/fonts/
+type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/p
+ublic/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/a
+msfonts/cm/cmr17.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts
+/cm/cmr5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6
+.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></u
+sr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share
+/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/share/texlive
+/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf
+-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></usr/share/texlive/texmf-dist/f
+onts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/texlive/texmf-dist/fonts/ty
+pe1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/pub
+lic/amsfonts/cm/cmsy9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/ams
+fonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/
+cm/cmti9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt
+10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt9.pfb>
+
+Output written on seeding.pdf (72 pages, 5819930 bytes).
 PDF statistics:
- 1037 PDF objects out of 1200 (max. 8388607)
- 518 compressed objects within 6 object streams
+ 1058 PDF objects out of 1200 (max. 8388607)
+ 532 compressed objects within 6 object streams
  0 named destinations out of 1000 (max. 500000)
- 186 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 196 words of extra memory for PDF output out of 10000 (max. 10000000)
 
